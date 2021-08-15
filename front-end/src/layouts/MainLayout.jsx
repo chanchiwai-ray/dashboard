@@ -1,0 +1,104 @@
+import React, { useContext, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+
+import {
+  Container,
+  Row,
+  Col,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUserCog,
+  faBars,
+  faHome,
+  faWallet,
+} from "@fortawesome/free-solid-svg-icons";
+
+import Header from "../components/Header/Header.jsx";
+import Sidebar from "../components/Sidebar/Sidebar.jsx";
+import Context from "../contexts.jsx";
+import { useAuth } from "../authenticate.jsx";
+
+const headerNavItems = [
+  {
+    to: "/home",
+    label: "Home",
+    faIcon: faHome,
+  },
+];
+
+const sidebarNavItems = [
+  {
+    to: "/home",
+    label: "Home",
+    faIcon: faHome,
+  },
+  {
+    to: "/finance",
+    label: "Finance",
+    faIcon: faWallet,
+  },
+];
+
+export default function MainLayout(props) {
+  const [sidebarState, setSidebarState] = useState(true);
+  const context = useContext(Context);
+  const history = useHistory();
+  const auth = useAuth();
+
+  return (
+    <React.Fragment>
+      <Header
+        brand={<FontAwesomeIcon className="fa-lg fa-fw" icon={faBars} />}
+        navItems={headerNavItems}
+        toggleSidebar={() => setSidebarState(!sidebarState)}
+      >
+        {
+          <Dropdown alignRight>
+            <OverlayTrigger
+              key="bottom"
+              placement="bottom"
+              overlay={<Tooltip>Settings</Tooltip>}
+            >
+              <Dropdown.Toggle>
+                <FontAwesomeIcon color="white" icon={faUserCog} />
+              </Dropdown.Toggle>
+            </OverlayTrigger>
+            <Dropdown.Menu>
+              <Link
+                style={{ textDecoration: "none", color: "black" }}
+                to="/profile"
+              >
+                <Dropdown.Item as="button">
+                  <span>Profile</span>
+                </Dropdown.Item>
+              </Link>
+              <Dropdown.Item
+                as="button"
+                onClick={() => {
+                  auth.logout(() => history.replace("/login"));
+                }}
+              >
+                <span>Log Out</span>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        }
+      </Header>
+      <Container fluid>
+        <Row>
+          <Sidebar
+            id="sidebar-container"
+            navItems={sidebarNavItems}
+            state={sidebarState}
+            activePageID={context.page}
+          />
+          <Col className="p-0 main-panel">{props.children}</Col>
+        </Row>
+      </Container>
+    </React.Fragment>
+  );
+}

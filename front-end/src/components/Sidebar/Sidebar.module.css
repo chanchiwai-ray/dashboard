@@ -1,0 +1,32 @@
+.container {
+  background-color: #fafafa;
+  border-right: 1px solid lightgray;
+}
+
+.link {
+  font-size: 1.1rem;
+  color: rgb(100, 100, 100, 0.8);
+  padding: 10px 23px;
+  display: block;
+  transition: all 0.1s ease-in-out;
+}
+
+.link:hover {
+  color: rgb(0, 115, 246);
+  text-decoration: none;
+  background-color: lightgray;
+}
+
+.link-focus {
+  font-weight: 700;
+  color: rgb(0, 115, 246) !important;
+  box-shadow: 5px 0px 0px 0px rgb(0, 115, 246) inset;
+  -webkit-box-shadow: 5px 0px 0px 0px rgb(0, 115, 246) inset;
+  -moz-box-shadow: 5px 0px 0px 0px rgb(0, 115, 246) inset;
+  background-color: lightgray;
+}
+
+.link-text {
+  margin-right: 7rem;
+  margin-left: 1.5rem;
+}

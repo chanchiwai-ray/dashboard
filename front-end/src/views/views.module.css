@@ -1,0 +1,70 @@
+.comming-soon-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../assets/images/pexels-pixabay-531880.jpg");
+  background-size: cover;
+  font-family: "Courier New", Courier, monospace;
+  height: 100%;
+}
+
+body {
+}
+
+.avatar {
+  width: 160px;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #12c2e9; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to bottom,
+    #f64f59,
+    #c471ed,
+    #12c2e9
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    #f64f59,
+    #c471ed,
+    #12c2e9
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.borderTop {
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  border-top: 1px solid #c2c2c2;
+}
+
+.strongOr {
+  font-family: "Poppins", sans-serif;
+  text-transform: uppercase;
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  background-image: linear-gradient(to right, #32be8f, #38d39f, #32be8f);
+  background-size: 200%;
+  font-size: 1.2rem;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  text-transform: uppercase;
+  margin: 1rem 0;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.submit-btn:hover {
+  background-position: right;
+}

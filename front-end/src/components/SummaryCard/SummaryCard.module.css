@@ -1,0 +1,15 @@
+.footer-text {
+  font-size: 12px;
+}
+
+.body-label {
+  display: block;
+  text-align: right;
+  font-size: 14px;
+}
+
+.body-text {
+  display: block;
+  text-align: right;
+  font-size: 2rem;
+}
