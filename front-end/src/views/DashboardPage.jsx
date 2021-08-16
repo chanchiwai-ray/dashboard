@@ -19,6 +19,7 @@ import {
 import Controller from "../components/Controller/Controller.jsx";
 import Context from "../contexts.jsx";
 import { useAuthFetch } from "../utils.jsx";
+import { recordFields } from "../configs.jsx";
 
 const GenericCard = (props) => {
   return (
@@ -42,11 +43,19 @@ const GenericCard = (props) => {
 
 export default function DashboardPage({ ...props }) {
   const [recordState, recordAction] = useAuthFetch("finances", "records");
+  const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
 
   const context = useContext(Context);
   useEffect(() => {
     context.updatePage("Home");
   });
+
+  useEffect(() => {
+    let categoryField = recordFields.filter((field) => field.id === 2)[0];
+    if (categoryState.success) {
+      categoryField.choices = categoryState.payload;
+    }
+  }, [categoryState]);
 
   return (
     <MainLayout>
@@ -106,7 +115,7 @@ export default function DashboardPage({ ...props }) {
               href="/finance"
               style={{ minHeight: "600px" }}
             >
-              {<Chart records={finance.payload} />}
+              {<Chart records={recordState.payload} categories={categoryState.payload} />}
             </GenericCard>
           </Col>
         </Row>
