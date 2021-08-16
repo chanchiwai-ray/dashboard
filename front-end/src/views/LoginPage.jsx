@@ -1,13 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import ReactDOM from "react-dom";
-import {
-  BrowserRouter,
-  Redirect,
-  Route,
-  Switch,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Form from "react-bootstrap/Form";
@@ -16,11 +8,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
-import {
-  faFacebook,
-  faGithub,
-  faGoogle,
-} from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 import styles from "./views.module.css";
 import Avatar from "../assets/images/avatar.svg";
