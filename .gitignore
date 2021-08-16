@@ -1,0 +1,7 @@
+.env
+.envrc
+.pre-commit-config.yaml
+
+dist/
+node_modules/
+dbdata/
