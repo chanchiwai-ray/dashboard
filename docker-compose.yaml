@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  frontend:
+    env_file: .env
+    build:
+      context: ./front-end/
+      args:
+        REACT_APP_API_HOST: ${API_HOST}
+    ports:
+      - "80:80"
+  backend:
+    env_file: .env
+    build: ./back-end/
+    ports:
+      - "3001:3000"
+  database:
+    env_file: .env
+    image: mongo:latest
+    volumes:
+      - ./dbdata:/data/db
+
+volumes:
+  dbdata:

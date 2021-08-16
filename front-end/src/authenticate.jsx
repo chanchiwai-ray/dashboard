@@ -14,7 +14,7 @@ function useProvideAuth() {
   };
 
   const verifySession = (callback) => {
-    fetch(`${process.env.API_HOST}/authenticate/verify`, {
+    fetch(`${process.env.REACT_APP_API_HOST}/authenticate/verify`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -34,7 +34,7 @@ function useProvideAuth() {
   };
 
   const login = (formData, callback) => {
-    fetch(`${process.env.API_HOST}/authenticate/login`, {
+    fetch(`${process.env.REACT_APP_API_HOST}/authenticate/login`, {
       method: "POST",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
@@ -62,7 +62,7 @@ function useProvideAuth() {
   };
 
   const signup = (formData, callback) => {
-    fetch(`${process.env.API_HOST}/authenticate/signup`, {
+    fetch(`${process.env.REACT_APP_API_HOST}/authenticate/signup`, {
       method: "POST",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
@@ -92,7 +92,7 @@ function useProvideAuth() {
   };
 
   const logout = (callback) => {
-    fetch(`${process.env.API_HOST}/authenticate/logout`, {
+    fetch(`${process.env.REACT_APP_API_HOST}/authenticate/logout`, {
       credentials: "include",
     })
       .then((res) => res.json())

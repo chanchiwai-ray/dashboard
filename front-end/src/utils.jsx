@@ -75,7 +75,7 @@ export function useDatedRecords(records) {
 
 // authenticated fetch api
 export function useAuthFetch(collection, resource) {
-  const api_host = process.env.API_HOST;
+  const api_host = process.env.REACT_APP_API_HOST;
   const auth = useAuth();
   const [state, setState] = useState({
     payload: [],

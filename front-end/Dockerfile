@@ -2,6 +2,10 @@ FROM node:16 AS build
 
 LABEL stage=build
 
+ARG REACT_APP_API_HOST
+
+ENV REACT_APP_API_HOST $REACT_APP_API_HOST
+
 WORKDIR /dashboard
 
 COPY . /dashboard
