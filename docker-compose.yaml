@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   frontend:
+    restart: always
     env_file: .env
     build:
       context: ./front-end/
@@ -10,12 +11,13 @@ services:
     ports:
       - "80:80"
   backend:
+    restart: always
     env_file: .env
     build: ./back-end/
     ports:
       - "3001:3000"
   database:
-    env_file: .env
+    restart: always
     image: mongo:latest
     volumes:
       - ./dbdata:/data/db
