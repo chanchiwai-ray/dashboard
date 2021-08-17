@@ -24,7 +24,6 @@ router
     Records.find({ userId: req.params.uid })
       .sort({ date: "desc" })
       .then((records) => {
-        console.log(records);
         res.status(200).json({
           success: true,
           message: `returned ${records.length} results.`,
@@ -64,7 +63,6 @@ router
   .get(authenticate.isSameUser, (req, res) => {
     Records.find({ userId: req.params.uid, _id: req.params.id })
       .then((record) => {
-        console.log(record);
         res.status(200).json({ success: true, message: "GET success.", payload: record });
       })
       .catch((err) => {
