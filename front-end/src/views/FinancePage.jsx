@@ -41,7 +41,7 @@ export default function FinancePage({ ...props }) {
       categoryField.choices = categoryState.payload;
     }
     if (accountState.success) {
-      accountField.choices = accountState.payload;
+      accountField.choices = [accountField.default, ...accountState.payload];
     }
   }, [categoryState, accountState]);
 
