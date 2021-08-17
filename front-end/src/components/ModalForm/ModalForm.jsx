@@ -19,7 +19,7 @@ export default function ModalForm({ title, fields, show, onHide, onPost, ...prop
     if ("date" in submitData && submitData["date"] === "") {
       submitData["date"] = Date.now();
     } else if ("date" in submitData && submitData["date"] !== "") {
-      submitData["date"] = Date.now(submitData["date"]);
+      submitData["date"] = Date.parse(submitData["date"]);
     }
     onPost(submitData);
     onHide();
