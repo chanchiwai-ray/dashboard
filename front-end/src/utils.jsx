@@ -134,10 +134,10 @@ export function useAuthFetch(collection, resource) {
             throw new Error(
               `Error: fail to PUT ${api_host}/${collection}/${auth.userId}/${resource}/${id}`
             );
-          setState((state) => ({ ...state, success: true }));
+          setState((state) => ({ ...state, success: true, reload: true }));
         })
         .catch((err) => {
-          setState((state) => ({ ...state, success: false }));
+          setState((state) => ({ ...state, success: false, reload: false }));
         });
     };
   };

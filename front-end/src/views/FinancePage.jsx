@@ -19,7 +19,7 @@ import MainLayout from "../layouts/MainLayout.jsx";
 import Context from "../contexts.jsx";
 import { useAuthFetch } from "../utils.jsx";
 import { columns, categoryFields, accountFields, recordFields } from "../configs.jsx";
-import EditableTable from "../components/EditableTable/Editabletable.jsx";
+import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 
 export default function FinancePage({ ...props }) {
   const [recordState, recordAction] = useAuthFetch("finances", "records");
@@ -49,6 +49,13 @@ export default function FinancePage({ ...props }) {
   }, [categoryState, accountState]);
 
   const onDelete = () => {
+    selectedRowIds.forEach((id) => {
+      recordAction.delete()(id);
+    });
+    setSelectedRowIds(new Set());
+  };
+
+  const onUpdate = () => {
     selectedRowIds.forEach((id) => {
       recordAction.delete()(id);
     });
@@ -101,20 +108,16 @@ export default function FinancePage({ ...props }) {
         onPost={recordAction.create()}
         onDelete={recordAction.delete()}
       />
-      <ModalForm
+      <EditableTableForm
         title="Update Record"
-        fields={[]}
+        size="sm"
+        rows={recordState.payload.filter((record) => selectedRowIds.has(record._id))}
+        fields={recordFields}
         show={showEditRecordForm}
         onHide={() => setDisplayEditRecordForm(false)}
-        onPost={recordAction.update()}
+        onUpdate={recordAction.update()}
         onDelete={recordAction.delete()}
-      >
-        <EditableTable
-          size="sm"
-          rows={recordState.payload.filter((record) => selectedRowIds.has(record._id))}
-          fields={recordFields}
-        />
-      </ModalForm>
+      />
       <ModalForm
         title="New Account"
         fields={accountFields}
