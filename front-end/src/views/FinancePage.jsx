@@ -102,7 +102,26 @@ export default function FinancePage({ ...props }) {
         onHide={() => setDisplayAccountForm(false)}
         onPost={accountAction.create()}
         onDelete={accountAction.delete()}
-      />
+      >
+        <hr />
+        <h6>Existing Accounts</h6>
+        <ListGroup>
+          {accountState.payload.map((choice) => (
+            <ListGroup.Item key={choice._id}>
+              <div className="d-flex">
+                <span className="mr-auto">{choice.label}</span>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={() => accountAction.delete()(choice._id)}
+                >
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </Button>
+              </div>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </ModalForm>
       <ModalForm
         title="New Category"
         fields={categoryFields}
