@@ -7,6 +7,7 @@ import {
   faPlusSquare,
   faCreditCard,
   faListAlt,
+  faEdit,
 } from "@fortawesome/free-regular-svg-icons";
 
 import ModalForm from "../components/ModalForm/ModalForm.jsx";
@@ -18,6 +19,7 @@ import MainLayout from "../layouts/MainLayout.jsx";
 import Context from "../contexts.jsx";
 import { useAuthFetch } from "../utils.jsx";
 import { columns, categoryFields, accountFields, recordFields } from "../configs.jsx";
+import EditableTable from "../components/EditableTable/Editabletable.jsx";
 
 export default function FinancePage({ ...props }) {
   const [recordState, recordAction] = useAuthFetch("finances", "records");
@@ -26,6 +28,7 @@ export default function FinancePage({ ...props }) {
   const [showRecordForm, setDisplayRecordForm] = useState(false);
   const [showAccountForm, setDisplayAccountForm] = useState(false);
   const [showCategoryForm, setDisplayCategoryForm] = useState(false);
+  const [showEditRecordForm, setDisplayEditRecordForm] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
   const [filterString, setFilterString] = useState("");
 
@@ -64,6 +67,9 @@ export default function FinancePage({ ...props }) {
         <Nav.Link onClick={() => setDisplayRecordForm(true)}>
           <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> Create
         </Nav.Link>
+        <Nav.Link onClick={() => setDisplayEditRecordForm(true)}>
+          <FontAwesomeIcon className="fa-fw" icon={faEdit} /> Update
+        </Nav.Link>
         <Nav.Link onClick={() => onDelete(selectedRowIds)}>
           <FontAwesomeIcon className="fa-fw" icon={faTrashAlt} /> Delete
         </Nav.Link>
@@ -95,6 +101,20 @@ export default function FinancePage({ ...props }) {
         onPost={recordAction.create()}
         onDelete={recordAction.delete()}
       />
+      <ModalForm
+        title="Update Record"
+        fields={[]}
+        show={showEditRecordForm}
+        onHide={() => setDisplayEditRecordForm(false)}
+        onPost={recordAction.update()}
+        onDelete={recordAction.delete()}
+      >
+        <EditableTable
+          size="sm"
+          rows={recordState.payload.filter((record) => selectedRowIds.has(record._id))}
+          fields={recordFields}
+        />
+      </ModalForm>
       <ModalForm
         title="New Account"
         fields={accountFields}

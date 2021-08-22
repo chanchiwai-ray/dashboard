@@ -71,7 +71,7 @@ router
       });
   })
   .put(authenticate.isSameUser, (req, res) => {
-    Records.findOneAndupdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
+    Records.findOneAndUpdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
       findOneAndModify: false,
       new: true,
     })
@@ -181,7 +181,7 @@ router
       });
   })
   .put(authenticate.isSameUser, (req, res) => {
-    Accounts.findOneAndupdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
+    Accounts.fineOneAndUpdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
       findOneAndModify: false,
       new: true,
     })
@@ -283,7 +283,7 @@ router
       });
   })
   .put(authenticate.isSameUser, (req, res) => {
-    Categories.findOneAndupdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
+    Categories.fineOneAndUpdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
       findOneAndModify: false,
       new: true,
     })
