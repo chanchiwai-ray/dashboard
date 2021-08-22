@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { Container, Row, Col, Nav } from "react-bootstrap";
+import { Container, Row, Col, Nav, ListGroup, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrashAlt,
@@ -110,7 +110,26 @@ export default function FinancePage({ ...props }) {
         onHide={() => setDisplayCategoryForm(false)}
         onPost={categoryAction.create()}
         onDelete={categoryAction.delete()}
-      />
+      >
+        <hr />
+        <h6>Existing Categories</h6>
+        <ListGroup>
+          {categoryState.payload.map((choice) => (
+            <ListGroup.Item key={choice._id}>
+              <div className="d-flex">
+                <span className="mr-auto">{choice.label}</span>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={() => categoryAction.delete()(choice._id)}
+                >
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </Button>
+              </div>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </ModalForm>
     </MainLayout>
   );
 }

@@ -73,7 +73,10 @@ export default function ModalForm({ title, fields, show, onHide, onPost, ...prop
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={(e) => onSubmit(e)}>
-        <Modal.Body>{renderBody()}</Modal.Body>
+        <Modal.Body>
+          {renderBody()}
+          {props.children}
+        </Modal.Body>
         <Modal.Footer>
           <Button type="submit">Submit</Button>
           <Button onClick={() => onReset()} variant="secondary">
