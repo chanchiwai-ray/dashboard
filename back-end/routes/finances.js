@@ -165,7 +165,7 @@ router
 
 // route to users:id's individual bank accounts
 router
-  .route("/:uids/accounts/:id")
+  .route("/:uid/accounts/:id")
   .get(authenticate.isSameUser, (req, res) => {
     Accounts.find({ userId: req.params.uid, _id: req.params.id })
       .then((account) => {
