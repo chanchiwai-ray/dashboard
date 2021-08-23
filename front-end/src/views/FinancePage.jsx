@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { Container, Row, Col, Nav, ListGroup, Button } from "react-bootstrap";
+import { Container, Row, Col, Nav, ListGroup, Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrashAlt,
@@ -29,6 +29,7 @@ export default function FinancePage({ ...props }) {
   const [showAccountForm, setDisplayAccountForm] = useState(false);
   const [showCategoryForm, setDisplayCategoryForm] = useState(false);
   const [showEditRecordForm, setDisplayEditRecordForm] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
   const [filterString, setFilterString] = useState("");
 
@@ -48,18 +49,22 @@ export default function FinancePage({ ...props }) {
     }
   }, [categoryState, accountState]);
 
-  const onDelete = () => {
+  const onDelete = (selectedRowIds) => {
+    if (selectedRowIds.size === 0) {
+      return setShowErrorModal(true);
+    }
+
     selectedRowIds.forEach((id) => {
       recordAction.delete()(id);
     });
     setSelectedRowIds(new Set());
   };
 
-  const onUpdate = () => {
-    selectedRowIds.forEach((id) => {
-      recordAction.delete()(id);
-    });
-    setSelectedRowIds(new Set());
+  const onUpdate = (selectedRowIds) => {
+    if (selectedRowIds.size === 0) {
+      return setShowErrorModal(true);
+    }
+    setDisplayEditRecordForm(true);
   };
 
   return (
@@ -74,7 +79,7 @@ export default function FinancePage({ ...props }) {
         <Nav.Link onClick={() => setDisplayRecordForm(true)}>
           <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> Create
         </Nav.Link>
-        <Nav.Link onClick={() => setDisplayEditRecordForm(true)}>
+        <Nav.Link onClick={() => onUpdate(selectedRowIds)}>
           <FontAwesomeIcon className="fa-fw" icon={faEdit} /> Update
         </Nav.Link>
         <Nav.Link onClick={() => onDelete(selectedRowIds)}>
@@ -168,6 +173,19 @@ export default function FinancePage({ ...props }) {
           ))}
         </ListGroup>
       </ModalForm>
+      <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          You have not selected any records... Please choose at least one record from the table.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setShowErrorModal(false)} variant="secondary">
+            Okay
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </MainLayout>
   );
 }
