@@ -106,7 +106,6 @@ export default function FinancePage({ ...props }) {
         show={showRecordForm}
         onHide={() => setDisplayRecordForm(false)}
         onPost={recordAction.create()}
-        onDelete={recordAction.delete()}
       />
       <EditableTableForm
         title="Update Record"
@@ -116,7 +115,6 @@ export default function FinancePage({ ...props }) {
         show={showEditRecordForm}
         onHide={() => setDisplayEditRecordForm(false)}
         onUpdate={recordAction.update()}
-        onDelete={recordAction.delete()}
       />
       <ModalForm
         title="New Account"
@@ -124,7 +122,6 @@ export default function FinancePage({ ...props }) {
         show={showAccountForm}
         onHide={() => setDisplayAccountForm(false)}
         onPost={accountAction.create()}
-        onDelete={accountAction.delete()}
       >
         <hr />
         <h6>Existing Accounts</h6>
@@ -151,7 +148,6 @@ export default function FinancePage({ ...props }) {
         show={showCategoryForm}
         onHide={() => setDisplayCategoryForm(false)}
         onPost={categoryAction.create()}
-        onDelete={categoryAction.delete()}
       >
         <hr />
         <h6>Existing Categories</h6>
