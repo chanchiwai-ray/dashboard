@@ -35,9 +35,9 @@ export default function CardContact({ profile, updateProfile }) {
         <Card.Header>
           <Card.Title>
             <span>
-              Contact Information{" "}
+              Contact Information
               <Badge className="m-2" variant={edit ? "danger" : "success"}>
-                {edit ? "Editing" : "Viewing"}
+                {edit ? " Editing" : " Viewing"}
               </Badge>
             </span>
           </Card.Title>
