@@ -123,7 +123,7 @@ export function useAuthFetch(collection, resource) {
 
   const put = () => {
     return (id, data) => {
-      fetch(`${api_host}/${collection}/${auth.userId}/${resource}/${id}`, {
+      fetch(`${api_host}/${collection}/${auth.userId}/${resource}/${id || ""}`, {
         method: "PUT",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
@@ -132,7 +132,7 @@ export function useAuthFetch(collection, resource) {
         .then((res) => {
           if (!res.ok)
             throw new Error(
-              `Error: fail to PUT ${api_host}/${collection}/${auth.userId}/${resource}/${id}`
+              `Error: fail to PUT ${api_host}/${collection}/${auth.userId}/${resource}/${id || ""}`
             );
           setState((state) => ({ ...state, success: true, reload: true }));
         })
