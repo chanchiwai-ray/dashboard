@@ -12,7 +12,7 @@ import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import styles from "./CardUser.module.css";
 
 // Note: this component handle state itself
-function CardUser({ profile, ...props }) {
+function CardUser({ profile, updateProfile, ...props }) {
   const [userProfile, setUserProfile] = useState({});
   const [isEditingNickname, editNickname] = useState(false);
   const [isEditingJobTitle, editJobTitle] = useState(false);
@@ -23,18 +23,34 @@ function CardUser({ profile, ...props }) {
     setUserProfile(newProfile);
   };
 
-  const trimSpaces = () => {
+  const trimSpaces = (userProfile) => {
     const newProfile = { ...userProfile };
-    newProfile.nickname = newProfile.nickname.trim();
-    newProfile.jobTitle = newProfile.jobTitle.trim();
-    setUserProfile(newProfile);
+    newProfile.nickname = newProfile.nickname ? newProfile.nickname.trim() : newProfile.nickname;
+    newProfile.jobTitle = newProfile.jobTitle ? newProfile.jobTitle.trim() : newProfile.jobTitle;
+    return newProfile;
   };
 
-  const onClickUpdateProfile = (callback, editState) => {
-    console.log("To be implemented...");
-    // trimSpaces();
-    // if (editState) putUser(user);
-    callback(!editState);
+  const onClickUpdateJobTitle = (isEditing) => {
+    if (isEditing) {
+      editJobTitle(false);
+      const profile = trimSpaces(userProfile);
+      updateProfile(null, profile);
+      setUserProfile(profile);
+    } else {
+      console.log(userProfile);
+      editJobTitle(true);
+    }
+  };
+
+  const onClickUpdateNickname = (isEditing) => {
+    if (isEditing) {
+      editNickname(false);
+      const profile = trimSpaces(userProfile);
+      updateProfile(null, profile);
+      setUserProfile(profile);
+    } else {
+      editNickname(true);
+    }
   };
 
   useEffect(() => {
@@ -71,7 +87,7 @@ function CardUser({ profile, ...props }) {
             )}
             <a
               className={`${styles["edit-name-btn"]}`}
-              onClick={() => onClickUpdateProfile(() => editNickname(!isEditingNickname))}
+              onClick={() => onClickUpdateNickname(isEditingNickname)}
             >
               <FontAwesomeIcon icon={faPencilAlt} color="blue" />
             </a>
@@ -88,7 +104,7 @@ function CardUser({ profile, ...props }) {
           )}
           <a
             className={`${styles["edit-title-btn"]}`}
-            onClick={() => onClickUpdateProfile(() => editJobTitle(!isEditingJobTitle))}
+            onClick={() => onClickUpdateJobTitle(isEditingJobTitle)}
           >
             <FontAwesomeIcon icon={faPencilAlt} color="blue" />
           </a>

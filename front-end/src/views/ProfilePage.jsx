@@ -22,7 +22,7 @@ export default function ProfilePage(props) {
       <Container>
         <Row>
           <Col lg={12} className="my-3">
-            <CardUser profile={profile.payload} />
+            <CardUser profile={profile.payload} updateProfile={profileAction.update()} />
           </Col>
           <Col lg={12} className="my-3">
             <CardContact profile={profile.payload} />
