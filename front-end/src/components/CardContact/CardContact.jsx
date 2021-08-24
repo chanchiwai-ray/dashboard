@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 
 import styles from "./CardContact.module.css";
 
-export default function CardContact({ profile, putProfile }) {
+export default function CardContact({ profile, updateProfile }) {
   const [edit, setEdit] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -23,9 +23,8 @@ export default function CardContact({ profile, putProfile }) {
       website: profile.website || "",
     },
     onSubmit: (values) => {
-      putProfile(values);
+      updateProfile(null, values);
       setEdit(!edit);
-      e.preventDefault();
     },
     enableReinitialize: true,
   });

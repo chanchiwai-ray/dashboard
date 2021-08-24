@@ -12,7 +12,6 @@ export default function ProfilePage(props) {
   const [profile, profileAction] = useAuthFetch("users", "profile");
 
   const context = useContext(Context);
-  console.log(profile);
   useEffect(() => {
     context.updatePage("Profile");
   });
@@ -25,7 +24,7 @@ export default function ProfilePage(props) {
             <CardUser profile={profile.payload} updateProfile={profileAction.update()} />
           </Col>
           <Col lg={12} className="my-3">
-            <CardContact profile={profile.payload} />
+            <CardContact profile={profile.payload} updateProfile={profileAction.update()} />
           </Col>
         </Row>
       </Container>

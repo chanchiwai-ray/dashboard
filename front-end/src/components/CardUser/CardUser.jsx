@@ -37,7 +37,6 @@ function CardUser({ profile, updateProfile, ...props }) {
       updateProfile(null, profile);
       setUserProfile(profile);
     } else {
-      console.log(userProfile);
       editJobTitle(true);
     }
   };
