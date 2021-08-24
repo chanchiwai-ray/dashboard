@@ -117,17 +117,17 @@ function CardUser({ profile, updateProfile, ...props }) {
           </Button>
         </OverlayTrigger>
         <OverlayTrigger placement="bottom" overlay={<Tooltip>Github</Tooltip>}>
-          <Button tag="a" target="_blank" href={userProfile.github} className="m-2">
+          <Button tag="a" target="_blank" href={`${userProfile.github}`} className="m-2">
             <FontAwesomeIcon icon={faGithub} />
           </Button>
         </OverlayTrigger>
         <OverlayTrigger placement="bottom" overlay={<Tooltip>LinkedIn</Tooltip>}>
-          <Button tag="a" target="_blank" href={userProfile.linkedin} className="m-2">
+          <Button tag="a" target="_blank" href={`${userProfile.linkedin}`} className="m-2">
             <FontAwesomeIcon icon={faLinkedinIn} />
           </Button>
         </OverlayTrigger>
         <OverlayTrigger placement="bottom" overlay={<Tooltip>Personal Website</Tooltip>}>
-          <Button tag="a" target="_blank" href={userProfile.website} className="m-2">
+          <Button tag="a" target="_blank" href={`${userProfile.website}`} className="m-2">
             <FontAwesomeIcon icon={faGlobe} />
           </Button>
         </OverlayTrigger>
