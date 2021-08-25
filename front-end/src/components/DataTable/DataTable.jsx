@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { Row, Col } from "react-bootstrap";
 import { Table, Pagination } from "react-bootstrap";
+import AutoPagintaion from "../AutoPagination/AutoPagination.jsx";
 
 import styles from "./DataTable.module.css";
 
@@ -16,7 +17,7 @@ export default function DataTable({
   ...props
 }) {
   const [page, setPage] = useState(1);
-  const [numOfRows, setNumOfRow] = useState(10);
+  const [numOfRows, setNumOfRow] = useState(1);
   const [isAllVisibleRowsChecked, checkAllVisibleRows] = useState(false);
 
   const toggleRowState = (id) => {
@@ -121,23 +122,15 @@ export default function DataTable({
         </Table>
       </Col>
       <Col sm={12} className="d-flex justify-content-center my-3">
-        {
-          // FIXME: properly implement pagination
-        }
-        <Pagination>
-          <Pagination.First onClick={() => toPage(1)} />
-          <Pagination.Prev onClick={() => toPrevPage()} />
-          {[...Array(Math.ceil(rows.length / numOfRows)).keys()].map((i) => (
-            <Pagination.Item active={i + 1 === page} onClick={() => toPage(i + 1)} key={i}>
-              {i + 1}
-            </Pagination.Item>
-          ))}
-          {
-            // <Pagination.Ellipsis />
-          }
-          <Pagination.Next onClick={() => toNextPage()} />
-          <Pagination.Last onClick={() => toPage(Math.ceil(rows.length / numOfRows))} />
-        </Pagination>
+        <AutoPagintaion
+          totalPages={rows.length}
+          currPage={page}
+          toPage={toPage}
+          toNextPage={toNextPage}
+          toPrevPage={toPrevPage}
+          maxLeftPages={2}
+          maxRightPages={2}
+        />
       </Col>
     </Row>
   );
