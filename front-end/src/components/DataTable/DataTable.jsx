@@ -17,7 +17,7 @@ export default function DataTable({
   ...props
 }) {
   const [page, setPage] = useState(1);
-  const [numOfRows, setNumOfRow] = useState(1);
+  const [numOfRows, setNumOfRow] = useState(10);
   const [isAllVisibleRowsChecked, checkAllVisibleRows] = useState(false);
 
   const toggleRowState = (id) => {
