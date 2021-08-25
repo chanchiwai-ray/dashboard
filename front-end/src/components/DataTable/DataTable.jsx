@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Row, Col } from "react-bootstrap";
-import { Table, Pagination } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import AutoPagintaion from "../AutoPagination/AutoPagination.jsx";
 
 import styles from "./DataTable.module.css";
