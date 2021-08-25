@@ -24,10 +24,11 @@ export default function AutoPagintaion({
   }, [currPage, totalPages]);
 
   const renderInnerNavigation = () => {
+    const numShownPages = rightBound - leftBound + 1;
     return (
       <React.Fragment>
         {leftBound === 1 ? null : <Pagination.Ellipsis disabled />}
-        {[...Array(rightBound - leftBound + 1).keys()].map((i) => {
+        {[...Array(numShownPages >= 0 ? numShownPages : 0).keys()].map((i) => {
           const j = i + leftBound;
           return (
             <Pagination.Item active={j === currPage} onClick={() => toPage(j)} key={j}>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Row, Col } from "react-bootstrap";
 import { Table } from "react-bootstrap";
@@ -58,6 +58,10 @@ export default function DataTable({
         : currPage + 1
     );
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [numOfRows]);
 
   return (
     <Row>
@@ -123,7 +127,7 @@ export default function DataTable({
       </Col>
       <Col sm={12} className="d-flex justify-content-center my-3">
         <AutoPagintaion
-          totalPages={rows.length}
+          totalPages={Math.ceil(rows.length / numOfRows)}
           currPage={page}
           toPage={toPage}
           toNextPage={toNextPage}
