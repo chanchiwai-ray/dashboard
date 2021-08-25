@@ -1,12 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import {
-  BrowserRouter,
-  Redirect,
-  Route,
-  Switch,
-  useHistory,
-} from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import DashboardPage from "./views/DashboardPage.jsx";
@@ -52,10 +46,7 @@ const Main = (props) => {
             <PrivateRoute path="/home" component={DashboardPage} />
             <PrivateRoute path="/profile" component={ProfilePage} />
             <PrivateRoute path="/finance" component={FinancePage} />
-            <Redirect
-              from="/"
-              to={window.localStorage.getItem("redirect") || "/login"}
-            />
+            <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
             <Route
               render={() => (
                 <div
