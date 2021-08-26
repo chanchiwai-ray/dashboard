@@ -36,7 +36,20 @@ export function useDates(date) {
   return [dates, { nextMonth: nextMonth, prevMonth: prevMonth, resetDates: resetDates }];
 }
 
-// given an array of records with unix time <date : String> return an object of *monthly* records grouped by Date.toLocaleDateString()
+// convert a date to UTC Date object
+export function toNearestDate(date) {
+  const d = new Date(date);
+  const newDate = new Date();
+  newDate.setFullYear(d.getFullYear());
+  newDate.setMonth(d.getMonth());
+  newDate.setDate(d.getDate());
+  newDate.setHours(0);
+  newDate.setMinutes(0);
+  newDate.setSeconds(0);
+  return newDate;
+}
+
+// given an array of records with unix time (ms) <date : String> return an object of *monthly* records grouped by the its closest date <date: Date>.
 export function useDatedRecords(records) {
   const [dates, datesAction] = useDates(new Date());
   const [datedRecords, setDatedRecords] = useState({});
@@ -45,10 +58,11 @@ export function useDatedRecords(records) {
   useEffect(() => {
     const thisRecords = {};
     records.forEach((record) => {
-      if (!thisRecords[new Date(Number(record.date)).toLocaleDateString()]) {
-        thisRecords[new Date(Number(record.date)).toLocaleDateString()] = [];
+      const date = toNearestDate(Number(record.date));
+      if (!thisRecords[date]) {
+        thisRecords[date] = [];
       }
-      thisRecords[new Date(Number(record.date)).toLocaleDateString()].push(record);
+      thisRecords[date].push(record);
     });
     setDatedRecords(thisRecords);
   }, [records]);
@@ -57,7 +71,7 @@ export function useDatedRecords(records) {
     const thisRecords = {};
     dates.forEach((date) => {
       // shallow copy
-      thisRecords[date.toLocaleDateString()] = datedRecords[date.toLocaleDateString()];
+      thisRecords[date] = datedRecords[date];
     });
     setMonthlyDatedRecords(thisRecords);
   }, [dates, datedRecords]);

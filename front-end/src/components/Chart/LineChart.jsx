@@ -31,8 +31,8 @@ export default function LineChart({ datasource, ...props }) {
         {
           label: "Expense",
           data: datasource.dates.map((date) =>
-            datasource.datedRecords[date.toLocaleDateString()]
-              ? datasource.datedRecords[date.toLocaleDateString()].reduce((acc, curr) => acc + curr.amount, 0)
+            datasource.datedRecords[date]
+              ? datasource.datedRecords[date].reduce((acc, curr) => acc + curr.amount, 0)
               : 0
           ),
           backgroundColor: "rgb(255, 99, 132)",

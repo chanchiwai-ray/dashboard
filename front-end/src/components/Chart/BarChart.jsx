@@ -35,8 +35,8 @@ export default function BarChart({ datasource, ...props }) {
       let t = 0;
       datasource.dates.forEach((date) => {
         categorizedData[category].push(
-          datasource.datedRecords[date.toLocaleDateString()]
-            ? datasource.datedRecords[date.toLocaleDateString()].reduce(
+          datasource.datedRecords[date]
+            ? datasource.datedRecords[date].reduce(
                 (acc, curr) => (curr.category === category ? acc + curr.amount : acc),
                 0
               )
@@ -51,12 +51,12 @@ export default function BarChart({ datasource, ...props }) {
       datasets: categories.map((category, index) => ({
         label: category,
         data: categorizedData[category],
-        backgroundColor: `rgb(${(index * (index + 10) + 100) % 255}, ${(index * (index + 20) + 100) % 255}, ${
-          (index * (index + 30) + 100) % 255
-        })`,
-        borderColor: `rgba(${(index * (index + 10) + 100) % 255}, ${(index * (index + 20) + 100) % 255}, ${
-          (index * (index + 30) + 100) % 255
-        }, 0.2)`,
+        backgroundColor: `rgb(${(index * (index + 10) + 100) % 255}, ${
+          (index * (index + 20) + 100) % 255
+        }, ${(index * (index + 30) + 100) % 255})`,
+        borderColor: `rgba(${(index * (index + 10) + 100) % 255}, ${
+          (index * (index + 20) + 100) % 255
+        }, ${(index * (index + 30) + 100) % 255}, 0.2)`,
         stack: "stack 0",
       })),
     });
