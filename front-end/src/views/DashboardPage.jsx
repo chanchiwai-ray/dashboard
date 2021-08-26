@@ -110,9 +110,9 @@ export default function DashboardPage({ ...props }) {
         <Row>
           <Col xs={12}>
             <GenericCard
-              title="Finance"
+              title="Expense"
               subtitle="Expenses for the month"
-              href="/finance"
+              href="/expense"
               style={{ minHeight: "600px" }}
             >
               {<Chart records={recordState.payload} categories={categoryState.payload} />}

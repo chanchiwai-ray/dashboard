@@ -1,21 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import {
-  Container,
-  Row,
-  Col,
-  Dropdown,
-  OverlayTrigger,
-  Tooltip,
-} from "react-bootstrap";
+import { Container, Row, Col, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserCog,
-  faBars,
-  faHome,
-  faWallet,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserCog, faBars, faHome, faWallet } from "@fortawesome/free-solid-svg-icons";
 
 import Header from "../components/Header/Header.jsx";
 import Sidebar from "../components/Sidebar/Sidebar.jsx";
@@ -37,8 +25,8 @@ const sidebarNavItems = [
     faIcon: faHome,
   },
   {
-    to: "/finance",
-    label: "Finance",
+    to: "/expense",
+    label: "Expense",
     faIcon: faWallet,
   },
 ];
@@ -58,20 +46,13 @@ export default function MainLayout(props) {
       >
         {
           <Dropdown alignRight>
-            <OverlayTrigger
-              key="bottom"
-              placement="bottom"
-              overlay={<Tooltip>Settings</Tooltip>}
-            >
+            <OverlayTrigger key="bottom" placement="bottom" overlay={<Tooltip>Settings</Tooltip>}>
               <Dropdown.Toggle>
                 <FontAwesomeIcon color="white" icon={faUserCog} />
               </Dropdown.Toggle>
             </OverlayTrigger>
             <Dropdown.Menu>
-              <Link
-                style={{ textDecoration: "none", color: "black" }}
-                to="/profile"
-              >
+              <Link style={{ textDecoration: "none", color: "black" }} to="/profile">
                 <Dropdown.Item as="button">
                   <span>Profile</span>
                 </Dropdown.Item>

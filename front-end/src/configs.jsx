@@ -12,11 +12,6 @@ export const columns = [
     width: 150,
   },
   {
-    field: "account",
-    headerName: "Account",
-    width: 110,
-  },
-  {
     field: "description",
     headerName: "Description",
     width: 160,
@@ -83,16 +78,6 @@ export const recordFields = [
     label: "Category",
     choices: [],
     required: true,
-  },
-  {
-    id: 3,
-    as: "select",
-    type: "text",
-    name: "bankName",
-    label: "Account",
-    choices: [],
-    required: false,
-    default: "",
   },
   {
     id: 4,

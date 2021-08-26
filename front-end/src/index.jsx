@@ -5,7 +5,7 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DashboardPage from "./views/DashboardPage.jsx";
 import ProfilePage from "./views/ProfilePage.jsx";
-import FinancePage from "./views/FinancePage.jsx";
+import ExpensePage from "./views/ExpensePage.jsx";
 import LoginPage from "./views/LoginPage.jsx";
 
 import "./index.css";
@@ -45,7 +45,7 @@ const Main = (props) => {
             <Route exact path="/login" component={LoginPage} />
             <PrivateRoute path="/home" component={DashboardPage} />
             <PrivateRoute path="/profile" component={ProfilePage} />
-            <PrivateRoute path="/finance" component={FinancePage} />
+            <PrivateRoute path="/expense" component={ExpensePage} />
             <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
             <Route
               render={() => (

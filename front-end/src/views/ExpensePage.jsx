@@ -2,13 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { Container, Row, Col, Nav, ListGroup, Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTrashAlt,
-  faPlusSquare,
-  faCreditCard,
-  faListAlt,
-  faEdit,
-} from "@fortawesome/free-regular-svg-icons";
+import { faTrashAlt, faPlusSquare, faListAlt, faEdit } from "@fortawesome/free-regular-svg-icons";
 
 import ModalForm from "../components/ModalForm/ModalForm.jsx";
 import Chart from "../components/Chart/Chart.jsx";
@@ -18,15 +12,13 @@ import MainLayout from "../layouts/MainLayout.jsx";
 
 import Context from "../contexts.jsx";
 import { useAuthFetch } from "../utils.jsx";
-import { columns, categoryFields, accountFields, recordFields } from "../configs.jsx";
+import { columns, categoryFields, recordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 
 export default function FinancePage({ ...props }) {
   const [recordState, recordAction] = useAuthFetch("finances", "records");
-  const [accountState, accountAction] = useAuthFetch("finances", "accounts");
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
   const [showRecordForm, setDisplayRecordForm] = useState(false);
-  const [showAccountForm, setDisplayAccountForm] = useState(false);
   const [showCategoryForm, setDisplayCategoryForm] = useState(false);
   const [showEditRecordForm, setDisplayEditRecordForm] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -40,14 +32,10 @@ export default function FinancePage({ ...props }) {
 
   useEffect(() => {
     let categoryField = recordFields.filter((field) => field.id === 2)[0];
-    let accountField = recordFields.filter((field) => field.id === 3)[0];
     if (categoryState.success) {
       categoryField.choices = categoryState.payload;
     }
-    if (accountState.success) {
-      accountField.choices = [accountField.default, ...accountState.payload];
-    }
-  }, [categoryState, accountState]);
+  }, [categoryState]);
 
   const onDelete = (selectedRowIds) => {
     if (selectedRowIds.size === 0) {
@@ -69,10 +57,7 @@ export default function FinancePage({ ...props }) {
 
   return (
     <MainLayout>
-      <Controller title="Finance" bg="light" expand="lg">
-        <Nav.Link onClick={() => setDisplayAccountForm(true)}>
-          <FontAwesomeIcon className="fa-fw" icon={faCreditCard} /> New Account
-        </Nav.Link>
+      <Controller title="Expense" bg="light" expand="lg">
         <Nav.Link onClick={() => setDisplayCategoryForm(true)}>
           <FontAwesomeIcon className="fa-fw" icon={faListAlt} /> New Category
         </Nav.Link>
@@ -121,32 +106,6 @@ export default function FinancePage({ ...props }) {
         onHide={() => setDisplayEditRecordForm(false)}
         onUpdate={recordAction.update()}
       />
-      <ModalForm
-        title="New Account"
-        fields={accountFields}
-        show={showAccountForm}
-        onHide={() => setDisplayAccountForm(false)}
-        onPost={accountAction.create()}
-      >
-        <hr />
-        <h6>Existing Accounts</h6>
-        <ListGroup>
-          {accountState.payload.map((choice) => (
-            <ListGroup.Item key={choice._id}>
-              <div className="d-flex">
-                <span className="mr-auto">{choice.label}</span>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  onClick={() => accountAction.delete()(choice._id)}
-                >
-                  <FontAwesomeIcon icon={faTrashAlt} />
-                </Button>
-              </div>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </ModalForm>
       <ModalForm
         title="New Category"
         fields={categoryFields}
