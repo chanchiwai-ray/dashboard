@@ -13,7 +13,7 @@ function useProvideAuth() {
     // return userId !== null;
   };
 
-  const verifySession = (callback) => {
+  const verifySession = (onSuccess, onFailure) => {
     fetch(`${process.env.REACT_APP_API_HOST}/authenticate/verify`, {
       credentials: "include",
     })
@@ -24,16 +24,22 @@ function useProvideAuth() {
           // FIXME: find a better way to keep the authentication state persistently (e.g. using redux-persist)
           window.localStorage.setItem("redirect", "/home");
           window.localStorage.setItem("authenticated", "true");
-          if (callback) callback();
+          if (onSuccess) onSuccess(res);
         } else {
           setUserId(null);
           window.localStorage.setItem("redirect", "/login");
           window.localStorage.setItem("authenticated", "false");
+          if (onFailure) onFailure(res);
         }
+      })
+      .catch((err) => {
+        setUserId(null);
+        if (onFailure)
+          onFailure({ success: false, message: "500: Internal Server Side Error.", payload: null });
       });
   };
 
-  const login = (formData, callback) => {
+  const login = (formData, onSuccess, onFailure) => {
     fetch(`${process.env.REACT_APP_API_HOST}/authenticate/login`, {
       method: "POST",
       body: JSON.stringify(formData),
@@ -47,21 +53,24 @@ function useProvideAuth() {
           // FIXME: find a better way to keep the authentication state persistently (e.g. using redux-persist)
           window.localStorage.setItem("authenticated", "true");
           window.localStorage.setItem("redirect", "/home");
-          if (callback) callback();
+          if (onSuccess) onSuccess(res);
         } else {
           setUserId(null);
           window.localStorage.setItem("redirect", "/login");
           window.localStorage.setItem("authenticated", "false");
-          throw new Error(res.message);
+          if (onFailure) onFailure(res);
         }
       })
       .catch((err) => {
         setUserId(null);
-        console.log("set up a modal to notify user that log in fails.", err);
+        window.localStorage.setItem("redirect", "/login");
+        window.localStorage.setItem("authenticated", "false");
+        if (onFailure)
+          onFailure({ success: false, message: "500: Internal Server Side Error.", payload: null });
       });
   };
 
-  const signup = (formData, callback) => {
+  const signup = (formData, onSuccess, onFailure) => {
     fetch(`${process.env.REACT_APP_API_HOST}/authenticate/signup`, {
       method: "POST",
       body: JSON.stringify(formData),
@@ -75,23 +84,24 @@ function useProvideAuth() {
           // FIXME: find a better way to keep the authentication state persistently (e.g. using redux-persist)
           window.localStorage.setItem("authenticated", "true");
           window.localStorage.setItem("redirect", "/home");
-          if (callback) callback();
+          if (onSuccess) onSuccess(res);
         } else {
           setUserId(null);
           window.localStorage.setItem("redirect", "/login");
           window.localStorage.setItem("authenticated", "false");
-          throw new Error(res.message);
+          if (onFailure) onFailure(res);
         }
       })
       .catch((err) => {
         setUserId(null);
         window.localStorage.setItem("redirect", "/login");
         window.localStorage.setItem("authenticated", "false");
-        console.log("set up a modal to notify user that log in fails.", err);
+        if (onFailure)
+          onFailure({ success: false, message: "500: Internal Server Side Error.", payload: null });
       });
   };
 
-  const logout = (callback) => {
+  const logout = (onSuccess, onFailure) => {
     fetch(`${process.env.REACT_APP_API_HOST}/authenticate/logout`, {
       credentials: "include",
     })
@@ -102,18 +112,19 @@ function useProvideAuth() {
           // FIXME: find a better way to keep the authentication state persistently (e.g. using redux-persist)
           window.localStorage.setItem("authenticated", "false");
           window.localStorage.setItem("redirect", "/login");
-          if (callback) callback();
+          if (onSuccess) onSuccess(res);
         } else {
           window.localStorage.removeItem("redirect");
           window.localStorage.removeItem("authenticated");
-          throw new Error(res.message);
+          if (onFailure) onFailure(res);
         }
       })
       .catch((err) => {
         setUserId(null);
         window.localStorage.removeItem("redirect");
         window.localStorage.removeItem("authenticated");
-        console.log("set up a modal to notify user that log in fails.", err);
+        if (onFailure)
+          onFailure({ success: false, message: "500: Internal Server Side Error.", payload: null });
       });
   };
 
