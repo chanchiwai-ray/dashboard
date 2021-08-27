@@ -36,6 +36,8 @@ export default function LoginPage(props) {
   });
   const [error, setError] = useState({ title: "Error", message: "An error occurs.", show: false });
 
+  // verify the cookies and redirect to homepage without logging in again if the
+  // user has valid cookies.
   useEffect(() => {
     auth.verifySession(() => {
       history.replace("/home");
