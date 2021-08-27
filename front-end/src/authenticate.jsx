@@ -34,6 +34,8 @@ function useProvideAuth() {
       })
       .catch((err) => {
         setUserId(null);
+        window.localStorage.removeItem("redirect");
+        window.localStorage.removeItem("authenticated");
         if (onFailure)
           onFailure({ success: false, message: "500: Internal Server Side Error.", payload: null });
       });
