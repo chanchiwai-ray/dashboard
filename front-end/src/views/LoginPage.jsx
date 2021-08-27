@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,6 +13,7 @@ import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-ico
 import styles from "./views.module.css";
 import Avatar from "../assets/images/avatar.svg";
 import { useAuth } from "../authenticate.jsx";
+import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
 
 const Separator = () => {
   return (
@@ -33,12 +34,39 @@ export default function LoginPage(props) {
       password: "",
     },
   });
+  const [error, setError] = useState({ title: "Error", message: "An error occurs.", show: false });
 
   useEffect(() => {
     auth.verifySession(() => {
       history.replace("/home");
-    });
+    }, null);
   }, []);
+
+  const handleLogin = () => {
+    auth.login(
+      formik.values,
+      (res) => {
+        setError({ title: "", message: "", show: false });
+        history.replace("/home");
+      },
+      (res) => {
+        setError({ title: "Error", message: res.message, show: true });
+      }
+    );
+  };
+
+  const handleSignup = () => {
+    auth.signup(
+      formik.values,
+      (res) => {
+        setError({ title: "", message: "", show: false });
+        history.replace("/home");
+      },
+      (res) => {
+        setError({ title: "Error", message: res.message, show: true });
+      }
+    );
+  };
 
   return (
     <div className={`container-fluid ${styles.container}`}>
@@ -83,25 +111,13 @@ export default function LoginPage(props) {
               />
             </InputGroup>
           </Form.Group>
-          <Button
-            className={`${styles["submit-btn"]}`}
-            type="submit"
-            onClick={() =>
-              auth.login(formik.values, () => {
-                history.replace("/home");
-              })
-            }
-          >
+          <Button className={`${styles["submit-btn"]}`} type="submit" onClick={() => handleLogin()}>
             <strong>Log In</strong>
           </Button>
           <Button
             className={`${styles["submit-btn"]}`}
             type="submit"
-            onClick={() =>
-              auth.signup(formik.values, () => {
-                history.replace("/home");
-              })
-            }
+            onClick={() => handleSignup()}
           >
             <strong>Sign Up</strong>
           </Button>
@@ -118,6 +134,13 @@ export default function LoginPage(props) {
             <FontAwesomeIcon icon={faGithub} />
           </Button>
         </div>
+        <ErrorModal
+          title={error.title}
+          show={error.show}
+          onHide={() => setError({ ...error, show: false })}
+        >
+          <p>{error.message}</p>
+        </ErrorModal>
       </div>
     </div>
   );
