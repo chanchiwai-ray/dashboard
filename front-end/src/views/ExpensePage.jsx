@@ -14,6 +14,7 @@ import Context from "../contexts.jsx";
 import { useAuthFetch } from "../utils.jsx";
 import { columns, categoryFields, recordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
+import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
 
 export default function FinancePage({ ...props }) {
   const [recordState, recordAction] = useAuthFetch("finances", "records");
@@ -132,19 +133,13 @@ export default function FinancePage({ ...props }) {
           ))}
         </ListGroup>
       </ModalForm>
-      <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Error</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          You have not selected any records... Please choose at least one record from the table.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setShowErrorModal(false)} variant="secondary">
-            Okay
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ErrorModal
+        title="Invaild Operation"
+        show={showErrorModal}
+        onHide={() => setShowErrorModal(false)}
+      >
+        <p>You have not selected any records. Please choose at least one record from the table.</p>
+      </ErrorModal>
     </MainLayout>
   );
 }
