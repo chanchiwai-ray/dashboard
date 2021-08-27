@@ -27,7 +27,7 @@ export default function FinancePage({ ...props }) {
 
   const context = useContext(Context);
   useEffect(() => {
-    context.updatePage("Finance");
+    context.updatePage("Expense");
   }, []);
 
   useEffect(() => {
