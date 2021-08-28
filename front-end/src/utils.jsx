@@ -88,7 +88,7 @@ export function useDatedRecords(records) {
 }
 
 // authenticated fetch api
-export function useAuthFetch(collection, resource) {
+export function useAuthFetch(collection, resource, query) {
   const api_host = process.env.REACT_APP_API_HOST;
   const auth = useAuth();
   const [state, setState] = useState({
@@ -103,13 +103,20 @@ export function useAuthFetch(collection, resource) {
 
   useEffect(() => {
     if (auth.isAuthenticated() && state.reload && auth.userId) {
-      fetch(`${api_host}/${collection}/${auth.userId}/${resource}`, {
-        credentials: "include",
-      })
+      fetch(
+        `${api_host}/${collection}/${auth.userId}/${resource}${
+          query ? "?" + new URLSearchParams(query).toString() : ""
+        }`,
+        {
+          credentials: "include",
+        }
+      )
         .then((res) => {
           if (!res.ok)
             throw new Error(
-              `Error: fail to GET ${api_host}/${collection}/${auth.userId}/${resource}`
+              `Error: fail to GET ${api_host}/${collection}/${auth.userId}/${resource}${
+                query ? "?" + new URLSearchParams(query).toString() : ""
+              }`
             );
           return res;
         })
