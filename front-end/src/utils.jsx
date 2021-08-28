@@ -93,43 +93,46 @@ export function useAuthFetch(collection, resource, query) {
   }, [state, auth]);
 
   const get = (query) => {
-    fetch(
-      `${api_host}/${collection}/${auth.userId}/${resource}${
-        query ? "?" + new URLSearchParams(query).toString() : ""
-      }`,
-      {
-        credentials: "include",
-      }
-    )
-      .then((res) => {
-        if (!res.ok)
-          throw new Error(
-            `Error: fail to GET ${api_host}/${collection}/${auth.userId}/${resource}${
-              query ? "?" + new URLSearchParams(query).toString() : ""
-            }`
-          );
-        return res;
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.success) {
-          setState((state) => ({
-            payload: [],
-            success: false,
-            reload: false,
-          }));
-        } else {
-          setState((state) => ({
-            payload: data.payload,
-            success: true,
-            reload: false,
-          }));
+    if (auth.isAuthenticated() && auth.userId) {
+      fetch(
+        `${api_host}/${collection}/${auth.userId}/${resource}${
+          query ? "?" + new URLSearchParams(query).toString() : ""
+        }`,
+        {
+          credentials: "include",
         }
-      })
-      .catch((err) => {
-        setState((state) => ({ payload: [], success: false, reload: false }));
-      });
+      )
+        .then((res) => {
+          if (!res.ok)
+            throw new Error(
+              `Error: fail to GET ${api_host}/${collection}/${auth.userId}/${resource}${
+                query ? "?" + new URLSearchParams(query).toString() : ""
+              }`
+            );
+          return res;
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.success) {
+            setState((state) => ({
+              payload: [],
+              success: false,
+              reload: false,
+            }));
+          } else {
+            setState((state) => ({
+              payload: data.payload,
+              success: true,
+              reload: false,
+            }));
+          }
+        })
+        .catch((err) => {
+          setState((state) => ({ payload: [], success: false, reload: false }));
+        });
+    }
   };
+
   const put = () => {
     return (id, data) => {
       fetch(`${api_host}/${collection}/${auth.userId}/${resource}/${id || ""}`, {
