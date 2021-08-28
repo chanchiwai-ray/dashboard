@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { Container, Row, Col, Nav, ListGroup, Button, Modal } from "react-bootstrap";
+import { Container, Row, Col, Nav, ListGroup, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt, faPlusSquare, faListAlt, faEdit } from "@fortawesome/free-regular-svg-icons";
 

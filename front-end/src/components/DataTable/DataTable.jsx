@@ -6,7 +6,6 @@ import AutoPagintaion from "../AutoPagination/AutoPagination.jsx";
 
 import styles from "./DataTable.module.css";
 
-// FIXME: don't fetch all data at once
 export default function DataTable({
   rows,
   columns,
