@@ -18,7 +18,7 @@ import {
 
 import Controller from "../components/Controller/Controller.jsx";
 import Context from "../contexts.jsx";
-import { useAuthFetch } from "../utils.jsx";
+import { useAuthFetch, useDates } from "../utils.jsx";
 import { recordFields } from "../configs.jsx";
 
 const GenericCard = (props) => {
@@ -42,13 +42,21 @@ const GenericCard = (props) => {
 };
 
 export default function DashboardPage({ ...props }) {
-  const [recordState, recordAction] = useAuthFetch("finances", "records");
+  const [dates, dateAction] = useDates(new Date());
+  const [recordState, recordAction] = useAuthFetch("finances", "records", {
+    start: Date.parse(dates[0]),
+    end: Date.parse(dates[dates.length - 1]),
+  });
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
 
   const context = useContext(Context);
   useEffect(() => {
     context.updatePage("Home");
   });
+
+  useEffect(() => {
+    recordAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
+  }, [dates]);
 
   useEffect(() => {
     let categoryField = recordFields.filter((field) => field.id === 2)[0];
@@ -115,7 +123,14 @@ export default function DashboardPage({ ...props }) {
               href="/expense"
               style={{ minHeight: "600px" }}
             >
-              {<Chart records={recordState.payload} categories={categoryState.payload} />}
+              {
+                <Chart
+                  dates={dates}
+                  records={recordState.payload}
+                  categories={categoryState.payload}
+                  dateAction={dateAction}
+                />
+              }
             </GenericCard>
           </Col>
         </Row>

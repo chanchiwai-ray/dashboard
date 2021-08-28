@@ -11,13 +11,17 @@ import DataTable from "../components/DataTable/DataTable.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 
 import Context from "../contexts.jsx";
-import { useAuthFetch } from "../utils.jsx";
+import { useAuthFetch, useDates } from "../utils.jsx";
 import { columns, categoryFields, recordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
 
 export default function FinancePage({ ...props }) {
-  const [recordState, recordAction] = useAuthFetch("finances", "records");
+  const [dates, dateAction] = useDates(new Date());
+  const [recordState, recordAction] = useAuthFetch("finances", "records", {
+    start: Date.parse(dates[0]),
+    end: Date.parse(dates[dates.length - 1]),
+  });
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
   const [showRecordForm, setDisplayRecordForm] = useState(false);
   const [showCategoryForm, setDisplayCategoryForm] = useState(false);
@@ -30,6 +34,10 @@ export default function FinancePage({ ...props }) {
   useEffect(() => {
     context.updatePage("Expense");
   }, []);
+
+  useEffect(() => {
+    recordAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
+  }, [dates]);
 
   useEffect(() => {
     let categoryField = recordFields.filter((field) => field.id === 2)[0];
@@ -75,7 +83,14 @@ export default function FinancePage({ ...props }) {
       <Container>
         <Row>
           <Col sm={12}>
-            {<Chart records={recordState.payload} categories={categoryState.payload} />}
+            {
+              <Chart
+                dates={dates}
+                records={recordState.payload}
+                categories={categoryState.payload}
+                dateAction={dateAction}
+              />
+            }
           </Col>
           <Col sm={12}>
             <DataTable

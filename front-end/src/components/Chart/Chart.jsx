@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Row, Col } from "react-bootstrap";
 import { ButtonGroup, Button } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartBar, faCaretSquareLeft, faCaretSquareRight, faCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faChartBar,
+  faCaretSquareLeft,
+  faCaretSquareRight,
+  faCircle,
+} from "@fortawesome/free-regular-svg-icons";
 import { faChartPie, faChartLine } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Chart.module.css";
-import { useDatedRecords } from "../../utils.jsx";
+import { toDatedRecords } from "../../utils.jsx";
 import BarChart from "./BarChart.jsx";
 import LineChart from "./LineChart.jsx";
 import DoughnutChart from "./DoughnutChart.jsx";
@@ -18,10 +23,18 @@ const ChartContainer = (props) => {
     <Row className={`${styles["container"]}`}>
       <Col xs={12} lg={2} className="d-flex justify-content-center align-items-center">
         <ButtonGroup className="m-2">
-          <Button variant="outline-info" active={props.currView === "bar"} onClick={() => props.onChangeView("bar")}>
+          <Button
+            variant="outline-info"
+            active={props.currView === "bar"}
+            onClick={() => props.onChangeView("bar")}
+          >
             <FontAwesomeIcon icon={faChartBar} />
           </Button>
-          <Button variant="outline-info" active={props.currView === "line"} onClick={() => props.onChangeView("line")}>
+          <Button
+            variant="outline-info"
+            active={props.currView === "line"}
+            onClick={() => props.onChangeView("line")}
+          >
             <FontAwesomeIcon icon={faChartLine} />
           </Button>
           <Button
@@ -56,15 +69,24 @@ const ChartContainer = (props) => {
   );
 };
 
-export default function Chart({ records, categories, ...props }) {
+export default function Chart({ dates, records, categories, dateAction, ...props }) {
   const [view, setView] = useState("bar");
-  // FIXME: fetching all records is not ideal
-  const [dates, monthlyRecords, recordsAction] = useDatedRecords(records);
+  const [monthlyRecords, setMonthlyRecords] = useState({});
+
+  useEffect(() => {
+    setMonthlyRecords(toDatedRecords(dates, records));
+  }, [dates, records]);
 
   const renderChart = (view) => {
     switch (view) {
       case "line":
-        return <LineChart datasource={{ dates: dates, datedRecords: monthlyRecords }} height={400} width={300} />;
+        return (
+          <LineChart
+            datasource={{ dates: dates, datedRecords: monthlyRecords }}
+            height={400}
+            width={300}
+          />
+        );
       case "doughnut":
         return (
           <DoughnutChart
@@ -102,13 +124,13 @@ export default function Chart({ records, categories, ...props }) {
             })
       }
       handlePrevBtn={() => {
-        recordsAction.prevMonthRecords();
+        dateAction.prevMonth();
       }}
       handleCurrBtn={() => {
-        recordsAction.thisMonthRecords();
+        dateAction.resetDates();
       }}
       handleNextBtn={() => {
-        recordsAction.nextMonthRecords();
+        dateAction.nextMonth();
       }}
       onChangeView={(v) => setView(v)}
       currView={view}
