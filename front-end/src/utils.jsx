@@ -49,42 +49,27 @@ export function toNearestDate(date) {
   return newDate;
 }
 
-// given an array of records with unix time (ms) <date : String> return an object of *monthly* records grouped by the its closest date <date: Date>.
-export function useDatedRecords(records) {
-  const [dates, datesAction] = useDates(new Date());
-  const [datedRecords, setDatedRecords] = useState({});
-  const [monthlyDatedRecords, setMonthlyDatedRecords] = useState({});
+// given an array of records with unix time (ms) <date : String> return an object of records grouped by the its closest date <date: Date>.
+export function toDatedRecords(dates, records) {
+  if (!dates || !records) {
+    return {};
+  }
 
-  useEffect(() => {
-    const thisRecords = {};
-    records.forEach((record) => {
-      const date = toNearestDate(Number(record.date));
-      if (!thisRecords[date]) {
-        thisRecords[date] = [];
-      }
-      thisRecords[date].push(record);
-    });
-    setDatedRecords(thisRecords);
-  }, [records]);
+  const datedRecords = {};
+  records.forEach((record) => {
+    const date = toNearestDate(Number(record.date));
+    if (!datedRecords[date]) {
+      datedRecords[date] = [];
+    }
+    datedRecords[date].push(record);
+  });
 
-  useEffect(() => {
-    const thisRecords = {};
-    dates.forEach((date) => {
-      // shallow copy
-      thisRecords[date] = datedRecords[date];
-    });
-    setMonthlyDatedRecords(thisRecords);
-  }, [dates, datedRecords]);
-
-  return [
-    dates,
-    monthlyDatedRecords,
-    {
-      nextMonthRecords: datesAction.nextMonth,
-      prevMonthRecords: datesAction.prevMonth,
-      thisMonthRecords: datesAction.resetDates,
-    },
-  ];
+  const thisRecords = {};
+  dates.forEach((date) => {
+    // shallow copy
+    thisRecords[date] = datedRecords[date];
+  });
+  return thisRecords;
 }
 
 // authenticated fetch api
@@ -103,45 +88,48 @@ export function useAuthFetch(collection, resource, query) {
 
   useEffect(() => {
     if (auth.isAuthenticated() && state.reload && auth.userId) {
-      fetch(
-        `${api_host}/${collection}/${auth.userId}/${resource}${
-          query ? "?" + new URLSearchParams(query).toString() : ""
-        }`,
-        {
-          credentials: "include",
-        }
-      )
-        .then((res) => {
-          if (!res.ok)
-            throw new Error(
-              `Error: fail to GET ${api_host}/${collection}/${auth.userId}/${resource}${
-                query ? "?" + new URLSearchParams(query).toString() : ""
-              }`
-            );
-          return res;
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.success) {
-            setState((state) => ({
-              payload: [],
-              success: false,
-              reload: false,
-            }));
-          } else {
-            setState((state) => ({
-              payload: data.payload,
-              success: true,
-              reload: false,
-            }));
-          }
-        })
-        .catch((err) => {
-          setState((state) => ({ payload: [], success: false, reload: false }));
-        });
+      get(query);
     }
   }, [state, auth]);
 
+  const get = (query) => {
+    fetch(
+      `${api_host}/${collection}/${auth.userId}/${resource}${
+        query ? "?" + new URLSearchParams(query).toString() : ""
+      }`,
+      {
+        credentials: "include",
+      }
+    )
+      .then((res) => {
+        if (!res.ok)
+          throw new Error(
+            `Error: fail to GET ${api_host}/${collection}/${auth.userId}/${resource}${
+              query ? "?" + new URLSearchParams(query).toString() : ""
+            }`
+          );
+        return res;
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success) {
+          setState((state) => ({
+            payload: [],
+            success: false,
+            reload: false,
+          }));
+        } else {
+          setState((state) => ({
+            payload: data.payload,
+            success: true,
+            reload: false,
+          }));
+        }
+      })
+      .catch((err) => {
+        setState((state) => ({ payload: [], success: false, reload: false }));
+      });
+  };
   const put = () => {
     return (id, data) => {
       fetch(`${api_host}/${collection}/${auth.userId}/${resource}/${id || ""}`, {
@@ -204,5 +192,5 @@ export function useAuthFetch(collection, resource, query) {
     };
   };
 
-  return [state, { update: put, create: post, delete: del }];
+  return [state, { reload: get, update: put, create: post, delete: del }];
 }
