@@ -16,7 +16,7 @@ import { columns, categoryFields, recordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
 
-export default function FinancePage({ ...props }) {
+export default function ExpensePage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
   const [recordState, recordAction] = useAuthFetch("finances", "records", {
     start: Date.parse(dates[0]),
