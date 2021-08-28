@@ -21,7 +21,9 @@ router.all("/", (req, res) => {
 router
   .route("/:uid/records")
   .get(authenticate.isSameUser, (req, res) => {
-    Records.find({ userId: req.params.uid })
+    const start = Math.round(Number(req.query.start)) || 0;
+    const end = Math.round(Number(req.query.end)) || 100 * 365 * 24 * 60 * 60 * 1000;
+    Records.find({ userId: req.params.uid, date: { $gte: start, $lte: end } })
       .sort({ date: "desc" })
       .then((records) => {
         res.status(200).json({
