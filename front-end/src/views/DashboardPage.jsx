@@ -21,6 +21,10 @@ import Context from "../contexts.jsx";
 import { useAuthFetch, useDates } from "../utils.jsx";
 import { recordFields } from "../configs.jsx";
 
+const date = new Date();
+const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+
 const GenericCard = (props) => {
   return (
     <Card {...props} className="my-3 mx-1">
@@ -44,12 +48,12 @@ const GenericCard = (props) => {
 export default function DashboardPage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
   const [stats, statsAction] = useAuthFetch("finances", "records/total", {
-    start: Date.parse(dates[0]),
-    end: Date.parse(dates[dates.length - 1]),
+    start: Date.parse(dates[0] || startDate),
+    end: Date.parse(dates[dates.length - 1]) || endDate,
   });
   const [recordState, recordAction] = useAuthFetch("finances", "records", {
-    start: Date.parse(dates[0]),
-    end: Date.parse(dates[dates.length - 1]),
+    start: Date.parse(dates[0] || startDate),
+    end: Date.parse(dates[dates.length - 1] || endDate),
   });
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
 
@@ -59,8 +63,14 @@ export default function DashboardPage({ ...props }) {
   });
 
   useEffect(() => {
-    recordAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
-    statsAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
+    recordAction.reload({
+      start: Date.parse(dates[0] || startDate),
+      end: Date.parse(dates[dates.length - 1] || endDate),
+    });
+    statsAction.reload({
+      start: Date.parse(dates[0] || startDate),
+      end: Date.parse(dates[dates.length - 1] || endDate),
+    });
   }, [dates]);
 
   useEffect(() => {

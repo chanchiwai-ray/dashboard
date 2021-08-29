@@ -16,11 +16,15 @@ import { columns, categoryFields, recordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
 
+const date = new Date();
+const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+
 export default function ExpensePage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
   const [recordState, recordAction] = useAuthFetch("finances", "records", {
-    start: Date.parse(dates[0]),
-    end: Date.parse(dates[dates.length - 1]),
+    start: Date.parse(dates[0] || startDate),
+    end: Date.parse(dates[dates.length - 1] || endDate),
   });
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
   const [showRecordForm, setDisplayRecordForm] = useState(false);
@@ -36,7 +40,10 @@ export default function ExpensePage({ ...props }) {
   }, []);
 
   useEffect(() => {
-    recordAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
+    recordAction.reload({
+      start: Date.parse(dates[0] || startDate),
+      end: Date.parse(dates[dates.length - 1] || endDate),
+    });
   }, [dates]);
 
   useEffect(() => {
