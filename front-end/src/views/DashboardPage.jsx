@@ -43,6 +43,10 @@ const GenericCard = (props) => {
 
 export default function DashboardPage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
+  const [stats, statsAction] = useAuthFetch("finances", "records/total", {
+    start: Date.parse(dates[0]),
+    end: Date.parse(dates[dates.length - 1]),
+  });
   const [recordState, recordAction] = useAuthFetch("finances", "records", {
     start: Date.parse(dates[0]),
     end: Date.parse(dates[dates.length - 1]),
@@ -56,6 +60,7 @@ export default function DashboardPage({ ...props }) {
 
   useEffect(() => {
     recordAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
+    statsAction.reload({ start: Date.parse(dates[0]), end: Date.parse(dates[dates.length - 1]) });
   }, [dates]);
 
   useEffect(() => {
@@ -73,7 +78,7 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                data: 1000,
+                data: stats.success ? stats.payload[0].total : "Loading",
                 icon: faYenSign,
                 label: "Monthly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
