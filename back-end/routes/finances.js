@@ -17,6 +17,51 @@ router.all("/", (req, res) => {
   res.status(501).json({ error: "GET is not implemented." });
 });
 
+// route to get the total of users:id's finance records from start to end
+router
+  .route("/:uid/records/total")
+  .get(authenticate.isSameUser, (req, res) => {
+    const start = Math.round(Number(req.query.start)) || 0;
+    const end = Math.round(Number(req.query.end)) || 100 * 365 * 24 * 60 * 60 * 1000;
+    Records.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: `${start}`,
+            $lte: `${end}`,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$amount",
+          },
+        },
+      },
+    ])
+      .then((sums) => {
+        res.status(200).json({
+          success: true,
+          message: `returned ${sums.length} results.`,
+          payload: sums,
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({ success: false, message: "GET not success.", payload: null });
+        console.log(err);
+      });
+  })
+  .post((req, res) => {
+    res.status(501).json({ error: "POST is not implemented." });
+  })
+  .put((req, res) => {
+    res.status(501).json({ error: "PUT is not implemented." });
+  })
+  .delete((req, res) => {
+    res.status(501).json({ error: "DELETE is not implemented." });
+  });
 // route to users:id's all finance records
 router
   .route("/:uid/records")
