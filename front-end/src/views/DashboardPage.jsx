@@ -22,6 +22,8 @@ import { useAuthFetch, useDates } from "../utils.jsx";
 import { recordFields } from "../configs.jsx";
 
 const date = new Date();
+const startMonth = new Date(date.getFullYear(), 0, 1);
+const endMonth = new Date(date.getFullYear(), 11, 1);
 const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
 const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
 
@@ -47,9 +49,13 @@ const GenericCard = (props) => {
 
 export default function DashboardPage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
-  const [stats, statsAction] = useAuthFetch("finances", "records/total", {
+  const [montlyExpense, montlyExpenseAction] = useAuthFetch("finances", "records/total", {
     start: Date.parse(dates[0] || startDate),
     end: Date.parse(dates[dates.length - 1]) || endDate,
+  });
+  const [yearlExpense, yearlyExpenseAction] = useAuthFetch("finances", "records/total", {
+    start: Date.parse(startMonth),
+    end: Date.parse(endMonth),
   });
   const [recordState, recordAction] = useAuthFetch("finances", "records", {
     start: Date.parse(dates[0] || startDate),
@@ -67,9 +73,17 @@ export default function DashboardPage({ ...props }) {
       start: Date.parse(dates[0] || startDate),
       end: Date.parse(dates[dates.length - 1] || endDate),
     });
-    statsAction.reload({
+    montlyExpenseAction.reload({
       start: Date.parse(dates[0] || startDate),
       end: Date.parse(dates[dates.length - 1] || endDate),
+    });
+    if (dates[0]) {
+      startMonth.setFullYear(dates[0].getFullYear());
+      endMonth.setFullYear(dates[0].getFullYear());
+    }
+    yearlyExpenseAction.reload({
+      start: Date.parse(startMonth),
+      end: Date.parse(endMonth),
     });
   }, [dates]);
 
@@ -88,7 +102,10 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                data: stats.success && stats.payload.length === 1 ? stats.payload[0].total : 0,
+                data:
+                  montlyExpense.success && montlyExpense.payload.length === 1
+                    ? montlyExpense.payload[0].total
+                    : 0,
                 icon: faYenSign,
                 label: "Monthly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
@@ -99,9 +116,12 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                data: 1000,
+                data:
+                  yearlExpense.success && yearlExpense.payload.length === 1
+                    ? yearlExpense.payload[0].total
+                    : 0,
                 icon: faYenSign,
-                label: "Monthly Income",
+                label: "Yearly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
               }}
               icon={{ icon: faHandHoldingUsd, color: "orange" }}
