@@ -88,7 +88,7 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                data: stats.success ? stats.payload[0].total : "Loading",
+                data: stats.success && stats.payload.length === 1 ? stats.payload[0].total : 0,
                 icon: faYenSign,
                 label: "Monthly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
