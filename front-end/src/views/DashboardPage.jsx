@@ -107,28 +107,30 @@ export default function DashboardPage({ ...props }) {
               icon={{ icon: faHandHoldingUsd, color: "orange" }}
             />
           </Col>
-          <Col sm={12} md={6}>
-            <SummaryCard
-              data={{
-                data: 1000,
-                icon: faYenSign,
-                label: "Saving (ゆうちょ銀行)",
-                lastUpdated: new Date().toLocaleDateString(),
-              }}
-              icon={{ icon: faPiggyBank, color: "lightgreen" }}
-            />
-          </Col>
-          <Col sm={12} md={6}>
-            <SummaryCard
-              data={{
-                data: 1000,
-                icon: faDollarSign,
-                label: "Saving (BoC)",
-                lastUpdated: new Date().toLocaleDateString(),
-              }}
-              icon={{ icon: faPiggyBank, color: "lightblue" }}
-            />
-          </Col>
+          {
+            // <Col sm={12} md={6}>
+            //   <SummaryCard
+            //     data={{
+            //       data: 1000,
+            //       icon: faYenSign,
+            //       label: "Saving (ゆうちょ銀行)",
+            //       lastUpdated: new Date().toLocaleDateString(),
+            //     }}
+            //     icon={{ icon: faPiggyBank, color: "lightgreen" }}
+            //   />
+            // </Col>
+            // <Col sm={12} md={6}>
+            //   <SummaryCard
+            //     data={{
+            //       data: 1000,
+            //       icon: faDollarSign,
+            //       label: "Saving (BoC)",
+            //       lastUpdated: new Date().toLocaleDateString(),
+            //     }}
+            //     icon={{ icon: faPiggyBank, color: "lightblue" }}
+            //   />
+            // </Col>
+          }
         </Row>
         <Row>
           <Col xs={12}>
