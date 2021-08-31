@@ -13,6 +13,9 @@ export function useDates(date) {
     while (startDate < endDate) {
       dateArray.push(new Date(startDate));
       startDate.setDate(startDate.getDate() + 1);
+      startDate.setHours(23);
+      startDate.setMinutes(59);
+      startDate.setSeconds(59);
     }
     setDates(dateArray);
   };
@@ -43,9 +46,9 @@ export function toNearestDate(date) {
   newDate.setFullYear(d.getFullYear());
   newDate.setMonth(d.getMonth());
   newDate.setDate(d.getDate());
-  newDate.setHours(0);
-  newDate.setMinutes(0);
-  newDate.setSeconds(0);
+  newDate.setHours(23);
+  newDate.setMinutes(59);
+  newDate.setSeconds(59);
   return newDate;
 }
 
