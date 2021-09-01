@@ -55,11 +55,20 @@ export default function ExpensePage({ ...props }) {
   }, [dates]);
 
   useEffect(() => {
-    let categoryField = recordFields.filter((field) => field.id === 2)[0];
     if (categoryState.success) {
+      let categoryField = recordFields.filter((field) => field.id === 2)[0];
       categoryField.choices = categoryState.payload;
     }
   }, [categoryState]);
+
+  useEffect(() => {
+    if (recordState.success) {
+      dailyRecordAction.reload({
+        start: Date.parse(dates[0] || startDate),
+        end: Date.parse(dates[dates.length - 1] || endDate),
+      });
+    }
+  }, [recordState]);
 
   const onDelete = (selectedRowIds) => {
     if (selectedRowIds.size === 0) {
