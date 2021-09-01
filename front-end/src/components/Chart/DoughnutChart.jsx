@@ -28,16 +28,12 @@ export default function DoughnutChart({ datasource, ...props }) {
     const categorizedData = {};
     const categories = datasource.categories.map((category) => category.label);
     categories.forEach((category) => {
-      if (!categorizedData[category]) {
-        categorizedData[category] = 0;
-      }
+      categorizedData[category] = 0;
     });
-    Object.values(datasource.datedRecords).forEach((records) => {
-      if (records && records.length !== 0) {
-        records.forEach((record) => {
-          categorizedData[record.category] += record.amount;
-        });
-      }
+    datasource.records.forEach((record) => {
+      record.categorySubTotal.forEach((entry) => {
+        categorizedData[entry.category] += entry.total;
+      });
     });
 
     // update state

@@ -25,16 +25,17 @@ export default function LineChart({ datasource, ...props }) {
   };
 
   useEffect(() => {
+    const dailyTotals = Array(datasource.dates.length).fill(0);
+    datasource.records.forEach((record) => {
+      dailyTotals[record._id.day - 1] = record.dailyTotal;
+    });
+
     setData({
       labels: datasource.dates.map((date) => `${date.getMonth() + 1}/${date.getDate()}`),
       datasets: [
         {
           label: "Expense",
-          data: datasource.dates.map((date) =>
-            datasource.datedRecords[date]
-              ? datasource.datedRecords[date].reduce((acc, curr) => acc + curr.amount, 0)
-              : 0
-          ),
+          data: dailyTotals,
           backgroundColor: "rgb(255, 99, 132)",
           borderColor: "rgba(255, 99, 132, 0.6)",
         },

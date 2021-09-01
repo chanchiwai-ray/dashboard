@@ -13,7 +13,6 @@ import {
 import { faChartPie, faChartLine } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Chart.module.css";
-import { toDatedRecords } from "../../utils.jsx";
 import BarChart from "./BarChart.jsx";
 import LineChart from "./LineChart.jsx";
 import DoughnutChart from "./DoughnutChart.jsx";
@@ -71,18 +70,16 @@ const ChartContainer = (props) => {
 
 export default function Chart({ dates, records, categories, dateAction, ...props }) {
   const [view, setView] = useState("bar");
-  const [monthlyRecords, setMonthlyRecords] = useState({});
-
-  useEffect(() => {
-    setMonthlyRecords(toDatedRecords(dates, records));
-  }, [dates, records]);
 
   const renderChart = (view) => {
     switch (view) {
       case "line":
         return (
           <LineChart
-            datasource={{ dates: dates, datedRecords: monthlyRecords }}
+            datasource={{
+              dates: dates,
+              records: records,
+            }}
             height={400}
             width={300}
           />
@@ -91,8 +88,8 @@ export default function Chart({ dates, records, categories, dateAction, ...props
         return (
           <DoughnutChart
             datasource={{
+              records: records,
               categories: categories,
-              datedRecords: monthlyRecords,
             }}
             height={400}
             width={300}
@@ -103,8 +100,8 @@ export default function Chart({ dates, records, categories, dateAction, ...props
           <BarChart
             datasource={{
               dates: dates,
+              records: records,
               categories: categories,
-              datedRecords: monthlyRecords,
             }}
             height={400}
             width={300}

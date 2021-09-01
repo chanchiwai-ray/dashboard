@@ -29,19 +29,13 @@ export default function BarChart({ datasource, ...props }) {
     const categorizedData = {};
     const categories = datasource.categories.map((category) => category.label);
     categories.forEach((category) => {
-      if (!categorizedData[category]) {
-        categorizedData[category] = [];
-      }
-      let t = 0;
-      datasource.dates.forEach((date) => {
-        categorizedData[category].push(
-          datasource.datedRecords[date]
-            ? datasource.datedRecords[date].reduce(
-                (acc, curr) => (curr.category === category ? acc + curr.amount : acc),
-                0
-              )
-            : 0
-        );
+      categorizedData[category] = Array(datasource.dates.length).fill(0);
+    });
+    datasource.records.forEach((record) => {
+      record["categorySubTotal"].forEach(({ category, total }) => {
+        if (categorizedData[category]) {
+          categorizedData[category][record._id.day - 1] = total;
+        }
       });
     });
 

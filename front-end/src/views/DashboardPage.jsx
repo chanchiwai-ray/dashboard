@@ -57,7 +57,7 @@ export default function DashboardPage({ ...props }) {
     start: Date.parse(startMonth),
     end: Date.parse(endMonth),
   });
-  const [recordState, recordAction] = useAuthFetch("finances", "records", {
+  const [dailyRecordState, dailyRecordAction] = useAuthFetch("finances", "records/daily", {
     start: Date.parse(dates[0] || startDate),
     end: Date.parse(dates[dates.length - 1] || endDate),
   });
@@ -69,7 +69,7 @@ export default function DashboardPage({ ...props }) {
   });
 
   useEffect(() => {
-    recordAction.reload({
+    dailyRecordAction.reload({
       start: Date.parse(dates[0] || startDate),
       end: Date.parse(dates[dates.length - 1] || endDate),
     });
@@ -163,7 +163,7 @@ export default function DashboardPage({ ...props }) {
               {
                 <Chart
                   dates={dates}
-                  records={recordState.payload}
+                  records={dailyRecordState.payload}
                   categories={categoryState.payload}
                   dateAction={dateAction}
                 />

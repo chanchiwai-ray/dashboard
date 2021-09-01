@@ -26,6 +26,10 @@ export default function ExpensePage({ ...props }) {
     start: Date.parse(dates[0] || startDate),
     end: Date.parse(dates[dates.length - 1] || endDate),
   });
+  const [dailyRecordState, dailyRecordAction] = useAuthFetch("finances", "records/daily", {
+    start: Date.parse(dates[0] || startDate),
+    end: Date.parse(dates[dates.length - 1] || endDate),
+  });
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
   const [showRecordForm, setDisplayRecordForm] = useState(false);
   const [showCategoryForm, setDisplayCategoryForm] = useState(false);
@@ -41,6 +45,10 @@ export default function ExpensePage({ ...props }) {
 
   useEffect(() => {
     recordAction.reload({
+      start: Date.parse(dates[0] || startDate),
+      end: Date.parse(dates[dates.length - 1] || endDate),
+    });
+    dailyRecordAction.reload({
       start: Date.parse(dates[0] || startDate),
       end: Date.parse(dates[dates.length - 1] || endDate),
     });
@@ -93,7 +101,7 @@ export default function ExpensePage({ ...props }) {
             {
               <Chart
                 dates={dates}
-                records={recordState.payload}
+                records={dailyRecordState.payload}
                 categories={categoryState.payload}
                 dateAction={dateAction}
               />
