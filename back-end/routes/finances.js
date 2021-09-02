@@ -41,11 +41,11 @@ router
         },
       },
     ])
-      .then((sums) => {
+      .then((sum) => {
         res.status(200).json({
           success: true,
-          message: `returned ${sums.length} results.`,
-          payload: sums,
+          message: "returned total amount.",
+          payload: sum[0] ? sum[0].total : 0,
         });
       })
       .catch((err) => {
