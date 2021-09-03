@@ -10,6 +10,8 @@ import LoginPage from "./views/LoginPage.jsx";
 
 import "./index.css";
 import Context from "./contexts.jsx";
+import { store } from "./store";
+import { Provider } from "react-redux";
 import { useAuth, ProvideAuth } from "./authenticate.jsx";
 
 const PrivateRoute = ({ component: Component, fallbackPath, ...props }) => {
@@ -33,34 +35,36 @@ const Main = (props) => {
   const [currentPage, setCurrentPage] = useState(null);
 
   return (
-    <ProvideAuth>
-      <Context.Provider
-        value={{
-          page: currentPage,
-          updatePage: (page) => setCurrentPage(page),
-        }}
-      >
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/login" component={LoginPage} />
-            <PrivateRoute path="/home" component={DashboardPage} />
-            <PrivateRoute path="/profile" component={ProfilePage} />
-            <PrivateRoute path="/expense" component={ExpensePage} />
-            <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
-            <Route
-              render={() => (
-                <div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: "100%", height: "100%" }}
-                >
-                  <h1>404: Page not found...</h1>
-                </div>
-              )}
-            />
-          </Switch>
-        </BrowserRouter>
-      </Context.Provider>
-    </ProvideAuth>
+    <Provider store={store}>
+      <ProvideAuth>
+        <Context.Provider
+          value={{
+            page: currentPage,
+            updatePage: (page) => setCurrentPage(page),
+          }}
+        >
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/login" component={LoginPage} />
+              <PrivateRoute path="/home" component={DashboardPage} />
+              <PrivateRoute path="/profile" component={ProfilePage} />
+              <PrivateRoute path="/expense" component={ExpensePage} />
+              <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
+              <Route
+                render={() => (
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "100%", height: "100%" }}
+                  >
+                    <h1>404: Page not found...</h1>
+                  </div>
+                )}
+              />
+            </Switch>
+          </BrowserRouter>
+        </Context.Provider>
+      </ProvideAuth>
+    </Provider>
   );
 };
 

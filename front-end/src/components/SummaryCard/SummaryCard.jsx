@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Row, Col } from "react-bootstrap";
 import { Card } from "react-bootstrap";
@@ -12,28 +12,18 @@ export default function SummaryCard({ data, icon, ...props }) {
     <Card className="my-3 mx-1">
       <Card.Body>
         <Row>
-          <Col
-            xs={4}
-            className="d-flex align-items-center justify-content-center "
-          >
+          <Col xs={4} className="d-flex align-items-center justify-content-center ">
             {icon ? (
-              <FontAwesomeIcon
-                size="4x"
-                icon={icon.icon}
-                color={icon.color}
-                className=""
-              />
+              <FontAwesomeIcon size="4x" icon={icon.icon} color={icon.color} />
             ) : (
               <span></span>
             )}
           </Col>
           <Col xs={8} className="ml-auto">
-            <span className={`text-muted ${styles["body-label"]}`}>
-              {data.label}
-            </span>
+            <span className={`text-muted ${styles["body-label"]}`}>{data.label}</span>
             <span className={`${styles["body-text"]}`}>
               <FontAwesomeIcon icon={data.icon} color={data.color} />
-              {data.data}
+              {data.value}
             </span>
           </Col>
         </Row>

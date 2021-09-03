@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./authenticate.jsx";
 
+export const api_host = process.env.REACT_APP_API_HOST;
+
 // given a Date object return an array of dates within the month of the Date
 export function useDates(date) {
   const [thisDate, setThisDate] = useState(new Date(date));

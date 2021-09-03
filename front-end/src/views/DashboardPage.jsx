@@ -20,6 +20,9 @@ import Controller from "../components/Controller/Controller.jsx";
 import Context from "../contexts.jsx";
 import { useAuthFetch, useDates } from "../utils.jsx";
 import { recordFields } from "../configs.jsx";
+import { monthlyExpenseCardSlice, yearlyExpenseCardSlice } from "../store.js";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "../authenticate.jsx";
 
 const date = new Date();
 const startMonth = new Date(date.getFullYear(), 0, 1);
@@ -49,43 +52,49 @@ const GenericCard = (props) => {
 
 export default function DashboardPage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
-  const [montlyExpense, montlyExpenseAction] = useAuthFetch("finances", "records/total", {
-    start: Date.parse(dates[0] || startDate),
-    end: Date.parse(dates[dates.length - 1]) || endDate,
-  });
-  const [yearlExpense, yearlyExpenseAction] = useAuthFetch("finances", "records/total", {
-    start: Date.parse(startMonth),
-    end: Date.parse(endMonth),
-  });
+  const auth = useAuth();
+  const monthlySummaryCardState = useSelector(monthlyExpenseCardSlice.selector);
+  const yearlySummaryCardState = useSelector(yearlyExpenseCardSlice.selector);
+  const dispatch = useDispatch();
+
   const [dailyRecordState, dailyRecordAction] = useAuthFetch("finances", "records/daily", {
     start: Date.parse(dates[0] || startDate),
     end: Date.parse(dates[dates.length - 1] || endDate),
   });
   const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
 
+  useEffect(() => {
+    // FIXME
+    if (dates.length > 0 && auth.userId) {
+      dailyRecordAction.reload({
+        start: Date.parse(dates[0] || startDate),
+        end: Date.parse(dates[dates.length - 1] || endDate),
+      });
+      dispatch(
+        monthlyExpenseCardSlice.extraActions.fetchTotalExpense({
+          userId: auth.userId,
+          query: {
+            start: Date.parse(dates[0] || startDate),
+            end: Date.parse(dates[dates.length - 1]) || endDate,
+          },
+        })
+      );
+      dispatch(
+        yearlyExpenseCardSlice.extraActions.fetchTotalExpense({
+          userId: auth.userId,
+          query: {
+            start: Date.parse(startMonth),
+            end: Date.parse(endMonth),
+          },
+        })
+      );
+    }
+  }, [dates, auth]);
+
   const context = useContext(Context);
   useEffect(() => {
     context.updatePage("Home");
   });
-
-  useEffect(() => {
-    dailyRecordAction.reload({
-      start: Date.parse(dates[0] || startDate),
-      end: Date.parse(dates[dates.length - 1] || endDate),
-    });
-    montlyExpenseAction.reload({
-      start: Date.parse(dates[0] || startDate),
-      end: Date.parse(dates[dates.length - 1] || endDate),
-    });
-    if (dates[0]) {
-      startMonth.setFullYear(dates[0].getFullYear());
-      endMonth.setFullYear(dates[0].getFullYear());
-    }
-    yearlyExpenseAction.reload({
-      start: Date.parse(startMonth),
-      end: Date.parse(endMonth),
-    });
-  }, [dates]);
 
   useEffect(() => {
     let categoryField = recordFields.filter((field) => field.id === 2)[0];
@@ -102,10 +111,7 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                data:
-                  montlyExpense.success && montlyExpense.payload.length === 1
-                    ? montlyExpense.payload[0].total
-                    : 0,
+                value: monthlySummaryCardState.value,
                 icon: faYenSign,
                 label: "Monthly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
@@ -116,10 +122,7 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                data:
-                  yearlExpense.success && yearlExpense.payload.length === 1
-                    ? yearlExpense.payload[0].total
-                    : 0,
+                value: yearlySummaryCardState.value,
                 icon: faYenSign,
                 label: "Yearly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
