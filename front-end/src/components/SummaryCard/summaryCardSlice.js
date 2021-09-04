@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { api_host } from "../../utils.jsx";
 
-export default function createNamedSlice(namespace = 1) {
+export default function createNamedSlice(namespace = "1") {
   const initialState = {
     value: 0,
     success: false,
