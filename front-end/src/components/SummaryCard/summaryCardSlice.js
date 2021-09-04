@@ -9,8 +9,8 @@ export default function createNamedSlice(namespace = "1") {
     message: "Loading",
   };
 
-  const fetchTotalExpense = createAsyncThunk(
-    `summaryCard:${namespace}/fetchTotalExpense`,
+  const getTotalExpense = createAsyncThunk(
+    `summaryCard:${namespace}/getTotalExpense`,
     async (args) => {
       const response = await fetch(
         `${api_host}/finances/${args.userId}/records/total${
@@ -21,7 +21,7 @@ export default function createNamedSlice(namespace = "1") {
         }
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch resource.");
+        throw new Error("Failed to get resource.");
       }
       return response.json();
     }
@@ -33,17 +33,17 @@ export default function createNamedSlice(namespace = "1") {
     reducers: {},
     extraReducers: (builder) => {
       builder
-        .addCase(fetchTotalExpense.pending, (state) => {
+        .addCase(getTotalExpense.pending, (state) => {
           (state.value = 0), (state.success = false);
           state.message = "Loading";
         })
-        .addCase(fetchTotalExpense.fulfilled, (state, action) => {
+        .addCase(getTotalExpense.fulfilled, (state, action) => {
           const data = action.payload;
           state.value = data.payload;
           state.success = data.success;
           state.message = data.message;
         })
-        .addCase(fetchTotalExpense.rejected, (state) => {
+        .addCase(getTotalExpense.rejected, (state) => {
           (state.value = 0), (state.success = false);
           state.message = "Network Error";
         });
@@ -56,6 +56,6 @@ export default function createNamedSlice(namespace = "1") {
     reducer: slice.reducer,
     selector: selector,
     actions: slice.actions,
-    extraActions: { fetchTotalExpense: fetchTotalExpense },
+    extraActions: { getTotalExpense: getTotalExpense },
   };
 }

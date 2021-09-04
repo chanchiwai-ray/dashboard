@@ -79,7 +79,7 @@ export default function DashboardPage({ ...props }) {
         })
       );
       dispatch(
-        monthlyExpenseCardSlice.extraActions.fetchTotalExpense({
+        monthlyExpenseCardSlice.extraActions.getTotalExpense({
           userId: auth.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
@@ -88,7 +88,7 @@ export default function DashboardPage({ ...props }) {
         })
       );
       dispatch(
-        yearlyExpenseCardSlice.extraActions.fetchTotalExpense({
+        yearlyExpenseCardSlice.extraActions.getTotalExpense({
           userId: auth.userId,
           query: {
             start: Date.parse(startMonth),
