@@ -20,7 +20,7 @@ import Controller from "../components/Controller/Controller.jsx";
 import Context from "../contexts.jsx";
 import { useAuthFetch, useDates } from "../utils.jsx";
 import { recordFields } from "../configs.jsx";
-import { monthlyExpenseCardSlice, yearlyExpenseCardSlice } from "../store.js";
+import { monthlyExpenseCardSlice, yearlyExpenseCardSlice, chartSlice } from "../store.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../authenticate.jsx";
 
@@ -55,21 +55,29 @@ export default function DashboardPage({ ...props }) {
   const auth = useAuth();
   const monthlySummaryCardState = useSelector(monthlyExpenseCardSlice.selector);
   const yearlySummaryCardState = useSelector(yearlyExpenseCardSlice.selector);
+  const chartState = useSelector(chartSlice.selector);
   const dispatch = useDispatch();
 
-  const [dailyRecordState, dailyRecordAction] = useAuthFetch("finances", "records/daily", {
-    start: Date.parse(dates[0] || startDate),
-    end: Date.parse(dates[dates.length - 1] || endDate),
-  });
-  const [categoryState, categoryAction] = useAuthFetch("finances", "categories");
+  useEffect(() => {
+    auth.verifySession();
+  }, []);
 
   useEffect(() => {
-    // FIXME
     if (dates.length > 0 && auth.userId) {
-      dailyRecordAction.reload({
-        start: Date.parse(dates[0] || startDate),
-        end: Date.parse(dates[dates.length - 1] || endDate),
-      });
+      dispatch(
+        chartSlice.extraActions.getDailyRecords({
+          userId: auth.userId,
+          query: {
+            start: Date.parse(dates[0] || startDate),
+            end: Date.parse(dates[dates.length - 1]) || endDate,
+          },
+        })
+      );
+      dispatch(
+        chartSlice.extraActions.getCategories({
+          userId: auth.userId,
+        })
+      );
       dispatch(
         monthlyExpenseCardSlice.extraActions.fetchTotalExpense({
           userId: auth.userId,
@@ -95,13 +103,6 @@ export default function DashboardPage({ ...props }) {
   useEffect(() => {
     context.updatePage("Home");
   });
-
-  useEffect(() => {
-    let categoryField = recordFields.filter((field) => field.id === 2)[0];
-    if (categoryState.success) {
-      categoryField.choices = categoryState.payload;
-    }
-  }, [categoryState]);
 
   return (
     <MainLayout>
@@ -163,14 +164,16 @@ export default function DashboardPage({ ...props }) {
               href="/expense"
               style={{ minHeight: "600px" }}
             >
-              {
+              {chartState.success ? (
                 <Chart
                   dates={dates}
-                  records={dailyRecordState.payload}
-                  categories={categoryState.payload}
+                  records={chartState.value.dailyRecords}
+                  categories={chartState.value.categories}
                   dateAction={dateAction}
                 />
-              }
+              ) : (
+                <h1>{chartState.message}</h1>
+              )}
             </GenericCard>
           </Col>
         </Row>
