@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Chart from "../components/Chart/Chart.jsx";
 import SummaryCard from "../components/SummaryCard/SummaryCard.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 
-import { Container, Row, Col, Card, Navbar } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyBillAlt } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -18,11 +19,15 @@ import {
 
 import Controller from "../components/Controller/Controller.jsx";
 import Context from "../contexts.jsx";
-import { useAuthFetch, useDates } from "../utils.jsx";
-import { recordFields } from "../configs.jsx";
-import { monthlyExpenseCardSlice, yearlyExpenseCardSlice, chartSlice } from "../store.js";
-import { useDispatch, useSelector } from "react-redux";
+import { selectRecords, selectCategories } from "../redux/app/store.js";
+import {
+  getDailyRecords,
+  getMonthlyExpense,
+  getYearlyExpense,
+} from "../redux/slices/finance/records.js";
+import { getCategories } from "../redux/slices/finance/categories.js";
 import { useAuth } from "../authenticate.jsx";
+import { useDates } from "../utils.jsx";
 
 const date = new Date();
 const startMonth = new Date(date.getFullYear(), 0, 1);
@@ -53,9 +58,8 @@ const GenericCard = (props) => {
 export default function DashboardPage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
   const auth = useAuth();
-  const monthlySummaryCardState = useSelector(monthlyExpenseCardSlice.selector);
-  const yearlySummaryCardState = useSelector(yearlyExpenseCardSlice.selector);
-  const chartState = useSelector(chartSlice.selector);
+  const records = useSelector(selectRecords);
+  const categories = useSelector(selectCategories);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -65,7 +69,7 @@ export default function DashboardPage({ ...props }) {
   useEffect(() => {
     if (dates.length > 0 && auth.userId) {
       dispatch(
-        chartSlice.extraActions.getDailyRecords({
+        getDailyRecords({
           userId: auth.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
@@ -74,12 +78,12 @@ export default function DashboardPage({ ...props }) {
         })
       );
       dispatch(
-        chartSlice.extraActions.getCategories({
+        getCategories({
           userId: auth.userId,
         })
       );
       dispatch(
-        monthlyExpenseCardSlice.extraActions.getTotalExpense({
+        getMonthlyExpense({
           userId: auth.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
@@ -88,7 +92,7 @@ export default function DashboardPage({ ...props }) {
         })
       );
       dispatch(
-        yearlyExpenseCardSlice.extraActions.getTotalExpense({
+        getYearlyExpense({
           userId: auth.userId,
           query: {
             start: Date.parse(startMonth),
@@ -112,7 +116,7 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                value: monthlySummaryCardState.value,
+                value: records.value.totals.monthlyTotal,
                 icon: faYenSign,
                 label: "Monthly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
@@ -123,7 +127,7 @@ export default function DashboardPage({ ...props }) {
           <Col sm={12} md={6}>
             <SummaryCard
               data={{
-                value: yearlySummaryCardState.value,
+                value: records.value.totals.yearlyTotal,
                 icon: faYenSign,
                 label: "Yearly Expense",
                 lastUpdated: new Date().toLocaleDateString(),
@@ -164,15 +168,15 @@ export default function DashboardPage({ ...props }) {
               href="/expense"
               style={{ minHeight: "600px" }}
             >
-              {chartState.success ? (
+              {records.success ? (
                 <Chart
                   dates={dates}
-                  records={chartState.value.dailyRecords}
-                  categories={chartState.value.categories}
+                  records={records.value.dailyRecords}
+                  categories={categories.value}
                   dateAction={dateAction}
                 />
               ) : (
-                <h1>{chartState.message}</h1>
+                <h1>{records.message}</h1>
               )}
             </GenericCard>
           </Col>

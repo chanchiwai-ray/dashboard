@@ -10,7 +10,7 @@ import LoginPage from "./views/LoginPage.jsx";
 
 import "./index.css";
 import Context from "./contexts.jsx";
-import { store } from "./store";
+import { store } from "./redux/app/store.js";
 import { Provider } from "react-redux";
 import { useAuth, ProvideAuth } from "./authenticate.jsx";
 
