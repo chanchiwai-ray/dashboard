@@ -102,7 +102,6 @@ export default function ExpensePage({ ...props }) {
   const [showEditRecordForm, setDisplayEditRecordForm] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
-  const [filterString, setFilterString] = useState("");
 
   const onDelete = (selectedRowIds) => {
     if (selectedRowIds.size === 0) {
@@ -161,13 +160,9 @@ export default function ExpensePage({ ...props }) {
           </Col>
           <Col sm={12}>
             <DataTable
-              rows={records.value.records.filter((row) =>
-                filterString !== "" ? row.description.includes(filterString) : true
-              )}
+              rows={records.value.records}
               columns={columns}
               selectedRowIds={selectedRowIds}
-              filterString={filterString}
-              setFilterString={setFilterString}
               setSelectedRowIds={(ids) => setSelectedRowIds(new Set(ids))}
             />
           </Col>

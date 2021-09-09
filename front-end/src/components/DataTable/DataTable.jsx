@@ -6,18 +6,15 @@ import AutoPagintaion from "../AutoPagination/AutoPagination.jsx";
 
 import styles from "./DataTable.module.css";
 
-export default function DataTable({
-  rows,
-  columns,
-  filterString,
-  setFilterString,
-  selectedRowIds,
-  setSelectedRowIds,
-  ...props
-}) {
+export default function DataTable({ rows, columns, selectedRowIds, setSelectedRowIds, ...props }) {
   const [page, setPage] = useState(1);
   const [numOfRows, setNumOfRow] = useState(10);
+  const [filterString, setFilterString] = useState("");
   const [isAllVisibleRowsChecked, checkAllVisibleRows] = useState(false);
+
+  rows = rows.filter((row) =>
+    filterString !== "" ? row.description.includes(filterString) : true
+  );
 
   const toggleRowState = (id) => {
     if (selectedRowIds.has(id)) {
