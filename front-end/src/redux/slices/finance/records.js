@@ -12,7 +12,7 @@ const initialState = {
 
 export const getRecords = createAsyncThunk(`${name}/getRecords`, async (args) => {
   const response = await fetch(
-    `${api_host}/finances/${args.userId}/records/${
+    `${api_host}/finances/${args.userId}/records${
       args.query ? "?" + new URLSearchParams(args.query).toString() : ""
     }`,
     {
@@ -22,6 +22,34 @@ export const getRecords = createAsyncThunk(`${name}/getRecords`, async (args) =>
   if (!response.ok) {
     throw new Error("Failed to fetch resource.");
   }
+  return response.json();
+});
+
+export const putRecords = createAsyncThunk(`${name}/putRecords`, async (args) => {
+  const response = await fetch(`${api_host}/finances/${args.userId}/records/${args.id}`, {
+    method: "PUT",
+    body: JSON.stringify(args.data),
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  return response.json();
+});
+
+export const postRecords = createAsyncThunk(`${name}/postRecords`, async (args) => {
+  const response = await fetch(`${api_host}/finances/${args.userId}/records`, {
+    method: "POST",
+    body: JSON.stringify({ ...args.data, userId: args.userId }),
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  return response.json();
+});
+
+export const deleteRecords = createAsyncThunk(`${name}/deleteRecords`, async (args) => {
+  const response = await fetch(`${api_host}/finances/${args.userId}/records/${args.id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
   return response.json();
 });
 
@@ -84,6 +112,37 @@ const slice = createSlice({
       })
       .addCase(getRecords.rejected, (state) => {
         state.value.records = [];
+        state.success = false;
+        state.message = "Network Error";
+      })
+      .addCase(putRecords.fulfilled, (state, action) => {
+        const data = action.payload;
+        const index = state.value.records.findIndex((record) => record._id === data.payload._id);
+        state.value.records[index] = data.payload;
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(putRecords.rejected, (state) => {
+        state.success = false;
+        state.message = "Network Error";
+      })
+      .addCase(postRecords.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.value.records.push(data.payload);
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(postRecords.rejected, (state) => {
+        state.success = false;
+        state.message = "Network Error";
+      })
+      .addCase(deleteRecords.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.value.records = state.value.records.filter((record) => record._id !== data._id);
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(deleteRecords.rejected, (state) => {
         state.success = false;
         state.message = "Network Error";
       })

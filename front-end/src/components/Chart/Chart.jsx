@@ -70,7 +70,7 @@ const ChartContainer = (props) => {
 
 export default function Chart({ dates, records, categories, dateAction, ...props }) {
   const [view, setView] = useState("bar");
-
+  console.log(1);
   const renderChart = (view) => {
     switch (view) {
       case "line":
