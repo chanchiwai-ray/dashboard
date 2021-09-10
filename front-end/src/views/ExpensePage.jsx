@@ -11,11 +11,10 @@ import Controller from "../components/Controller/Controller.jsx";
 import DataTable from "../components/DataTable/DataTable.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 
-import { useDates } from "../utils.jsx";
 import { columns, categoryFields, getRecordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
-import { selectAuth, selectRecords } from "../redux/app/store.js";
+import { selectAuth, selectDates, selectRecords } from "../redux/app/store.js";
 import {
   deleteRecords,
   getDailyRecords,
@@ -25,32 +24,30 @@ import {
 } from "../redux/slices/finance/records.js";
 import { deleteCategories, postCategories } from "../redux/slices/finance/categories.js";
 import { setCurrentPage } from "../redux/slices/common/settings.js";
-
-const date = new Date();
-const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+import { nextMonth, prevMonth, resetMonth } from "../redux/slices/common/dates.js";
 
 export default function ExpensePage({ ...props }) {
   const auth = useSelector(selectAuth);
+  const dates = useSelector(selectDates);
   const records = useSelector(selectRecords);
   const dispatch = useDispatch();
   const [reload, setReload] = useState(false);
   const recordFields = getRecordFields();
   const categories = recordFields[1].choices;
-  const [dates, dateAction] = useDates(new Date());
 
   useEffect(() => {
+    dispatch(resetMonth());
     dispatch(setCurrentPage("Expense"));
   }, []);
 
   useEffect(() => {
-    if (dates.length > 0 && auth.value.userId) {
+    if (auth.value.userId) {
       dispatch(
         getRecords({
           userId: auth.value.userId,
           query: {
-            start: Date.parse(dates[0] || startDate),
-            end: Date.parse(dates[dates.length - 1]) || endDate,
+            start: dates.value[0],
+            end: dates.value[dates.value.length - 1],
           },
         })
       );
@@ -58,8 +55,8 @@ export default function ExpensePage({ ...props }) {
         getDailyRecords({
           userId: auth.value.userId,
           query: {
-            start: Date.parse(dates[0] || startDate),
-            end: Date.parse(dates[dates.length - 1]) || endDate,
+            start: dates.value[0],
+            end: dates.value[dates.value.length - 1],
           },
         })
       );
@@ -72,8 +69,8 @@ export default function ExpensePage({ ...props }) {
         getRecords({
           userId: auth.value.userId,
           query: {
-            start: Date.parse(dates[0] || startDate),
-            end: Date.parse(dates[dates.length - 1]) || endDate,
+            start: dates.value[0],
+            end: dates.value[dates.value.length - 1],
           },
         })
       );
@@ -81,8 +78,8 @@ export default function ExpensePage({ ...props }) {
         getDailyRecords({
           userId: auth.value.userId,
           query: {
-            start: Date.parse(dates[0] || startDate),
-            end: Date.parse(dates[dates.length - 1]) || endDate,
+            start: dates.value[0],
+            end: dates.value[dates.value.length - 1],
           },
         })
       );
@@ -142,10 +139,14 @@ export default function ExpensePage({ ...props }) {
           <Col sm={12}>
             {records.success ? (
               <Chart
-                dates={dates}
+                dates={dates.value.map((unixTime) => new Date(Number(unixTime)))}
                 records={records.value.dailyRecords}
                 categories={categories}
-                dateAction={dateAction}
+                dateAction={{
+                  prevMonth: () => dispatch(prevMonth()),
+                  resetMonth: () => dispatch(resetMonth()),
+                  nextMonth: () => dispatch(nextMonth()),
+                }}
               />
             ) : (
               <h1>{records.message}</h1>

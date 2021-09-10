@@ -12,21 +12,19 @@ import { faMoneyBillAlt } from "@fortawesome/free-regular-svg-icons";
 import { faAngleRight, faYenSign, faHandHoldingUsd } from "@fortawesome/free-solid-svg-icons";
 
 import Controller from "../components/Controller/Controller.jsx";
-import { selectRecords, selectCategories, selectAuth } from "../redux/app/store.js";
+import { selectRecords, selectCategories, selectAuth, selectDates } from "../redux/app/store.js";
 import {
   getDailyRecords,
   getMonthlyExpense,
   getYearlyExpense,
 } from "../redux/slices/finance/records.js";
 import { getCategories } from "../redux/slices/finance/categories.js";
-import { useDates } from "../utils.jsx";
 import { setCurrentPage } from "../redux/slices/common/settings.js";
+import { nextMonth, prevMonth, resetMonth } from "../redux/slices/common/dates.js";
 
 const date = new Date();
 const startMonth = new Date(date.getFullYear(), 0, 1);
 const endMonth = new Date(date.getFullYear(), 11, 1);
-const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
 
 const GenericCard = (props) => {
   return (
@@ -49,24 +47,25 @@ const GenericCard = (props) => {
 };
 
 export default function DashboardPage({ ...props }) {
-  const [dates, dateAction] = useDates(new Date());
   const auth = useSelector(selectAuth);
+  const dates = useSelector(selectDates);
   const records = useSelector(selectRecords);
   const categories = useSelector(selectCategories);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(resetMonth());
     dispatch(setCurrentPage("Home"));
   }, []);
 
   useEffect(() => {
-    if (dates.length > 0 && auth.value.userId) {
+    if (auth.value.userId) {
       dispatch(
         getDailyRecords({
           userId: auth.value.userId,
           query: {
-            start: Date.parse(dates[0] || startDate),
-            end: Date.parse(dates[dates.length - 1]) || endDate,
+            start: dates.value[0],
+            end: dates.value[dates.value.length - 1],
           },
         })
       );
@@ -79,8 +78,8 @@ export default function DashboardPage({ ...props }) {
         getMonthlyExpense({
           userId: auth.value.userId,
           query: {
-            start: Date.parse(dates[0] || startDate),
-            end: Date.parse(dates[dates.length - 1]) || endDate,
+            start: dates.value[0],
+            end: dates.value[dates.value.length - 1],
           },
         })
       );
@@ -158,10 +157,14 @@ export default function DashboardPage({ ...props }) {
             >
               {records.success ? (
                 <Chart
-                  dates={dates}
+                  dates={dates.value.map((unixTime) => new Date(Number(unixTime)))}
                   records={records.value.dailyRecords}
                   categories={categories.value}
-                  dateAction={dateAction}
+                  dateAction={{
+                    prevMonth: () => dispatch(prevMonth()),
+                    resetMonth: () => dispatch(resetMonth()),
+                    nextMonth: () => dispatch(nextMonth()),
+                  }}
                 />
               ) : (
                 <h1>{records.message}</h1>

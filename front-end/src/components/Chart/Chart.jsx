@@ -124,7 +124,7 @@ export default function Chart({ dates, records, categories, dateAction, ...props
         dateAction.prevMonth();
       }}
       handleCurrBtn={() => {
-        dateAction.resetDates();
+        dateAction.resetMonth();
       }}
       handleNextBtn={() => {
         dateAction.nextMonth();
