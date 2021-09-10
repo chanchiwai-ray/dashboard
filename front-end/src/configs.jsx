@@ -1,9 +1,9 @@
 "use strict";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "./authenticate.jsx";
-import { selectCategories } from "./redux/app/store.js";
-import categories, { getCategories } from "./redux/slices/finance/categories.js";
+import { selectAuth, selectCategories } from "./redux/app/store.js";
+import { verify } from "./redux/slices/common/auth.js";
+import { getCategories } from "./redux/slices/finance/categories.js";
 
 export const columns = [
   {
@@ -67,19 +67,19 @@ export const accountFields = [
 ];
 
 export function getRecordFields() {
-  const auth = useAuth();
-  const dispatch = useDispatch();
+  const auth = useSelector(selectAuth);
   const categories = useSelector(selectCategories);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    auth.verifySession();
+    dispatch(verify());
   }, []);
 
   useEffect(() => {
-    if (auth.userId) {
+    if (auth.value.userId) {
       dispatch(
         getCategories({
-          userId: auth.userId,
+          userId: auth.value.userId,
         })
       );
     }

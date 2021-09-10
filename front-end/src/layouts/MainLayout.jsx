@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import { Container, Row, Col, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -7,8 +7,9 @@ import { faUserCog, faBars, faHome, faWallet } from "@fortawesome/free-solid-svg
 
 import Header from "../components/Header/Header.jsx";
 import Sidebar from "../components/Sidebar/Sidebar.jsx";
-import Context from "../contexts.jsx";
-import { useAuth } from "../authenticate.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuth, selectSettings } from "../redux/app/store.js";
+import { logout } from "../redux/slices/common/auth.js";
 
 const headerNavItems = [
   {
@@ -32,10 +33,17 @@ const sidebarNavItems = [
 ];
 
 export default function MainLayout(props) {
-  const [sidebarState, setSidebarState] = useState(true);
-  const context = useContext(Context);
+  const auth = useSelector(selectAuth);
+  const settings = useSelector(selectSettings);
+  const dispatch = useDispatch();
   const history = useHistory();
-  const auth = useAuth();
+  const [sidebarState, setSidebarState] = useState(true);
+
+  useEffect(() => {
+    if (!auth.value.authenticated) {
+      history.replace(auth.value.redirect);
+    }
+  }, [auth]);
 
   return (
     <React.Fragment>
@@ -57,12 +65,7 @@ export default function MainLayout(props) {
                   <span>Profile</span>
                 </Dropdown.Item>
               </Link>
-              <Dropdown.Item
-                as="button"
-                onClick={() => {
-                  auth.logout(() => history.replace("/login"));
-                }}
-              >
+              <Dropdown.Item as="button" onClick={() => dispatch(logout())}>
                 <span>Log Out</span>
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -75,7 +78,7 @@ export default function MainLayout(props) {
             id="sidebar-container"
             navItems={sidebarNavItems}
             state={sidebarState}
-            activePageID={context.page}
+            activePageID={settings.currentPage}
           />
           <Col className="p-0 main-panel">{props.children}</Col>
         </Row>

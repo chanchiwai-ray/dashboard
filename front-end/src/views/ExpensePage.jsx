@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Container, Row, Col, Nav, ListGroup, Button } from "react-bootstrap";
@@ -11,12 +11,11 @@ import Controller from "../components/Controller/Controller.jsx";
 import DataTable from "../components/DataTable/DataTable.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 
-import Context from "../contexts.jsx";
 import { useDates } from "../utils.jsx";
 import { columns, categoryFields, getRecordFields } from "../configs.jsx";
 import EditableTableForm from "../components/EditableTableForm/Editabletable.jsx";
 import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
-import { selectRecords } from "../redux/app/store.js";
+import { selectAuth, selectRecords } from "../redux/app/store.js";
 import {
   deleteRecords,
   getDailyRecords,
@@ -24,37 +23,31 @@ import {
   postRecords,
   putRecords,
 } from "../redux/slices/finance/records.js";
-import {
-  deleteCategories,
-  getCategories,
-  postCategories,
-} from "../redux/slices/finance/categories.js";
-import { useAuth } from "../authenticate.jsx";
+import { deleteCategories, postCategories } from "../redux/slices/finance/categories.js";
+import { setCurrentPage } from "../redux/slices/common/settings.js";
 
 const date = new Date();
 const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
 const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
 
 export default function ExpensePage({ ...props }) {
-  const auth = useAuth();
-  const [reload, setReload] = useState(false);
-  const dispatch = useDispatch();
+  const auth = useSelector(selectAuth);
   const records = useSelector(selectRecords);
+  const dispatch = useDispatch();
+  const [reload, setReload] = useState(false);
   const recordFields = getRecordFields();
   const categories = recordFields[1].choices;
   const [dates, dateAction] = useDates(new Date());
 
-  const context = useContext(Context);
   useEffect(() => {
-    auth.verifySession();
-    context.updatePage("Expense");
+    dispatch(setCurrentPage("Expense"));
   }, []);
 
   useEffect(() => {
-    if (dates.length > 0 && auth.userId) {
+    if (dates.length > 0 && auth.value.userId) {
       dispatch(
         getRecords({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
             end: Date.parse(dates[dates.length - 1]) || endDate,
@@ -63,7 +56,7 @@ export default function ExpensePage({ ...props }) {
       );
       dispatch(
         getDailyRecords({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
             end: Date.parse(dates[dates.length - 1]) || endDate,
@@ -77,7 +70,7 @@ export default function ExpensePage({ ...props }) {
     if (reload) {
       dispatch(
         getRecords({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
             end: Date.parse(dates[dates.length - 1]) || endDate,
@@ -86,7 +79,7 @@ export default function ExpensePage({ ...props }) {
       );
       dispatch(
         getDailyRecords({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
             end: Date.parse(dates[dates.length - 1]) || endDate,
@@ -111,7 +104,7 @@ export default function ExpensePage({ ...props }) {
     selectedRowIds.forEach((id) => {
       dispatch(
         deleteRecords({
-          userId: auth.userId,
+          userId: auth.value.userId,
           id: id,
         })
       );
@@ -176,7 +169,7 @@ export default function ExpensePage({ ...props }) {
         onPost={(data) => {
           dispatch(
             postRecords({
-              userId: auth.userId,
+              userId: auth.value.userId,
               data: data,
             })
           );
@@ -194,7 +187,7 @@ export default function ExpensePage({ ...props }) {
           dispatch(
             putRecords({
               id: id,
-              userId: auth.userId,
+              userId: auth.value.userId,
               data: data,
             })
           );
@@ -209,7 +202,7 @@ export default function ExpensePage({ ...props }) {
         onPost={(data) => {
           dispatch(
             postCategories({
-              userId: auth.userId,
+              userId: auth.value.userId,
               data: data,
             })
           );
@@ -229,7 +222,7 @@ export default function ExpensePage({ ...props }) {
                   onClick={() => {
                     dispatch(
                       deleteCategories({
-                        userId: auth.userId,
+                        userId: auth.value.userId,
                         id: choice._id,
                       })
                     );

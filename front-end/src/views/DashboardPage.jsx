@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -9,25 +9,18 @@ import MainLayout from "../layouts/MainLayout.jsx";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyBillAlt } from "@fortawesome/free-regular-svg-icons";
-import {
-  faAngleRight,
-  faYenSign,
-  faPiggyBank,
-  faDollarSign,
-  faHandHoldingUsd,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faYenSign, faHandHoldingUsd } from "@fortawesome/free-solid-svg-icons";
 
 import Controller from "../components/Controller/Controller.jsx";
-import Context from "../contexts.jsx";
-import { selectRecords, selectCategories } from "../redux/app/store.js";
+import { selectRecords, selectCategories, selectAuth } from "../redux/app/store.js";
 import {
   getDailyRecords,
   getMonthlyExpense,
   getYearlyExpense,
 } from "../redux/slices/finance/records.js";
 import { getCategories } from "../redux/slices/finance/categories.js";
-import { useAuth } from "../authenticate.jsx";
 import { useDates } from "../utils.jsx";
+import { setCurrentPage } from "../redux/slices/common/settings.js";
 
 const date = new Date();
 const startMonth = new Date(date.getFullYear(), 0, 1);
@@ -57,20 +50,20 @@ const GenericCard = (props) => {
 
 export default function DashboardPage({ ...props }) {
   const [dates, dateAction] = useDates(new Date());
-  const auth = useAuth();
+  const auth = useSelector(selectAuth);
   const records = useSelector(selectRecords);
   const categories = useSelector(selectCategories);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    auth.verifySession();
+    dispatch(setCurrentPage("Home"));
   }, []);
 
   useEffect(() => {
-    if (dates.length > 0 && auth.userId) {
+    if (dates.length > 0 && auth.value.userId) {
       dispatch(
         getDailyRecords({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
             end: Date.parse(dates[dates.length - 1]) || endDate,
@@ -79,12 +72,12 @@ export default function DashboardPage({ ...props }) {
       );
       dispatch(
         getCategories({
-          userId: auth.userId,
+          userId: auth.value.userId,
         })
       );
       dispatch(
         getMonthlyExpense({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(dates[0] || startDate),
             end: Date.parse(dates[dates.length - 1]) || endDate,
@@ -93,7 +86,7 @@ export default function DashboardPage({ ...props }) {
       );
       dispatch(
         getYearlyExpense({
-          userId: auth.userId,
+          userId: auth.value.userId,
           query: {
             start: Date.parse(startMonth),
             end: Date.parse(endMonth),
@@ -102,11 +95,6 @@ export default function DashboardPage({ ...props }) {
       );
     }
   }, [dates, auth]);
-
-  const context = useContext(Context);
-  useEffect(() => {
-    context.updatePage("Home");
-  });
 
   return (
     <MainLayout>

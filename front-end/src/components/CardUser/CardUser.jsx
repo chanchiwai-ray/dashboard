@@ -34,7 +34,7 @@ function CardUser({ profile, updateProfile, ...props }) {
     if (isEditing) {
       editJobTitle(false);
       const profile = trimSpaces(userProfile);
-      updateProfile(null, profile);
+      updateProfile(profile);
       setUserProfile(profile);
     } else {
       editJobTitle(true);
@@ -45,7 +45,7 @@ function CardUser({ profile, updateProfile, ...props }) {
     if (isEditing) {
       editNickname(false);
       const profile = trimSpaces(userProfile);
-      updateProfile(null, profile);
+      updateProfile(profile);
       setUserProfile(profile);
     } else {
       editNickname(true);

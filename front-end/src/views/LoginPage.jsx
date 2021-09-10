@@ -12,8 +12,11 @@ import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-ico
 
 import styles from "./views.module.css";
 import Avatar from "../assets/images/avatar.svg";
-import { useAuth } from "../authenticate.jsx";
 import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentPage } from "../redux/slices/common/settings.js";
+import { selectAuth } from "../redux/app/store.js";
+import { verify, login, signup } from "../redux/slices/common/auth.js";
 
 const Separator = () => {
   return (
@@ -26,8 +29,9 @@ const Separator = () => {
 };
 
 export default function LoginPage(props) {
-  const auth = useAuth();
+  const auth = useSelector(selectAuth);
   const history = useHistory();
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
       account: "",
@@ -36,38 +40,23 @@ export default function LoginPage(props) {
   });
   const [error, setError] = useState({ title: "Error", message: "An error occurs.", show: false });
 
-  // verify the cookies and redirect to homepage without logging in again if the
-  // user has valid cookies.
   useEffect(() => {
-    auth.verifySession(() => {
-      history.replace("/home");
-    }, null);
+    dispatch(verify());
+    dispatch(setCurrentPage(undefined));
   }, []);
 
+  useEffect(() => {
+    if (auth.value.authenticated) {
+      history.replace(auth.value.redirect);
+    }
+  }, [auth]);
+
   const handleLogin = () => {
-    auth.login(
-      formik.values,
-      (res) => {
-        setError({ title: "", message: "", show: false });
-        history.replace("/home");
-      },
-      (res) => {
-        setError({ title: "Error", message: res.message, show: true });
-      }
-    );
+    dispatch(login({ data: formik.values }));
   };
 
   const handleSignup = () => {
-    auth.signup(
-      formik.values,
-      (res) => {
-        setError({ title: "", message: "", show: false });
-        history.replace("/home");
-      },
-      (res) => {
-        setError({ title: "Error", message: res.message, show: true });
-      }
-    );
+    dispatch(signup({ data: formik.values }));
   };
 
   return (

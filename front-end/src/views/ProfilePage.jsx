@@ -1,30 +1,44 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 
 import { Container, Row, Col } from "react-bootstrap";
 
 import CardUser from "../components/CardUser/CardUser.jsx";
 import CardContact from "../components/CardContact/CardContact.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
-import Context from "../contexts.jsx";
-import { useAuthFetch } from "../utils.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentPage } from "../redux/slices/common/settings.js";
+import { selectAuth, selectProfile } from "../redux/app/store.js";
+import { getProfile, putProfile } from "../redux/slices/user/profile.js";
 
 export default function ProfilePage(props) {
-  const [profile, profileAction] = useAuthFetch("users", "profile");
+  const auth = useSelector(selectAuth);
+  const profile = useSelector(selectProfile);
+  const dispatch = useDispatch();
 
-  const context = useContext(Context);
   useEffect(() => {
-    context.updatePage("Profile");
-  });
+    dispatch(getProfile({ userId: auth.value.userId }));
+    dispatch(setCurrentPage(undefined));
+  }, []);
 
   return (
     <MainLayout>
       <Container>
         <Row>
           <Col lg={12} className="my-3">
-            <CardUser profile={profile.payload} updateProfile={profileAction.update()} />
+            <CardUser
+              profile={profile.value}
+              updateProfile={(data) =>
+                dispatch(putProfile({ userId: auth.value.userId, data: data }))
+              }
+            />
           </Col>
           <Col lg={12} className="my-3">
-            <CardContact profile={profile.payload} updateProfile={profileAction.update()} />
+            <CardContact
+              profile={profile.value}
+              updateProfile={(data) =>
+                dispatch(putProfile({ userId: auth.value.userId, data: data }))
+              }
+            />
           </Col>
         </Row>
       </Container>

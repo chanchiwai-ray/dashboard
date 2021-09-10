@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 
@@ -9,22 +9,26 @@ import ExpensePage from "./views/ExpensePage.jsx";
 import LoginPage from "./views/LoginPage.jsx";
 
 import "./index.css";
-import Context from "./contexts.jsx";
-import { store } from "./redux/app/store.js";
-import { Provider } from "react-redux";
-import { useAuth, ProvideAuth } from "./authenticate.jsx";
+import { selectAuth, store } from "./redux/app/store.js";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { verify } from "./redux/slices/common/auth.js";
 
 const PrivateRoute = ({ component: Component, fallbackPath, ...props }) => {
-  const auth = useAuth();
+  const auth = useSelector(selectAuth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(verify());
+  }, []);
 
   return (
     <Route
       {...props}
       render={(props) => {
-        return auth.isAuthenticated() ? (
+        return auth.value.authenticated ? (
           <Component {...props} />
         ) : (
-          <Redirect to={{ pathname: "/login", state: props.location }} />
+          <Redirect to={{ pathname: auth.value.redirect, state: props.location }} />
         );
       }}
     />
@@ -32,38 +36,27 @@ const PrivateRoute = ({ component: Component, fallbackPath, ...props }) => {
 };
 
 const Main = (props) => {
-  const [currentPage, setCurrentPage] = useState(null);
-
   return (
     <Provider store={store}>
-      <ProvideAuth>
-        <Context.Provider
-          value={{
-            page: currentPage,
-            updatePage: (page) => setCurrentPage(page),
-          }}
-        >
-          <BrowserRouter>
-            <Switch>
-              <Route exact path="/login" component={LoginPage} />
-              <PrivateRoute path="/home" component={DashboardPage} />
-              <PrivateRoute path="/profile" component={ProfilePage} />
-              <PrivateRoute path="/expense" component={ExpensePage} />
-              <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
-              <Route
-                render={() => (
-                  <div
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ width: "100%", height: "100%" }}
-                  >
-                    <h1>404: Page not found...</h1>
-                  </div>
-                )}
-              />
-            </Switch>
-          </BrowserRouter>
-        </Context.Provider>
-      </ProvideAuth>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/login" component={LoginPage} />
+          <PrivateRoute path="/home" component={DashboardPage} />
+          <PrivateRoute path="/profile" component={ProfilePage} />
+          <PrivateRoute path="/expense" component={ExpensePage} />
+          <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
+          <Route
+            render={() => (
+              <div
+                className="d-flex align-items-center justify-content-center"
+                style={{ width: "100%", height: "100%" }}
+              >
+                <h1>404: Page not found...</h1>
+              </div>
+            )}
+          />
+        </Switch>
+      </BrowserRouter>
     </Provider>
   );
 };

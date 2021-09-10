@@ -23,7 +23,7 @@ export default function CardContact({ profile, updateProfile }) {
       website: profile.website || "",
     },
     onSubmit: (values) => {
-      updateProfile(null, values);
+      updateProfile(values);
       setEdit(!edit);
     },
     enableReinitialize: true,
