@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { api_host } from "../../../utils.jsx";
+import { api_host } from "../../../configs.jsx";
 
 const name = "finance/categories";
 

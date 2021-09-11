@@ -1,9 +1,11 @@
 "use strict";
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuth, selectCategories } from "./redux/app/store.js";
-import { verify } from "./redux/slices/common/auth.js";
-import { getCategories } from "./redux/slices/finance/categories.js";
+import { selectAuth, selectCategories } from "./redux/app/store";
+import { getCategories } from "./redux/slices/finance/categories";
+
+export const api_host = process.env.REACT_APP_API_HOST;
 
 export const columns = [
   {
@@ -66,24 +68,18 @@ export const accountFields = [
   },
 ];
 
-export function getRecordFields() {
+export const getRecordFields = () => {
   const auth = useSelector(selectAuth);
   const categories = useSelector(selectCategories);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(verify());
+    dispatch(
+      getCategories({
+        userId: auth.value.userId,
+      })
+    );
   }, []);
-
-  useEffect(() => {
-    if (auth.value.userId) {
-      dispatch(
-        getCategories({
-          userId: auth.value.userId,
-        })
-      );
-    }
-  }, [auth]);
 
   return [
     {
@@ -120,4 +116,4 @@ export function getRecordFields() {
       default: Date.now(),
     },
   ];
-}
+};

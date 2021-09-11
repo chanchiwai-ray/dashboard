@@ -6,7 +6,6 @@ import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 
 import authReducer from "../slices/common/auth.js";
-import datesReducer from "../slices/common/dates.js";
 import profileReducer from "../slices/user/profile.js";
 import settingsReducer from "../slices/common/settings.js";
 import recordsReducer from "../slices/finance/records.js";
@@ -15,7 +14,6 @@ import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  dates: datesReducer,
   profile: profileReducer,
   settings: settingsReducer,
   records: recordsReducer,
@@ -37,7 +35,6 @@ export const store = configureStore({
 });
 
 export const selectAuth = (state) => state.auth;
-export const selectDates = (state) => state.dates;
 export const selectProfile = (state) => state.profile;
 export const selectSettings = (state) => state.settings;
 export const selectRecords = (state) => state.records;
