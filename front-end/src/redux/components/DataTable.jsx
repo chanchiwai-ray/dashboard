@@ -22,6 +22,16 @@ export default (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (records.reload) {
+      dispatch(
+        getRecords({
+          userId: auth.value.userId,
+        })
+      );
+    }
+  }, [records]);
+
   const render = () =>
     records.success ? (
       <DataTable

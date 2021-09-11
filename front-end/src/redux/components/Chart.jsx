@@ -40,6 +40,20 @@ export default (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (records.reload) {
+      dispatch(
+        getDailyRecords({
+          userId: auth.value.userId,
+          query: {
+            start: dates[0],
+            end: dates[dates.length - 1],
+          },
+        })
+      );
+    }
+  }, [records]);
+
   const render = () => {
     return records.success ? (
       <Chart
