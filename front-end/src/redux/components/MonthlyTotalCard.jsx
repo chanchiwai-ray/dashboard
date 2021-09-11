@@ -48,7 +48,7 @@ export default (props) => {
   return (
     <SummaryCard
       data={{
-        value: records.value.totals.monthlyTotal,
+        value: records.success ? records.value.totals.monthlyTotal : records.message,
         icon: faYenSign,
         label: `Total Expense in ${monthString[now.getMonth()]}`,
         lastUpdated: now.toLocaleDateString(),

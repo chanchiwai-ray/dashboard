@@ -22,12 +22,17 @@ export default (props) => {
     }
   }, []);
 
-  return (
-    <DataTable
-      rows={records.value.records}
-      columns={columns}
-      selectedRowIds={props.selectedRowIds}
-      setSelectedRowIds={(ids) => props.setSelectedRowIds(new Set(ids))}
-    />
-  );
+  const render = () =>
+    records.success ? (
+      <DataTable
+        rows={records.value.records}
+        columns={columns}
+        selectedRowIds={props.selectedRowIds}
+        setSelectedRowIds={(ids) => props.setSelectedRowIds(new Set(ids))}
+      />
+    ) : (
+      <h1>{records.message}</h1>
+    );
+
+  return render();
 };
