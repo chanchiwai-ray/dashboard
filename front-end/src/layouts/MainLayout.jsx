@@ -3,7 +3,13 @@ import { Link, useHistory } from "react-router-dom";
 
 import { Container, Row, Col, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCog, faBars, faHome, faWallet } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserCog,
+  faBars,
+  faHome,
+  faWallet,
+  faAddressBook,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Header from "../components/Header/Header.jsx";
 import Sidebar from "../components/Sidebar/Sidebar.jsx";
@@ -29,6 +35,11 @@ const sidebarNavItems = [
     to: "/expense",
     label: "Expense",
     faIcon: faWallet,
+  },
+  {
+    to: "/contacts",
+    label: "Contacts",
+    faIcon: faAddressBook,
   },
 ];
 

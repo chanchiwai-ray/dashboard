@@ -8,7 +8,7 @@ import MainLayout from "../layouts/MainLayout.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPage } from "../redux/slices/common/settings.js";
 import { selectAuth, selectProfile } from "../redux/app/store.js";
-import { getProfile, putProfile } from "../redux/slices/user/profile.js";
+import { getProfile, putProfile } from "../redux/slices/users/profile.js";
 
 export default function ProfilePage(props) {
   const auth = useSelector(selectAuth);

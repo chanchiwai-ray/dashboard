@@ -64,18 +64,20 @@ export default function ExpensePage({ ...props }) {
   return (
     <MainLayout>
       <Controller title="Expense" bg="light" expand="lg">
-        <Nav.Link onClick={() => setState({ ...state, showCategoryForm: true })}>
-          <FontAwesomeIcon className="fa-fw" icon={faListAlt} /> New Category
-        </Nav.Link>
-        <Nav.Link onClick={() => setState({ ...state, showRecordForm: true })}>
-          <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> Create
-        </Nav.Link>
-        <Nav.Link onClick={() => onUpdate(state.selectedRowIds)}>
-          <FontAwesomeIcon className="fa-fw" icon={faEdit} /> Update
-        </Nav.Link>
-        <Nav.Link onClick={() => onDelete(state.selectedRowIds)}>
-          <FontAwesomeIcon className="fa-fw" icon={faTrashAlt} /> Delete
-        </Nav.Link>
+        <Nav>
+          <Nav.Link onClick={() => setState({ ...state, showCategoryForm: true })}>
+            <FontAwesomeIcon className="fa-fw" icon={faListAlt} /> New Category
+          </Nav.Link>
+          <Nav.Link onClick={() => setState({ ...state, showRecordForm: true })}>
+            <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> Create
+          </Nav.Link>
+          <Nav.Link onClick={() => onUpdate(state.selectedRowIds)}>
+            <FontAwesomeIcon className="fa-fw" icon={faEdit} /> Update
+          </Nav.Link>
+          <Nav.Link onClick={() => onDelete(state.selectedRowIds)}>
+            <FontAwesomeIcon className="fa-fw" icon={faTrashAlt} /> Delete
+          </Nav.Link>
+        </Nav>
       </Controller>
       <Container>
         <Row>

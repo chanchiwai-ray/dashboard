@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 
 export default function Controller({ title, ...props }) {
   return (
@@ -9,9 +9,7 @@ export default function Controller({ title, ...props }) {
         <h3>{title}</h3>
       </Navbar.Brand>
       <Navbar.Toggle />
-      <Navbar.Collapse id="navbar-collapse">
-        <Nav>{props.children}</Nav>
-      </Navbar.Collapse>
+      <Navbar.Collapse id="navbar-collapse">{props.children}</Navbar.Collapse>
     </Navbar>
   );
 }

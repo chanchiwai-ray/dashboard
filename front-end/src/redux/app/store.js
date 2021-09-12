@@ -6,7 +6,8 @@ import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 
 import authReducer from "../slices/common/auth.js";
-import profileReducer from "../slices/user/profile.js";
+import profileReducer from "../slices/users/profile.js";
+import contactsReducer from "../slices/contacts/index.js";
 import settingsReducer from "../slices/common/settings.js";
 import recordsReducer from "../slices/finance/records.js";
 import categoriesReducer from "../slices/finance/categories.js";
@@ -15,6 +16,7 @@ import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 const rootReducer = combineReducers({
   auth: authReducer,
   profile: profileReducer,
+  contacts: contactsReducer,
   settings: settingsReducer,
   records: recordsReducer,
   categories: categoriesReducer,
@@ -36,6 +38,7 @@ export const store = configureStore({
 
 export const selectAuth = (state) => state.auth;
 export const selectProfile = (state) => state.profile;
+export const selectContacts = (state) => state.contacts;
 export const selectSettings = (state) => state.settings;
 export const selectRecords = (state) => state.records;
 export const selectCategories = (state) => state.categories;
