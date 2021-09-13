@@ -23,9 +23,9 @@ mongoose
     }
   );
 
-const userRouter = require("./routes/users.js");
-const financeRouter = require("./routes/finances.js");
-const authenticateRouter = require("./routes/authenticate.js");
+const cors = require("./routes/cors.js");
+const userRouter = require("./routes/users");
+const authenticateRouter = require("./routes/authenticate");
 
 const app = express();
 
@@ -43,12 +43,12 @@ app.use(
 
 app.use(logger("dev"));
 app.use(express.json());
+app.use(cors.cors);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use("/apis/users", userRouter);
-app.use("/apis/finances", financeRouter);
 app.use("/apis/authenticate", authenticateRouter);
 
 module.exports = app;

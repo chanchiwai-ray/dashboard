@@ -2,10 +2,13 @@
 
 // Load mongoose
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
 
 // Define the schema
 const schema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
   nickname: {
     type: String,
     default: "Your Name or Nick Name",
@@ -70,7 +73,5 @@ const schema = new mongoose.Schema({
   },
 });
 
-schema.plugin(passportLocalMongoose, { usernameField: "account" });
-
 // Build and export the model
-module.exports = new mongoose.model("Users", schema);
+module.exports = new mongoose.model("users.profile", schema);

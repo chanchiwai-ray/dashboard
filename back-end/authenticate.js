@@ -1,5 +1,5 @@
 const passport = require("passport");
-const Users = require("./models/user.js");
+const Users = require("./models/users");
 
 passport.use(Users.createStrategy());
 passport.serializeUser(Users.serializeUser());
@@ -20,12 +20,19 @@ exports.isLoggedIn = (req, res, next) => {
 exports.isSameUser = (req, res, next) => {
   Users.findOne({ _id: req.params.uid })
     .then((user) => {
-      if (!user)
+      if (!user) {
+        return res.status(403).json({
+          success: false,
+          message: "Error: cannot find such user.",
+          payload: null,
+        });
+      } else if (user.account !== req.session.passport.user) {
         return res.status(403).json({
           success: false,
           message: "Permission denied: requesting resources that does not belong to you.",
           payload: null,
         });
+      }
       return next();
     })
     .catch((err) => console.log(err));

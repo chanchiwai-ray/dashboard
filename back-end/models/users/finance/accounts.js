@@ -33,4 +33,4 @@ schema.pre("save", function (next) {
   next();
 });
 
-module.exports = new mongoose.model("bankAccount", schema);
+module.exports = new mongoose.model("users.finance.accounts", schema);

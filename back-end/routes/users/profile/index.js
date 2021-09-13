@@ -1,54 +1,16 @@
 "use strict";
 
 const express = require("express");
-const router = express.Router();
-const cors = require("./cors.js");
-const Users = require("../models/user.js");
-const authenticate = require("../authenticate.js");
+const router = express.Router({ mergeParams: true });
+const Profile = require("../../../models/users/profile");
+const authenticate = require("../../../authenticate.js");
 
-router.use(express.json());
-router.use(cors.cors);
-router.use(authenticate.isLoggedIn);
+router.use(authenticate.isSameUser);
 
-// default route to /users
 router
   .route("/")
-  .post((req, res) => {
-    Users.create(req.body)
-      .then((user) => {
-        res.status(200).json({ success: true, message: "added one user.", payload: user });
-      })
-      .catch((err) => {
-        res.status(400).json({ success: false, message: "POST not success", payload: null });
-        console.log(err.message);
-      });
-  })
   .get((req, res) => {
-    Users.find({})
-      .then((users) => {
-        res.status(200).json({
-          success: true,
-          message: `returning ${users.length} users.`,
-          payload: users,
-        });
-      })
-      .catch((err) => {
-        res.status(400).json({ success: false, message: "POST not success", payload: null });
-        console.log(err.message);
-      });
-  })
-  .put((req, res) => {
-    res.status(501).json({ error: "PUT is not implemented." });
-  })
-  .delete((req, res) => {
-    res.status(501).json({ error: "DELETE is not implemented." });
-  });
-
-// route to users:id's profile
-router
-  .route("/:uid/profile")
-  .get((req, res) => {
-    Users.findOne({ _id: req.params.uid })
+    Profile.findOne({ userId: req.params.uid })
       .then((user) => {
         if (!user) {
           return res.status(400).json({
@@ -69,7 +31,7 @@ router
       });
   })
   .put((req, res) => {
-    Users.findOneAndUpdate({ _id: req.params.uid }, req.body, {
+    Profile.findOneAndUpdate({ userId: req.params.uid }, req.body, {
       useFindAndModify: false,
       new: true,
     })

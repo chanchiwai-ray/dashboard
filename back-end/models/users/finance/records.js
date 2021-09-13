@@ -30,4 +30,4 @@ const schema = new mongoose.Schema({
   },
 });
 
-module.exports = new mongoose.model("financeRecord", schema);
+module.exports = new mongoose.model("users.finance.records", schema);
