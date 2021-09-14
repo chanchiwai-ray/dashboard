@@ -58,7 +58,7 @@ router
       });
   })
   .put((req, res) => {
-    Categories.fineOneAndUpdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
+    Categories.findOneAndUpdate({ userId: req.params.uid, _id: req.params.id }, req.body, {
       findOneAndModify: false,
       new: true,
     })
