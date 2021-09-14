@@ -13,7 +13,7 @@ const initialState = {
 
 export const getRecords = createAsyncThunk(`${name}/getRecords`, async (args) => {
   const response = await fetch(
-    `${api_host}/finances/${args.userId}/records${
+    `${api_host}/users/${args.userId}/finance/records${
       args.query ? "?" + new URLSearchParams(args.query).toString() : ""
     }`,
     {
@@ -27,7 +27,7 @@ export const getRecords = createAsyncThunk(`${name}/getRecords`, async (args) =>
 });
 
 export const putRecords = createAsyncThunk(`${name}/putRecords`, async (args) => {
-  const response = await fetch(`${api_host}/finances/${args.userId}/records/${args.id}`, {
+  const response = await fetch(`${api_host}/users/${args.userId}/finance/records/${args.id}`, {
     method: "PUT",
     body: JSON.stringify(args.data),
     headers: { "Content-Type": "application/json" },
@@ -37,7 +37,7 @@ export const putRecords = createAsyncThunk(`${name}/putRecords`, async (args) =>
 });
 
 export const postRecords = createAsyncThunk(`${name}/postRecords`, async (args) => {
-  const response = await fetch(`${api_host}/finances/${args.userId}/records`, {
+  const response = await fetch(`${api_host}/users/${args.userId}/finance/records`, {
     method: "POST",
     body: JSON.stringify({ ...args.data, userId: args.userId }),
     headers: { "Content-Type": "application/json" },
@@ -47,7 +47,7 @@ export const postRecords = createAsyncThunk(`${name}/postRecords`, async (args) 
 });
 
 export const deleteRecords = createAsyncThunk(`${name}/deleteRecords`, async (args) => {
-  const response = await fetch(`${api_host}/finances/${args.userId}/records/${args.id}`, {
+  const response = await fetch(`${api_host}/users/${args.userId}/finance/records/${args.id}`, {
     method: "DELETE",
     credentials: "include",
   });
@@ -56,7 +56,7 @@ export const deleteRecords = createAsyncThunk(`${name}/deleteRecords`, async (ar
 
 export const getDailyRecords = createAsyncThunk(`${name}/getDailyRecords`, async (args) => {
   const response = await fetch(
-    `${api_host}/finances/${args.userId}/records/daily${
+    `${api_host}/users/${args.userId}/finance/records/daily${
       args.query ? "?" + new URLSearchParams(args.query).toString() : ""
     }`,
     {
@@ -71,7 +71,7 @@ export const getDailyRecords = createAsyncThunk(`${name}/getDailyRecords`, async
 
 export const getMonthlyExpense = createAsyncThunk(`${name}/getMonthlyExpense`, async (args) => {
   const response = await fetch(
-    `${api_host}/finances/${args.userId}/records/total${
+    `${api_host}/users/${args.userId}/finance/records/total${
       args.query ? "?" + new URLSearchParams(args.query).toString() : ""
     }`,
     {
@@ -86,7 +86,7 @@ export const getMonthlyExpense = createAsyncThunk(`${name}/getMonthlyExpense`, a
 
 export const getYearlyExpense = createAsyncThunk(`${name}/getYearlyExpense`, async (args) => {
   const response = await fetch(
-    `${api_host}/finances/${args.userId}/records/total${
+    `${api_host}/users/${args.userId}/finance/records/total${
       args.query ? "?" + new URLSearchParams(args.query).toString() : ""
     }`,
     {

@@ -11,7 +11,7 @@ const initialState = {
 };
 
 export const getCategories = createAsyncThunk(`${name}/getCategories`, async (args) => {
-  const response = await fetch(`${api_host}/finances/${args.userId}/categories`, {
+  const response = await fetch(`${api_host}/users/${args.userId}/finance/categories`, {
     credentials: "include",
   });
   if (!response.ok) {
@@ -21,7 +21,7 @@ export const getCategories = createAsyncThunk(`${name}/getCategories`, async (ar
 });
 
 export const postCategories = createAsyncThunk(`${name}/postCategories`, async (args) => {
-  const response = await fetch(`${api_host}/finances/${args.userId}/categories`, {
+  const response = await fetch(`${api_host}/users/${args.userId}/finance/categories`, {
     method: "POST",
     body: JSON.stringify({ ...args.data, userId: args.userId }),
     headers: { "Content-Type": "application/json" },
@@ -31,7 +31,7 @@ export const postCategories = createAsyncThunk(`${name}/postCategories`, async (
 });
 
 export const deleteCategories = createAsyncThunk(`${name}/putCategories`, async (args) => {
-  const response = await fetch(`${api_host}/finances/${args.userId}/categories/${args.id}`, {
+  const response = await fetch(`${api_host}/users/${args.userId}/finance/categories/${args.id}`, {
     method: "DELETE",
     credentials: "include",
   });
