@@ -21,14 +21,18 @@ export default function ContactPage() {
 
   useEffect(() => {
     dispatch(setCurrentPage("Contacts"));
-    dispatch(getContacts());
+    dispatch(
+      getContacts({
+        userId: auth.value.userId,
+      })
+    );
   }, []);
 
   return (
     <MainLayout>
       <Controller title="People" bg="light" expand="lg">
         <Nav>
-          <Nav.Link onClick={(data) => dispatch(postContact({ userId: auth.userId, data: data }))}>
+          <Nav.Link onClick={() => dispatch(postContact({ userId: auth.value.userId }))}>
             <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> New Contact
           </Nav.Link>
         </Nav>
@@ -50,19 +54,23 @@ export default function ContactPage() {
               .filter((contact) =>
                 `${contact.firstname} ${contact.lastname}`.includes(filterString)
               )
-              .map((contact, index) => (
-                <Col key={index} md={6} className="my-3">
+              .map((contact) => (
+                <Col key={contact._id} md={6} className="my-3">
                   <Contact
-                    key={index}
+                    key={contact._id}
                     firstname={contact.firstname}
                     lastname={contact.lastname}
                     mobile={contact.mobile}
                     email={contact.email}
                     address={contact.address}
                     update={(data) =>
-                      dispatch(putContact({ id: contact._id, userId: auth.userId, data: data }))
+                      dispatch(
+                        putContact({ id: contact._id, userId: auth.value.userId, data: data })
+                      )
                     }
-                    delete={() => dispatch(deleteContact({ id: contact._id }))}
+                    delete={() =>
+                      dispatch(deleteContact({ userId: auth.value.userId, id: contact._id }))
+                    }
                   />
                 </Col>
               ))

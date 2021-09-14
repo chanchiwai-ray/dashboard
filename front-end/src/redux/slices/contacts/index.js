@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// import { api_host } from "../../../configs.jsx";
+import { api_host } from "../../../configs.jsx";
 
 const name = "contacts";
 
@@ -10,15 +10,15 @@ const initialState = {
   message: "Loading",
 };
 
-export const getContacts = createAsyncThunk(`${name}/getContacts`, async () => {
-  const response = await fetch(``, {
+export const getContacts = createAsyncThunk(`${name}/getContacts`, async (args) => {
+  const response = await fetch(`${api_host}/users/${args.userId}/contacts`, {
     credentials: "include",
   });
   return response.json();
 });
 
 export const putContact = createAsyncThunk(`${name}/putContact`, async (args) => {
-  const response = await fetch(``, {
+  const response = await fetch(`${api_host}/users/${args.userId}/contacts/${args.id}`, {
     method: "PUT",
     body: JSON.stringify(args.data),
     headers: { "Content-Type": "application/json" },
@@ -28,7 +28,7 @@ export const putContact = createAsyncThunk(`${name}/putContact`, async (args) =>
 });
 
 export const postContact = createAsyncThunk(`${name}/postContact`, async (args) => {
-  const response = await fetch(``, {
+  const response = await fetch(`${api_host}/users/${args.userId}/contacts`, {
     method: "POST",
     body: JSON.stringify({ ...args.data, userId: args.userId }),
     headers: { "Content-Type": "application/json" },
@@ -37,8 +37,8 @@ export const postContact = createAsyncThunk(`${name}/postContact`, async (args) 
   return response.json();
 });
 
-export const deleteContact = createAsyncThunk(`${name}/deleteContact`, async () => {
-  const response = await fetch(``, {
+export const deleteContact = createAsyncThunk(`${name}/deleteContact`, async (args) => {
+  const response = await fetch(`${api_host}/users/${args.userId}/contacts/${args.id}`, {
     method: "DELETE",
     credentials: "include",
   });

@@ -8,6 +8,7 @@ const authenticate = require("../../authenticate.js");
 
 const profile = require("./profile");
 const finance = require("./finance");
+const contacts = require("./contacts");
 
 router.use(express.json());
 router.use(cors.cors);
@@ -49,5 +50,6 @@ router
 
 router.use("/:uid/profile", profile);
 router.use("/:uid/finance", finance);
+router.use("/:uid/contacts", contacts);
 
 module.exports = router;
