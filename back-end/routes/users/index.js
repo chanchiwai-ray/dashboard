@@ -6,6 +6,7 @@ const cors = require("../cors.js");
 const Users = require("../../models/users/index.js");
 const authenticate = require("../../authenticate.js");
 
+const notes = require("./notes");
 const profile = require("./profile");
 const finance = require("./finance");
 const contacts = require("./contacts");
@@ -48,6 +49,7 @@ router
     res.status(501).json({ error: "DELETE is not implemented." });
   });
 
+router.use("/:uid/notes", notes);
 router.use("/:uid/profile", profile);
 router.use("/:uid/finance", finance);
 router.use("/:uid/contacts", contacts);

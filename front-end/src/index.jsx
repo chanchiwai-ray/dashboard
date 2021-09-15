@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import DashboardPage from "./views/DashboardPage.jsx";
 import ProfilePage from "./views/ProfilePage.jsx";
 import ExpensePage from "./views/ExpensePage.jsx";
+import NotesPage from "./views/NotesPage.jsx";
 import ContactsPage from "./views/ContactsPage.jsx";
 import LoginPage from "./views/LoginPage.jsx";
 
@@ -49,6 +50,7 @@ const Main = (props) => {
             <Route exact path="/login" component={LoginPage} />
             <PrivateRoute path="/home" component={DashboardPage} />
             <PrivateRoute path="/profile" component={ProfilePage} />
+            <PrivateRoute path="/notes" component={NotesPage} />
             <PrivateRoute path="/expense" component={ExpensePage} />
             <PrivateRoute path="/contacts" component={ContactsPage} />
             <Redirect from="/" to={window.localStorage.getItem("redirect") || "/login"} />
