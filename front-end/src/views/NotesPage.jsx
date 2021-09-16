@@ -22,62 +22,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 import { getNotes, putNote, postNote, deleteNote } from "../redux/slices/notes";
 import { selectAuth, selectNotes } from "../redux/app/store.js";
-import { faEllipsisH, faEllipsisV, faSort } from "@fortawesome/free-solid-svg-icons";
-
-const NewNoteBar = ({ onNew, ...props }) => {
-  const [label, setLabel] = useState("default");
-  const formik = useFormik({
-    initialValues: {
-      textContent: "",
-    },
-    onSubmit: (values) => {
-      const submitValues = {
-        title: "",
-        uuid: uuid(),
-        label: "default",
-        listContent: undefined,
-        imageContent: undefined,
-        modifiedDate: new Date(),
-      };
-      console.log(submitValues);
-      onNew(submitValues);
-      formik.setFieldValue("textContent", "");
-    },
-  });
-
-  return (
-    <Form className="new-note-bar" onSubmit={formik.handleSubmit}>
-      <InputGroup>
-        <InputGroup.Prepend>
-          <InputGroup.Text>
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </InputGroup.Text>
-        </InputGroup.Prepend>
-        <input
-          className="form-control"
-          placeholder="Enter new content..."
-          id="textContent"
-          name="textContent"
-          onChange={formik.handleChange}
-          value={formik.values.textContent}
-        />
-        <InputGroup.Append>
-          <OverlayTrigger overlay={<Tooltip>Add</Tooltip>}>
-            <InputGroup.Text
-              className="btn btn-outline-success btn-outline-overwrite"
-              onClick={() => formik.handleSubmit()}
-            >
-              <FontAwesomeIcon icon={faPlusCircle} />
-            </InputGroup.Text>
-          </OverlayTrigger>
-        </InputGroup.Append>
-        <InputGroup.Append>
-          <OverlayTrigger overlay={<Tooltip>Options</Tooltip>}></OverlayTrigger>
-        </InputGroup.Append>
-      </InputGroup>
-    </Form>
-  );
-};
+import { faEllipsisV, faSort } from "@fortawesome/free-solid-svg-icons";
 
 export default function NotesPage() {
   const auth = useSelector(selectAuth);
@@ -85,7 +30,6 @@ export default function NotesPage() {
   const dispatch = useDispatch();
   const [sortKey, setSortKey] = useState("date");
   const [displayNewNoteForm, setDisplayNewNoteForm] = useState(false);
-  const [displayNewLabelForm, setDisplayNewLabelForm] = useState(false);
   const [filterString, setFilterString] = useState("");
   const [searchType, setSearchType] = useState("title");
 

@@ -14,7 +14,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquare, faCheckSquare } from "@fortawesome/free-regular-svg-icons";
+import { faSquare, faCheckSquare, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { faImage, faListAlt, faTrash, faEdit, faTag } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from "uuid";
 
@@ -97,6 +97,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
     </ListGroup>
   );
 };
+
 export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
   const [isEditing, setEditing] = useState(props.edit);
   const formik = useFormik({
@@ -130,10 +131,47 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
           <div className="d-flex ">
             <div className="mr-auto">
               <FontAwesomeIcon icon={faTag} color="grey" className="fa-fw mr-1" size="sm" />
-              {item.labels
-                ? item.labels.map((label) => (
-                    <Badge className="mx-1" key={label._id} pill variant="primary">
-                      {label.label}
+              {formik.values.labels
+                ? formik.values.labels.map((label) => (
+                    <Badge key={label.id} className="m-1" pill variant="primary">
+                      {isEditing ? (
+                        <input
+                          className="mx-1"
+                          style={{ width: "5rem" }}
+                          value={formik.values.labels.find((l) => l.id === label.id).label}
+                          onChange={(e) =>
+                            formik.setFieldValue(
+                              "labels",
+                              formik.values.labels.map((l) => {
+                                if (l.id === label.id) {
+                                  const newLabel = { ...l };
+                                  newLabel.label = e.target.value;
+                                  return newLabel;
+                                } else {
+                                  return l;
+                                }
+                              })
+                            )
+                          }
+                        />
+                      ) : (
+                        <span className="m-1">{label.label}</span>
+                      )}
+                      <OverlayTrigger key={label.id} overlay={<Tooltip>Click to delete</Tooltip>}>
+                        <FontAwesomeIcon
+                          icon={faTimesCircle}
+                          color="black"
+                          onClick={() => {
+                            formik.setFieldValue(
+                              "labels",
+                              formik.values.labels.filter((l) => l.id !== label.id)
+                            );
+                            if (!isEditing) {
+                              formik.handleSubmit();
+                            }
+                          }}
+                        />
+                      </OverlayTrigger>
                     </Badge>
                   ))
                 : null}
@@ -167,7 +205,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
             <div></div>
           ) : (
             <React.Fragment>
-              <Card.Img src={item.imageContent} />
+              <Card.Img src={formik.values.imageContent} />
               <hr />
             </React.Fragment>
           )}
@@ -213,7 +251,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
         <Card.Footer className="text-muted d-flex">
           {!isEditing ? (
             <span className="ml-auto">{`Last modified: ${
-              new Date(Number(item.modifiedDate)).toLocaleString("en-GB") || ""
+              new Date(Number(formik.values.modifiedDate)).toLocaleString("en-GB") || ""
             }`}</span>
           ) : (
             <React.Fragment>
@@ -241,7 +279,12 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
               <OverlayTrigger overlay={<Tooltip>Add Label</Tooltip>}>
                 <InputGroup.Text
                   className="btn btn-outline-info mx-1"
-                  onClick={() => console.log("Add picture")}
+                  onClick={() => {
+                    formik.setFieldValue("labels", [
+                      ...formik.values.labels,
+                      { id: uuid(), label: "" },
+                    ]);
+                  }}
                 >
                   <FontAwesomeIcon icon={faTag} />
                 </InputGroup.Text>

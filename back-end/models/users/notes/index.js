@@ -17,7 +17,6 @@ const schema = new mongoose.Schema({
     {
       id: { type: String, default: new mongoose.Types.ObjectId() },
       label: { type: String, default: "Default" },
-      color: { type: String, default: "blue" },
     },
   ],
   description: {
