@@ -183,7 +183,6 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
                 color="green"
                 icon={faEdit}
                 onClick={(e) => {
-                  e.stopPropagation();
                   isEditing || setEditing(!isEditing);
                 }}
               />
@@ -194,7 +193,6 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
                 color="red"
                 icon={faTrash}
                 onClick={(e) => {
-                  e.stopPropagation();
                   onDelete();
                 }}
               />
@@ -298,7 +296,6 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
                   className="ml-auto mr-1"
                   variant="secondary"
                   onClick={(e) => {
-                    e.stopPropagation();
                     setEditing(false);
                     formik.resetForm();
                     if (onCancel) {

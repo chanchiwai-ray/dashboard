@@ -21,7 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 import { getNotes, putNote, postNote, deleteNote } from "../redux/slices/notes";
 import { selectAuth, selectNotes } from "../redux/app/store.js";
-import { faEllipsisV, faSort } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./views.module.css";
 
@@ -29,7 +29,6 @@ export default function NotesPage() {
   const auth = useSelector(selectAuth);
   const notes = useSelector(selectNotes);
   const dispatch = useDispatch();
-  const [sortKey, setSortKey] = useState("date");
   const [displayNewNoteForm, setDisplayNewNoteForm] = useState(false);
   const [filterString, setFilterString] = useState("");
   const [searchType, setSearchType] = useState("title");
