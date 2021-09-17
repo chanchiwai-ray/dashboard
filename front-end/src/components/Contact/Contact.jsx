@@ -71,23 +71,14 @@ const Contact = ({
               First Name
             </Form.Label>
             <Col>
-              {edit ? (
-                <Form.Control
-                  id="firstname"
-                  name="firstname"
-                  type="string"
-                  onChange={formik.handleChange}
-                  value={formik.values.firstname}
-                ></Form.Control>
-              ) : (
-                <Form.Control
-                  id="firstname"
-                  name="firstname"
-                  onChange={formik.handleChange}
-                  value={formik.values.firstname}
-                  readOnly
-                ></Form.Control>
-              )}
+              <Form.Control
+                id="firstname"
+                name="firstname"
+                type="string"
+                onChange={formik.handleChange}
+                value={formik.values.firstname}
+                readOnly={!edit}
+              />
             </Col>
           </Form.Row>
           <br />
@@ -96,23 +87,14 @@ const Contact = ({
               Last Name
             </Form.Label>
             <Col>
-              {edit ? (
-                <Form.Control
-                  id="lastname"
-                  name="lastname"
-                  type="string"
-                  onChange={formik.handleChange}
-                  value={formik.values.lastname}
-                ></Form.Control>
-              ) : (
-                <Form.Control
-                  id="lastname"
-                  name="lastname"
-                  onChange={formik.handleChange}
-                  value={formik.values.lastname}
-                  readOnly
-                ></Form.Control>
-              )}
+              <Form.Control
+                id="lastname"
+                name="lastname"
+                type="string"
+                onChange={formik.handleChange}
+                value={formik.values.lastname}
+                readOnly={!edit}
+              />
             </Col>
           </Form.Row>
           <br />
@@ -121,23 +103,14 @@ const Contact = ({
               Mobile
             </Form.Label>
             <Col>
-              {edit ? (
-                <Form.Control
-                  id="mobile"
-                  name="mobile"
-                  type="string"
-                  onChange={formik.handleChange}
-                  value={formik.values.mobile}
-                ></Form.Control>
-              ) : (
-                <Form.Control
-                  id="mobile"
-                  name="mobile"
-                  onChange={formik.handleChange}
-                  value={formik.values.mobile}
-                  readOnly
-                ></Form.Control>
-              )}
+              <Form.Control
+                id="mobile"
+                name="mobile"
+                type="string"
+                onChange={formik.handleChange}
+                value={formik.values.mobile}
+                readOnly={!edit}
+              />
             </Col>
           </Form.Row>
           <br />
@@ -146,23 +119,14 @@ const Contact = ({
               Email
             </Form.Label>
             <Col>
-              {edit ? (
-                <Form.Control
-                  id="email"
-                  name="email"
-                  type="email"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                ></Form.Control>
-              ) : (
-                <Form.Control
-                  id="email"
-                  name="email"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                  readOnly
-                ></Form.Control>
-              )}
+              <Form.Control
+                id="email"
+                name="email"
+                type="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                readOnly={!edit}
+              />
             </Col>
           </Form.Row>
           <br />
@@ -171,24 +135,14 @@ const Contact = ({
               Address
             </Form.Label>
             <Col>
-              {edit ? (
-                <Form.Control
-                  id="address"
-                  name="address"
-                  onChange={formik.handleChange}
-                  value={formik.values.address}
-                  placeholder="(optional)"
-                ></Form.Control>
-              ) : (
-                <Form.Control
-                  id="address"
-                  name="address"
-                  onChange={formik.handleChange}
-                  value={formik.values.address}
-                  placeholder="(optional)"
-                  readOnly
-                ></Form.Control>
-              )}
+              <Form.Control
+                id="address"
+                name="address"
+                onChange={formik.handleChange}
+                value={formik.values.address}
+                placeholder="(optional)"
+                readOnly={!edit}
+              />
             </Col>
           </Form.Row>
         </Card.Body>
