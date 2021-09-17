@@ -5,6 +5,8 @@ import { Button, Card, Form, Col, OverlayTrigger, Tooltip } from "react-bootstra
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 
+import styles from "./Contact.module.css";
+
 const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
   const [edit, enableEdit] = useState(false);
   const formik = useFormik({
@@ -29,15 +31,25 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
     <Card>
       <Card.Header className="d-flex">
         <div>
-          <FontAwesomeIcon icon={faUser} className="mx-1" />{" "}
-          {`${formik.values.firstname} ${formik.values.lastname}`}
+          <FontAwesomeIcon icon={faUser} color="#777" className="mx-1" />{" "}
+          <span className="font-weight-bold">{`${formik.values.firstname} ${formik.values.lastname}`}</span>
         </div>
         <div className="ml-auto">
           <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
-            <FontAwesomeIcon icon={faEdit} className="mx-2" onClick={() => enableEdit(!edit)} />
+            <FontAwesomeIcon
+              icon={faEdit}
+              color="green"
+              className={`${styles["fontawesome-as-btn"]} mx-2`}
+              onClick={() => enableEdit(!edit)}
+            />
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
-            <FontAwesomeIcon icon={faTrash} className="mx-2" onClick={() => props.delete()} />
+            <FontAwesomeIcon
+              icon={faTrash}
+              color="red"
+              className={`${styles["fontawesome-as-btn"]} mx-2`}
+              onClick={() => props.delete()}
+            />
           </OverlayTrigger>
         </div>
       </Card.Header>
