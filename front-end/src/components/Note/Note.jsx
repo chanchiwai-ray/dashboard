@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare, faCheckSquare, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { faImage, faListAlt, faTrash, faEdit, faTag } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from "uuid";
+import styles from "./Note.module.css";
 
 const CheckList = ({ content, onDone, onEdit, isEditing }) => {
   const onChange = (id, key, value) => {
@@ -49,7 +50,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
               {item.completed ? (
                 <OverlayTrigger overlay={<Tooltip>UnCheck</Tooltip>}>
                   <FontAwesomeIcon
-                    className="fontawesome-as-btn"
+                    className={`${styles["fontawesome-as-btn"]}`}
                     icon={faCheckSquare}
                     onClick={(e) => onChange(item.id, "completed", false)}
                   />
@@ -57,7 +58,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
               ) : (
                 <OverlayTrigger overlay={<Tooltip>Check</Tooltip>}>
                   <FontAwesomeIcon
-                    className="fontawesome-as-btn"
+                    className={`${styles["fontawesome-as-btn"]}`}
                     icon={faSquare}
                     onClick={(e) => onChange(item.id, "completed", true)}
                   />
@@ -69,7 +70,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
                 <span>{item.title}</span>
               ) : (
                 <input
-                  className="input-as-list-item"
+                  className="form-control"
                   id="title"
                   name="title"
                   onChange={(e) => onChange(item.id, "title", e.target.value.trim())}
@@ -83,7 +84,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
               ) : (
                 <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
                   <FontAwesomeIcon
-                    className="fontawesome-as-btn mx-1"
+                    className={`${styles["fontawesome-as-btn"]} mx-1`}
                     color="red"
                     icon={faTrash}
                     onClick={(e) => onDelete(item.id)}
@@ -178,7 +179,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
             </div>
             <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
               <FontAwesomeIcon
-                className="fontawesome-as-btn mx-1"
+                className={`${styles["fontawesome-as-btn"]} mx-1`}
                 color="green"
                 icon={faEdit}
                 onClick={(e) => {
@@ -189,7 +190,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
             </OverlayTrigger>
             <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
               <FontAwesomeIcon
-                className="fontawesome-as-btn mx-1"
+                className={`${styles["fontawesome-as-btn"]} mx-1`}
                 color="red"
                 icon={faTrash}
                 onClick={(e) => {
@@ -214,7 +215,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
               formik.values.title
             ) : (
               <input
-                className="form-control input-as-list-item"
+                className="form-control"
                 id="title"
                 name="title"
                 placeholder="Note Title"
@@ -228,7 +229,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
               formik.values.textContent
             ) : (
               <textarea
-                className="form-control input-as-list-item"
+                className="form-control"
                 id="textContent"
                 name="textContent"
                 placeholder="Description"

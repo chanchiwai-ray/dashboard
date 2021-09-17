@@ -8,9 +8,6 @@
   height: 100%;
 }
 
-body {
-}
-
 .avatar {
   width: 160px;
 }
@@ -67,4 +64,9 @@ body {
 
 .submit-btn:hover {
   background-position: right;
+}
+
+.dropdown-btn-overwrite {
+  border-left: none;
+  border-radius: 0 0.25rem 0.25rem 0;
 }

@@ -10,7 +10,6 @@ import {
   Dropdown,
   InputGroup,
   Modal,
-  Button,
 } from "react-bootstrap";
 
 import Note from "../components/Note/Note.jsx";
@@ -23,6 +22,8 @@ import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 import { getNotes, putNote, postNote, deleteNote } from "../redux/slices/notes";
 import { selectAuth, selectNotes } from "../redux/app/store.js";
 import { faEllipsisV, faSort } from "@fortawesome/free-solid-svg-icons";
+
+import styles from "./views.module.css";
 
 export default function NotesPage() {
   const auth = useSelector(selectAuth);
@@ -59,7 +60,7 @@ export default function NotesPage() {
               value={filterString}
             />
             <Dropdown.Toggle
-              bsPrefix="dropdown-btn-overwrite"
+              bsPrefix={`${styles["dropdown-btn-overwrite"]}`}
               as={InputGroup.Text}
               className="btn btn-outline-info"
             >
