@@ -14,8 +14,20 @@ import {
   Badge,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquare, faCheckSquare, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
-import { faImage, faListAlt, faTrash, faEdit, faTag } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSquare,
+  faCheckSquare,
+  faTimesCircle,
+  faStar as faStarHollow,
+} from "@fortawesome/free-regular-svg-icons";
+import {
+  faImage,
+  faListAlt,
+  faTrash,
+  faEdit,
+  faTag,
+  faStar as faStarFilled,
+} from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from "uuid";
 import styles from "./Note.module.css";
 
@@ -47,23 +59,13 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
         <ListGroup.Item key={item.id}>
           <Row className="align-items-center">
             <Col xs={1} className="d-flex justify-content-center">
-              {item.completed ? (
-                <OverlayTrigger overlay={<Tooltip>UnCheck</Tooltip>}>
-                  <FontAwesomeIcon
-                    className={`${styles["fontawesome-as-btn"]}`}
-                    icon={faCheckSquare}
-                    onClick={(e) => onChange(item.id, "completed", false)}
-                  />
-                </OverlayTrigger>
-              ) : (
-                <OverlayTrigger overlay={<Tooltip>Check</Tooltip>}>
-                  <FontAwesomeIcon
-                    className={`${styles["fontawesome-as-btn"]}`}
-                    icon={faSquare}
-                    onClick={(e) => onChange(item.id, "completed", true)}
-                  />
-                </OverlayTrigger>
-              )}
+              <OverlayTrigger overlay={<Tooltip>{item.completed ? "Uncheck" : "Check"}</Tooltip>}>
+                <FontAwesomeIcon
+                  className={`${styles["fontawesome-as-btn"]}`}
+                  icon={item.completed ? faCheckSquare : faSquare}
+                  onClick={(e) => onChange(item.id, "completed", !item.completed)}
+                />
+              </OverlayTrigger>
             </Col>
             <Col sx={10} className="d-flex">
               {!isEditing ? (
@@ -103,6 +105,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
   const [isEditing, setEditing] = useState(props.edit);
   const formik = useFormik({
     initialValues: {
+      star: item.star || false,
       title: item.title || "",
       labels: item.labels || [],
       textContent: item.textContent || "",
@@ -118,6 +121,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       editedValues.listContent = editedValues.listContent.filter(
         (item) => item.title.trim() !== ""
       );
+      console.log(editedValues);
       setEditing(false);
       onDone(editedValues);
     },
@@ -128,7 +132,6 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
     <Form onSubmit={formik.handleSubmit}>
       <Card>
         <Card.Header>
-          <div></div>
           <div className="d-flex ">
             <div className="mr-auto">
               <FontAwesomeIcon icon={faTag} color="grey" className="fa-fw mr-1" size="sm" />
@@ -177,26 +180,41 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
                   ))
                 : null}
             </div>
-            <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
-              <FontAwesomeIcon
-                className={`${styles["fontawesome-as-btn"]} mx-1`}
-                color="green"
-                icon={faEdit}
-                onClick={(e) => {
-                  isEditing || setEditing(!isEditing);
-                }}
-              />
-            </OverlayTrigger>
-            <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
-              <FontAwesomeIcon
-                className={`${styles["fontawesome-as-btn"]} mx-1`}
-                color="red"
-                icon={faTrash}
-                onClick={(e) => {
-                  onDelete();
-                }}
-              />
-            </OverlayTrigger>
+            <div>
+              <OverlayTrigger overlay={<Tooltip>{formik.values.star ? "Unstar" : "Star"}</Tooltip>}>
+                <FontAwesomeIcon
+                  className={`${styles["fontawesome-as-btn"]} mx-1`}
+                  color="#ff55f2"
+                  icon={formik.values.star ? faStarFilled : faStarHollow}
+                  onClick={(e) => {
+                    formik.setFieldValue("star", !formik.values.star);
+                    if (!isEditing) {
+                      formik.handleSubmit();
+                    }
+                  }}
+                />
+              </OverlayTrigger>
+              <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
+                <FontAwesomeIcon
+                  className={`${styles["fontawesome-as-btn"]} mx-1`}
+                  color="green"
+                  icon={faEdit}
+                  onClick={(e) => {
+                    isEditing || setEditing(!isEditing);
+                  }}
+                />
+              </OverlayTrigger>
+              <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+                <FontAwesomeIcon
+                  className={`${styles["fontawesome-as-btn"]} mx-1`}
+                  color="red"
+                  icon={faTrash}
+                  onClick={(e) => {
+                    onDelete();
+                  }}
+                />
+              </OverlayTrigger>
+            </div>
           </div>
         </Card.Header>
         <Card.Body>

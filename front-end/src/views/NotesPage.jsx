@@ -110,6 +110,7 @@ export default function NotesPage() {
           <Note
             edit={true}
             item={{
+              star: false,
               title: "",
               labels: [],
               textContent: "",
