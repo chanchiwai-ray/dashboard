@@ -7,8 +7,18 @@ import { faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Contact.module.css";
 
-const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
-  const [edit, enableEdit] = useState(false);
+const Contact = ({
+  firstname,
+  lastname,
+  mobile,
+  email,
+  address,
+  onDone,
+  onDelete,
+  onCancel,
+  ...props
+}) => {
+  const [edit, enableEdit] = useState(props.edit);
   const formik = useFormik({
     initialValues: {
       firstname: firstname || "",
@@ -20,12 +30,13 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
     onSubmit: (values) => {
       // PUT request
       enableEdit(false);
-      props.update(values);
+      onDone(values);
     },
     onReset: (values) => {
       enableEdit(false);
       values = formik.initialValues;
     },
+    enableReinitialize: true,
   });
   return (
     <Card>
@@ -40,7 +51,7 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
               icon={faEdit}
               color="green"
               className={`${styles["fontawesome-as-btn"]} mx-2`}
-              onClick={() => enableEdit(!edit)}
+              onClick={() => edit || enableEdit(!edit)}
             />
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
@@ -48,7 +59,7 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
               icon={faTrash}
               color="red"
               className={`${styles["fontawesome-as-btn"]} mx-2`}
-              onClick={() => props.delete()}
+              onClick={() => onDelete()}
             />
           </OverlayTrigger>
         </div>
@@ -64,6 +75,7 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
                 <Form.Control
                   id="firstname"
                   name="firstname"
+                  type="string"
                   onChange={formik.handleChange}
                   value={formik.values.firstname}
                 ></Form.Control>
@@ -88,6 +100,7 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
                 <Form.Control
                   id="lastname"
                   name="lastname"
+                  type="string"
                   onChange={formik.handleChange}
                   value={formik.values.lastname}
                 ></Form.Control>
@@ -112,6 +125,7 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
                 <Form.Control
                   id="mobile"
                   name="mobile"
+                  type="string"
                   onChange={formik.handleChange}
                   value={formik.values.mobile}
                 ></Form.Control>
@@ -136,6 +150,7 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
                 <Form.Control
                   id="email"
                   name="email"
+                  type="email"
                   onChange={formik.handleChange}
                   value={formik.values.email}
                 ></Form.Control>
@@ -182,7 +197,16 @@ const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
             <Button type="submit" className="mx-2">
               Save
             </Button>
-            <Button type="reset" className="mx-2">
+            <Button
+              className="mx-2"
+              onClick={() => {
+                enableEdit(false);
+                formik.resetForm();
+                if (onCancel) {
+                  onCancel();
+                }
+              }}
+            >
               Cancel
             </Button>
           </Card.Footer>

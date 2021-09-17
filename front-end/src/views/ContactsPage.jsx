@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Row, Col, Container, FormControl, Nav } from "react-bootstrap";
+import { Row, Col, Container, FormControl, Nav, Modal } from "react-bootstrap";
 
 import Contact from "../components/Contact/Contact.jsx";
 import Controller from "../components/Controller/Controller.jsx";
@@ -17,6 +17,7 @@ export default function ContactPage() {
   const auth = useSelector(selectAuth);
   const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
+  const [displayNewContactForm, setDisplayNewContactForm] = useState(false);
   const [filterString, setFilterString] = useState("");
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function ContactPage() {
     <MainLayout>
       <Controller title="People" bg="light" expand="lg">
         <Nav>
-          <Nav.Link onClick={() => dispatch(postContact({ userId: auth.value.userId }))}>
+          <Nav.Link onClick={() => setDisplayNewContactForm(true)}>
             <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> New Contact
           </Nav.Link>
         </Nav>
@@ -63,12 +64,12 @@ export default function ContactPage() {
                     mobile={contact.mobile}
                     email={contact.email}
                     address={contact.address}
-                    update={(data) =>
+                    onDone={(data) =>
                       dispatch(
                         putContact({ id: contact._id, userId: auth.value.userId, data: data })
                       )
                     }
-                    delete={() =>
+                    onDelete={() =>
                       dispatch(deleteContact({ userId: auth.value.userId, id: contact._id }))
                     }
                   />
@@ -79,6 +80,27 @@ export default function ContactPage() {
           )}
         </Row>
       </Container>
+      <Modal show={displayNewContactForm} onHide={() => setDisplayNewContactForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>New Contact</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0">
+          <Contact
+            edit={true}
+            firstname=""
+            lastname=""
+            mobile=""
+            email=""
+            address=""
+            onDone={(data) => {
+              dispatch(postContact({ userId: auth.value.userId, data: data }));
+              setDisplayNewContactForm(false);
+            }}
+            onDelete={() => null}
+            onCancel={() => setDisplayNewContactForm(false)}
+          />
+        </Modal.Body>
+      </Modal>
     </MainLayout>
   );
 }
