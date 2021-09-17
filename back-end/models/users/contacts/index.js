@@ -9,6 +9,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  star: {
+    type: Boolean,
+    default: false,
+  },
   firstname: {
     type: String,
     default: "",
