@@ -59,6 +59,7 @@ export default function ContactPage() {
                 <Col key={contact._id} md={6} className="my-3">
                   <Contact
                     key={contact._id}
+                    star={contact.star}
                     firstname={contact.firstname}
                     lastname={contact.lastname}
                     mobile={contact.mobile}
@@ -87,6 +88,7 @@ export default function ContactPage() {
         <Modal.Body className="p-0">
           <Contact
             edit={true}
+            star={false}
             firstname=""
             lastname=""
             mobile=""

@@ -3,11 +3,13 @@ import { useFormik } from "formik";
 
 import { Button, Card, Form, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash, faUser, faStar as faStarFilled } from "@fortawesome/free-solid-svg-icons";
+import { faStar as faStarHollow } from "@fortawesome/free-regular-svg-icons";
 
 import styles from "./Contact.module.css";
 
 const Contact = ({
+  star,
   firstname,
   lastname,
   mobile,
@@ -21,6 +23,7 @@ const Contact = ({
   const [edit, enableEdit] = useState(props.edit);
   const formik = useFormik({
     initialValues: {
+      star: star || false,
       firstname: firstname || "",
       lastname: lastname || "",
       mobile: mobile || "",
@@ -46,6 +49,19 @@ const Contact = ({
           <span className="font-weight-bold">{`${formik.values.firstname} ${formik.values.lastname}`}</span>
         </div>
         <div className="ml-auto">
+          <OverlayTrigger overlay={<Tooltip>{formik.values.star ? "Unstar" : "Star"}</Tooltip>}>
+            <FontAwesomeIcon
+              className={`${styles["fontawesome-as-btn"]} mx-1`}
+              color="#ff55f2"
+              icon={formik.values.star ? faStarFilled : faStarHollow}
+              onClick={(e) => {
+                formik.setFieldValue("star", !formik.values.star);
+                if (!edit) {
+                  formik.handleSubmit();
+                }
+              }}
+            />
+          </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
             <FontAwesomeIcon
               icon={faEdit}
