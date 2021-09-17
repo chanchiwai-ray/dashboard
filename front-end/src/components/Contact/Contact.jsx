@@ -1,9 +1,9 @@
-import { faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useFormik } from "formik";
 
 import { Button, Card, Form, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Contact = ({ firstname, lastname, mobile, email, address, ...props }) => {
   const [edit, enableEdit] = useState(false);
