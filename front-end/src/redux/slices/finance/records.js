@@ -162,7 +162,7 @@ const slice = createSlice({
         state.message = data.message;
       })
       .addCase(getDailyRecords.rejected, (state) => {
-        (state.value = { dailyRecords: [], categories: [] }), (state.success = false);
+        (state.value.dailyRecords = []), (state.success = false);
         state.reload = false;
         state.message = "Network Error";
       })
