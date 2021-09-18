@@ -1,0 +1,39 @@
+.fontawesome-as-btn:hover {
+  cursor: pointer;
+}
+
+.task-item-editing {
+  background: white;
+  padding: 15px 0;
+  border: solid rgba(135, 135, 135, 0.3) 1px;
+  border-radius: 5px;
+}
+
+.task-item {
+  background: white;
+  padding: 15px 0;
+  margin-bottom: 15px;
+  border: solid rgba(135, 135, 135, 0.3) 1px;
+  border-radius: 5px;
+  transition: all 0.2s ease-in-out;
+}
+
+.task-item:hover {
+  background-color: rgba(235, 235, 235, 0.4);
+  box-shadow: 0 0 1rem #ccc;
+}
+
+.task-title-text {
+  display: block;
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+
+.task-description-text {
+  display: block;
+  padding-bottom: 10px;
+}
+
+.task-meta-text {
+  color: #6c757d;
+}

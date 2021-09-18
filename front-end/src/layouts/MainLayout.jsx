@@ -10,6 +10,7 @@ import {
   faWallet,
   faAddressBook,
   faStickyNote,
+  faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 
 import Header from "../components/Header/Header.jsx";
@@ -31,6 +32,11 @@ const sidebarNavItems = [
     to: "/home",
     label: "Home",
     faIcon: faHome,
+  },
+  {
+    to: "/tasks",
+    label: "Tasks",
+    faIcon: faTasks,
   },
   {
     to: "/notes",
