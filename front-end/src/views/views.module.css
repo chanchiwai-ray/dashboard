@@ -67,6 +67,7 @@
 }
 
 .dropdown-btn-overwrite {
+  height: 100%;
   border-left: none;
   border-radius: 0 0.25rem 0.25rem 0;
 }

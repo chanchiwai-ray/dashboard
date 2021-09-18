@@ -50,7 +50,7 @@ export default function NotesPage() {
             <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> New Note
           </Nav.Link>
         </Nav>
-        <Dropdown style={{ marginLeft: "auto" }}>
+        <div style={{ marginLeft: "auto" }}>
           <InputGroup>
             <FormControl
               type="text"
@@ -58,22 +58,26 @@ export default function NotesPage() {
               onChange={(e) => setFilterString(e.target.value)}
               value={filterString}
             />
-            <Dropdown.Toggle
-              bsPrefix={`${styles["dropdown-btn-overwrite"]}`}
-              as={InputGroup.Text}
-              className="btn btn-outline-info"
-            >
-              <FontAwesomeIcon icon={faEllipsisV} />
-            </Dropdown.Toggle>
+            <InputGroup.Append>
+              <Dropdown>
+                <Dropdown.Toggle
+                  bsPrefix={`${styles["dropdown-btn-overwrite"]}`}
+                  as={InputGroup.Text}
+                  className="btn btn-outline-info"
+                >
+                  <FontAwesomeIcon icon={faEllipsisV} />
+                </Dropdown.Toggle>
+                <Dropdown.Menu align="right">
+                  <Dropdown.Header>Search</Dropdown.Header>
+                  <Dropdown.Item onClick={() => setSearchType("title")}>By Title</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSearchType("description")}>
+                    By Description
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </InputGroup.Append>
           </InputGroup>
-          <Dropdown.Menu>
-            <Dropdown.Header>Search</Dropdown.Header>
-            <Dropdown.Item onClick={() => setSearchType("title")}>By Title</Dropdown.Item>
-            <Dropdown.Item onClick={() => setSearchType("description")}>
-              By Description
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        </div>
       </Controller>
       <Container>
         <Row className="my-3">
