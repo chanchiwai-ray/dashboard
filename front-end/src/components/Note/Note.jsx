@@ -237,6 +237,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
                 placeholder="Note Title"
                 onChange={formik.handleChange}
                 value={formik.values.title}
+                required
               />
             )}
           </Card.Title>
