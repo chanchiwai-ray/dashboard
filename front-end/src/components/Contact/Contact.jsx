@@ -94,6 +94,7 @@ const Contact = ({
                 onChange={formik.handleChange}
                 value={formik.values.firstname}
                 readOnly={!edit}
+                required
               />
             </Col>
           </Form.Row>
@@ -110,6 +111,7 @@ const Contact = ({
                 onChange={formik.handleChange}
                 value={formik.values.lastname}
                 readOnly={!edit}
+                required
               />
             </Col>
           </Form.Row>
@@ -126,6 +128,7 @@ const Contact = ({
                 onChange={formik.handleChange}
                 value={formik.values.mobile}
                 readOnly={!edit}
+                required
               />
             </Col>
           </Form.Row>
