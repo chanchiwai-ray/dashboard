@@ -25,15 +25,35 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./views.module.css";
 
+const sorting = (x, y, type) => {
+  if (type === "priority") {
+    return x < y;
+  } else if (type === "dueDate") {
+    if (x && y) {
+      return x > y;
+    } else {
+      return -1;
+    }
+  }
+  return x > y;
+};
+
 export default function TasksPage() {
   const auth = useSelector(selectAuth);
   const tasks = useSelector(selectTasks);
-  const incompleteTasks = tasks.value.filter((item) => !item.completed);
-  const completedTasks = tasks.value.filter((item) => item.completed);
   const dispatch = useDispatch();
   const [displayNewTaskForm, setDisplayNewTaskForm] = useState(false);
   const [filterString, setFilterString] = useState("");
   const [searchType, setSearchType] = useState("title");
+  const [sortType, setSortType] = useState("priority");
+
+  const items = tasks.value.filter((task) => task[searchType].includes(filterString.trim()));
+  const incompleteTasks = items
+    .filter((item) => !item.completed)
+    .sort((x, y) => sorting(x[sortType], y[sortType], sortType));
+  const completedTasks = items
+    .filter((item) => item.completed)
+    .sort((x, y) => sorting(x[sortType], y[sortType], sortType));
 
   useEffect(() => {
     dispatch(setCurrentPage("Tasks"));
@@ -71,19 +91,73 @@ export default function TasksPage() {
                 </Dropdown.Toggle>
                 <Dropdown.Menu align="right">
                   <Dropdown.Header>Search</Dropdown.Header>
-                  <Dropdown.Item onClick={() => setSearchType("title")}>By Title</Dropdown.Item>
-                  <Dropdown.Item onClick={() => setSearchType("description")}>
+                  <Dropdown.Item
+                    className={`${searchType === "title" ? "font-weight-bold" : ""}`}
+                    onClick={() => setSearchType("title")}
+                  >
+                    By Title
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className={`${searchType === "description" ? "font-weight-bold" : ""}`}
+                    onClick={() => setSearchType("description")}
+                  >
                     By Description
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>Sort by</Dropdown.Header>
-                  <Dropdown.Item>Title</Dropdown.Item>
-                  <Dropdown.Item>Priority</Dropdown.Item>
-                  <Dropdown.Item>Due Date</Dropdown.Item>
-                  <Dropdown.Item>Created Date</Dropdown.Item>
+                  <Dropdown.Item
+                    className={`${sortType === "priority" ? "font-weight-bold" : ""}`}
+                    onClick={() => setSortType("priority")}
+                  >
+                    Priority
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className={`${sortType === "dueDate" ? "font-weight-bold" : ""}`}
+                    onClick={() => setSortType("dueDate")}
+                  >
+                    Due Date
+                  </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>More Options</Dropdown.Header>
-                  <Dropdown.Item>Remove all completed tasks</Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() =>
+                      incompleteTasks.forEach((t) =>
+                        dispatch(
+                          putTask({
+                            userId: auth.value.userId,
+                            id: t._id,
+                            data: { ...t, completed: true },
+                          })
+                        )
+                      )
+                    }
+                  >
+                    Mark all as completed
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() =>
+                      completedTasks.forEach((t) =>
+                        dispatch(
+                          putTask({
+                            userId: auth.value.userId,
+                            id: t._id,
+                            data: { ...t, completed: false },
+                          })
+                        )
+                      )
+                    }
+                  >
+                    Mark all as incomplete
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() =>
+                      completedTasks.forEach((t) =>
+                        dispatch(deleteTask({ userId: auth.value.userId, id: t._id }))
+                      )
+                    }
+                  >
+                    Remove all completed tasks
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </InputGroup.Append>

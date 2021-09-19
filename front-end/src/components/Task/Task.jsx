@@ -29,7 +29,6 @@ export default function Task({ content, onDelete, onDone, onCancel, ...props }) 
         const [year, month, day] = editedValues.dueDate.split("-");
         editedValues.dueDate = Date.parse(new Date(year, month - 1, day));
       }
-      console.log(editedValues);
       setEditing(false);
       onDone(editedValues);
     },
