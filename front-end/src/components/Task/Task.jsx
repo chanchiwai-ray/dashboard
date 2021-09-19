@@ -3,8 +3,12 @@ import { useFormik } from "formik";
 
 import { Row, Col, Form, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquare, faCheckSquare } from "@fortawesome/free-regular-svg-icons";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSquare,
+  faCheckSquare,
+  faStar as faStarFilled,
+} from "@fortawesome/free-regular-svg-icons";
+import { faEdit, faTrash, faStar as faStarHollow } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Task.module.css";
 
@@ -185,6 +189,19 @@ export default function Task({ content, onDelete, onDone, onCancel, ...props }) 
         )}
       </Col>
       <Col xs={2} className="d-flex justify-content-center">
+        <OverlayTrigger overlay={<Tooltip>{formik.values.star ? "Unstar" : "Star"}</Tooltip>}>
+          <FontAwesomeIcon
+            className={`${styles["fontawesome-as-btn"]} mx-1`}
+            color="#ff55f2"
+            icon={formik.values.star ? faStarHollow : faStarFilled}
+            onClick={() => {
+              formik.setFieldValue("star", !formik.values.star);
+              if (!isEditing) {
+                formik.handleSubmit();
+              }
+            }}
+          />
+        </OverlayTrigger>
         {formik.values.completed ? (
           <div></div>
         ) : (
