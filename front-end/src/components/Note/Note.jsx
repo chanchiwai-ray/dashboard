@@ -108,7 +108,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       star: item.star || false,
       title: item.title || "",
       labels: item.labels || [],
-      textContent: item.textContent || "",
+      description: item.description || "",
       listContent: item.listContent || [],
       imageContent: item.imageContent || undefined,
       modifiedDate: item.modifiedDate || Date.now(),
@@ -244,14 +244,14 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
         {isEditing ? (
           <textarea
             className="form-control"
-            id="textContent"
-            name="textContent"
+            id="description"
+            name="description"
             placeholder="Description"
             onChange={formik.handleChange}
-            value={formik.values.textContent}
+            value={formik.values.description}
           />
         ) : (
-          formik.values.textContent
+          formik.values.description
         )}
       </Card.Text>
     </React.Fragment>

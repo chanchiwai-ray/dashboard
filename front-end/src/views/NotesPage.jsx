@@ -117,7 +117,7 @@ export default function NotesPage() {
               star: false,
               title: "",
               labels: [],
-              textContent: "",
+              description: "",
               listContent: [],
               imageContent: undefined,
               modifiedDate: Date.now(),
