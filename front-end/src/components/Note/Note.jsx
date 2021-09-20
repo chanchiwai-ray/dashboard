@@ -128,206 +128,217 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
     enableReinitialize: true,
   });
 
+  const renderHeader = () => (
+    <React.Fragment>
+      <div className="d-flex ">
+        <div className="mr-auto">
+          <FontAwesomeIcon icon={faTag} color="grey" className="fa-fw mr-1" size="sm" />
+          {formik.values.labels
+            ? formik.values.labels.map((label) => (
+                <Badge key={label.id} className="m-1" pill variant="primary">
+                  {isEditing ? (
+                    <input
+                      className="mx-1"
+                      style={{ width: "5rem" }}
+                      value={formik.values.labels.find((l) => l.id === label.id).label}
+                      onChange={(e) =>
+                        formik.setFieldValue(
+                          "labels",
+                          formik.values.labels.map((l) => {
+                            if (l.id === label.id) {
+                              const newLabel = { ...l };
+                              newLabel.label = e.target.value;
+                              return newLabel;
+                            } else {
+                              return l;
+                            }
+                          })
+                        )
+                      }
+                    />
+                  ) : (
+                    <span className="m-1">{label.label}</span>
+                  )}
+                  <OverlayTrigger key={label.id} overlay={<Tooltip>Click to delete</Tooltip>}>
+                    <FontAwesomeIcon
+                      icon={faTimesCircle}
+                      color="black"
+                      onClick={() => {
+                        formik.setFieldValue(
+                          "labels",
+                          formik.values.labels.filter((l) => l.id !== label.id)
+                        );
+                        if (!isEditing) {
+                          formik.handleSubmit();
+                        }
+                      }}
+                    />
+                  </OverlayTrigger>
+                </Badge>
+              ))
+            : null}
+        </div>
+        <div>
+          <OverlayTrigger overlay={<Tooltip>{formik.values.star ? "Unstar" : "Star"}</Tooltip>}>
+            <FontAwesomeIcon
+              className={`${styles["fontawesome-as-btn"]} mx-1`}
+              color="#ff55f2"
+              icon={formik.values.star ? faStarFilled : faStarHollow}
+              onClick={(e) => {
+                formik.setFieldValue("star", !formik.values.star);
+                if (!isEditing) {
+                  formik.handleSubmit();
+                }
+              }}
+            />
+          </OverlayTrigger>
+          <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
+            <FontAwesomeIcon
+              className={`${styles["fontawesome-as-btn"]} mx-1`}
+              color="green"
+              icon={faEdit}
+              onClick={(e) => {
+                isEditing || setEditing(!isEditing);
+              }}
+            />
+          </OverlayTrigger>
+          <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+            <FontAwesomeIcon
+              className={`${styles["fontawesome-as-btn"]} mx-1`}
+              color="red"
+              icon={faTrash}
+              onClick={(e) => {
+                onDelete();
+              }}
+            />
+          </OverlayTrigger>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+
+  const renderBody = () => (
+    <React.Fragment>
+      {formik.values.imageContent ? (
+        <React.Fragment>
+          <Card.Img src={formik.values.imageContent} />
+          <hr />
+        </React.Fragment>
+      ) : null}
+      <Card.Title>
+        {isEditing ? (
+          <input
+            className="form-control"
+            id="title"
+            name="title"
+            placeholder="Note Title"
+            onChange={formik.handleChange}
+            value={formik.values.title}
+            required
+          />
+        ) : (
+          formik.values.title
+        )}
+      </Card.Title>
+      <Card.Text>
+        {isEditing ? (
+          <textarea
+            className="form-control"
+            id="textContent"
+            name="textContent"
+            placeholder="Description"
+            onChange={formik.handleChange}
+            value={formik.values.textContent}
+          />
+        ) : (
+          formik.values.textContent
+        )}
+      </Card.Text>
+    </React.Fragment>
+  );
+
+  const renderFooter = () => (
+    <React.Fragment>
+      {!isEditing ? (
+        <span className="ml-auto">{`Last modified: ${
+          new Date(Number(formik.values.modifiedDate)).toLocaleString("en-GB") || ""
+        }`}</span>
+      ) : (
+        <React.Fragment>
+          <OverlayTrigger overlay={<Tooltip>Add Items</Tooltip>}>
+            <InputGroup.Text
+              className="btn btn-outline-success mx-1"
+              onClick={() =>
+                formik.setFieldValue("listContent", [
+                  ...formik.values.listContent,
+                  { id: uuid(), title: "", completed: false },
+                ])
+              }
+            >
+              <FontAwesomeIcon icon={faListAlt} />
+            </InputGroup.Text>
+          </OverlayTrigger>
+          <OverlayTrigger overlay={<Tooltip>Add Picture</Tooltip>}>
+            <InputGroup.Text
+              className="btn btn-outline-warning mx-1"
+              onClick={() => console.log("Add picture")}
+            >
+              <FontAwesomeIcon icon={faImage} />
+            </InputGroup.Text>
+          </OverlayTrigger>
+          <OverlayTrigger overlay={<Tooltip>Add Label</Tooltip>}>
+            <InputGroup.Text
+              className="btn btn-outline-info mx-1"
+              onClick={() => {
+                formik.setFieldValue("labels", [
+                  ...formik.values.labels,
+                  { id: uuid(), label: "" },
+                ]);
+              }}
+            >
+              <FontAwesomeIcon icon={faTag} />
+            </InputGroup.Text>
+          </OverlayTrigger>
+          <div className="ml-auto">
+            <Button className="ml-auto mr-1" variant="primary" type="submit">
+              Done
+            </Button>
+            <Button
+              className="ml-auto mr-1"
+              variant="secondary"
+              onClick={(e) => {
+                setEditing(false);
+                formik.resetForm();
+                if (onCancel) {
+                  onCancel();
+                }
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </React.Fragment>
+      )}
+    </React.Fragment>
+  );
+
+  const renderList = () =>
+    formik.values.listContent && formik.values.listContent.length !== 0 ? (
+      <CheckList
+        content={formik.values.listContent}
+        onDone={() => formik.handleSubmit()}
+        onEdit={(newContent) => formik.setFieldValue("listContent", newContent)}
+        isEditing={isEditing}
+      />
+    ) : null;
+
   return (
     <Form onSubmit={formik.handleSubmit}>
       <Card>
-        <Card.Header>
-          <div className="d-flex ">
-            <div className="mr-auto">
-              <FontAwesomeIcon icon={faTag} color="grey" className="fa-fw mr-1" size="sm" />
-              {formik.values.labels
-                ? formik.values.labels.map((label) => (
-                    <Badge key={label.id} className="m-1" pill variant="primary">
-                      {isEditing ? (
-                        <input
-                          className="mx-1"
-                          style={{ width: "5rem" }}
-                          value={formik.values.labels.find((l) => l.id === label.id).label}
-                          onChange={(e) =>
-                            formik.setFieldValue(
-                              "labels",
-                              formik.values.labels.map((l) => {
-                                if (l.id === label.id) {
-                                  const newLabel = { ...l };
-                                  newLabel.label = e.target.value;
-                                  return newLabel;
-                                } else {
-                                  return l;
-                                }
-                              })
-                            )
-                          }
-                        />
-                      ) : (
-                        <span className="m-1">{label.label}</span>
-                      )}
-                      <OverlayTrigger key={label.id} overlay={<Tooltip>Click to delete</Tooltip>}>
-                        <FontAwesomeIcon
-                          icon={faTimesCircle}
-                          color="black"
-                          onClick={() => {
-                            formik.setFieldValue(
-                              "labels",
-                              formik.values.labels.filter((l) => l.id !== label.id)
-                            );
-                            if (!isEditing) {
-                              formik.handleSubmit();
-                            }
-                          }}
-                        />
-                      </OverlayTrigger>
-                    </Badge>
-                  ))
-                : null}
-            </div>
-            <div>
-              <OverlayTrigger overlay={<Tooltip>{formik.values.star ? "Unstar" : "Star"}</Tooltip>}>
-                <FontAwesomeIcon
-                  className={`${styles["fontawesome-as-btn"]} mx-1`}
-                  color="#ff55f2"
-                  icon={formik.values.star ? faStarFilled : faStarHollow}
-                  onClick={(e) => {
-                    formik.setFieldValue("star", !formik.values.star);
-                    if (!isEditing) {
-                      formik.handleSubmit();
-                    }
-                  }}
-                />
-              </OverlayTrigger>
-              <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
-                <FontAwesomeIcon
-                  className={`${styles["fontawesome-as-btn"]} mx-1`}
-                  color="green"
-                  icon={faEdit}
-                  onClick={(e) => {
-                    isEditing || setEditing(!isEditing);
-                  }}
-                />
-              </OverlayTrigger>
-              <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
-                <FontAwesomeIcon
-                  className={`${styles["fontawesome-as-btn"]} mx-1`}
-                  color="red"
-                  icon={faTrash}
-                  onClick={(e) => {
-                    onDelete();
-                  }}
-                />
-              </OverlayTrigger>
-            </div>
-          </div>
-        </Card.Header>
-        <Card.Body>
-          {!formik.values.imageContent ? (
-            <div></div>
-          ) : (
-            <React.Fragment>
-              <Card.Img src={formik.values.imageContent} />
-              <hr />
-            </React.Fragment>
-          )}
-          <Card.Title>
-            {!isEditing ? (
-              formik.values.title
-            ) : (
-              <input
-                className="form-control"
-                id="title"
-                name="title"
-                placeholder="Note Title"
-                onChange={formik.handleChange}
-                value={formik.values.title}
-                required
-              />
-            )}
-          </Card.Title>
-          <Card.Text>
-            {!isEditing ? (
-              formik.values.textContent
-            ) : (
-              <textarea
-                className="form-control"
-                id="textContent"
-                name="textContent"
-                placeholder="Description"
-                onChange={formik.handleChange}
-                value={formik.values.textContent}
-              />
-            )}
-          </Card.Text>
-        </Card.Body>
-        {!formik.values.listContent || formik.values.listContent.length === 0 ? (
-          <div></div>
-        ) : (
-          <CheckList
-            content={formik.values.listContent}
-            onDone={() => formik.handleSubmit()}
-            onEdit={(newContent) => formik.setFieldValue("listContent", newContent)}
-            isEditing={isEditing}
-          />
-        )}
-        <Card.Footer className="text-muted d-flex">
-          {!isEditing ? (
-            <span className="ml-auto">{`Last modified: ${
-              new Date(Number(formik.values.modifiedDate)).toLocaleString("en-GB") || ""
-            }`}</span>
-          ) : (
-            <React.Fragment>
-              <OverlayTrigger overlay={<Tooltip>Add Items</Tooltip>}>
-                <InputGroup.Text
-                  className="btn btn-outline-success mx-1"
-                  onClick={() =>
-                    formik.setFieldValue("listContent", [
-                      ...formik.values.listContent,
-                      { id: uuid(), title: "", completed: false },
-                    ])
-                  }
-                >
-                  <FontAwesomeIcon icon={faListAlt} />
-                </InputGroup.Text>
-              </OverlayTrigger>
-              <OverlayTrigger overlay={<Tooltip>Add Picture</Tooltip>}>
-                <InputGroup.Text
-                  className="btn btn-outline-warning mx-1"
-                  onClick={() => console.log("Add picture")}
-                >
-                  <FontAwesomeIcon icon={faImage} />
-                </InputGroup.Text>
-              </OverlayTrigger>
-              <OverlayTrigger overlay={<Tooltip>Add Label</Tooltip>}>
-                <InputGroup.Text
-                  className="btn btn-outline-info mx-1"
-                  onClick={() => {
-                    formik.setFieldValue("labels", [
-                      ...formik.values.labels,
-                      { id: uuid(), label: "" },
-                    ]);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTag} />
-                </InputGroup.Text>
-              </OverlayTrigger>
-              <div className="ml-auto">
-                <Button className="ml-auto mr-1" variant="primary" type="submit">
-                  Done
-                </Button>
-                <Button
-                  className="ml-auto mr-1"
-                  variant="secondary"
-                  onClick={(e) => {
-                    setEditing(false);
-                    formik.resetForm();
-                    if (onCancel) {
-                      onCancel();
-                    }
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </React.Fragment>
-          )}
-        </Card.Footer>
+        <Card.Header>{renderHeader()}</Card.Header>
+        <Card.Body>{renderBody()}</Card.Body>
+        {renderList()}
+        <Card.Footer className="text-muted d-flex">{renderFooter()}</Card.Footer>
       </Card>
     </Form>
   );
