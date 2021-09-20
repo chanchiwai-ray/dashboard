@@ -90,7 +90,12 @@ router
       });
   })
   .delete((req, res) => {
-    Records.findOneAndDelete({ userId: req.params.uid, _id: req.params.id })
+    Records.findOneAndDelete(
+      { userId: req.params.uid, _id: req.params.id },
+      {
+        findOneAndModify: false,
+      }
+    )
       .then((record) => {
         if (!record) {
           res.status(400).json({

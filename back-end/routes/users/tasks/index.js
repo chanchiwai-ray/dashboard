@@ -80,7 +80,12 @@ router
       });
   })
   .delete((req, res) => {
-    Tasks.findOneAndDelete({ userId: req.params.uid, _id: req.params.id })
+    Tasks.findOneAndDelete(
+      { userId: req.params.uid, _id: req.params.id },
+      {
+        findOneAndModify: false,
+      }
+    )
       .then((task) => {
         if (!task) {
           res.status(400).json({

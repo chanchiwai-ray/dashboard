@@ -80,7 +80,12 @@ router
       });
   })
   .delete((req, res) => {
-    Contacts.findOneAndDelete({ userId: req.params.uid, _id: req.params.id })
+    Contacts.findOneAndDelete(
+      { userId: req.params.uid, _id: req.params.id },
+      {
+        findOneAndModify: false,
+      }
+    )
       .then((contact) => {
         if (!contact) {
           res.status(400).json({

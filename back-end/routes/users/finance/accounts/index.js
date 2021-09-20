@@ -82,7 +82,12 @@ router
       });
   })
   .delete((req, res) => {
-    Accounts.findOneAndDelete({ userId: req.params.uid, _id: req.params.id })
+    Accounts.findOneAndDelete(
+      { userId: req.params.uid, _id: req.params.id },
+      {
+        findOneAndModify: false,
+      }
+    )
       .then((account) => {
         if (!account) {
           res.status(400).json({

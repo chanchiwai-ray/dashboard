@@ -82,7 +82,12 @@ router
       });
   })
   .delete((req, res) => {
-    Categories.findOneAndDelete({ userId: req.params.uid, _id: req.params.id })
+    Categories.findOneAndDelete(
+      { userId: req.params.uid, _id: req.params.id },
+      {
+        findOneAndModify: false,
+      }
+    )
       .then((category) => {
         if (!category) {
           res.status(400).json({
