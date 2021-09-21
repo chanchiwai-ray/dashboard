@@ -86,7 +86,7 @@ export default function NotesPage() {
               .filter((item) => item[searchType].includes(filterString))
               .sort((a, b) => a.modifiedDate < b.modifiedDate)
               .map((item) => (
-                <Col key={item._id} className="my-3" md={{ offset: 2, span: 8 }}>
+                <Col key={item._id} className="my-3" lg={12}>
                   <Note
                     key={item._id}
                     item={item}

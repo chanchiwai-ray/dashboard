@@ -21,11 +21,11 @@ import { setCurrentPage } from "../redux/slices/common/settings.js";
 const GenericCard = (props) => {
   return (
     <Card {...props} className="my-3 mx-1">
-      <Card.Body style={{ overflowY: "auto" }}>
+      <Card.Header>
         <Card.Title>{props.title}</Card.Title>
         <span className="text-muted">{props.subtitle}</span>
-        {props.children}
-      </Card.Body>
+      </Card.Header>
+      <Card.Body style={{ overflowY: "auto" }}>{props.children}</Card.Body>
       <Card.Footer>
         <div className="d-flex justify-content-center align-items-center">
           <FontAwesomeIcon className="fa-fw mx-2" icon={faAngleRight} />
@@ -50,7 +50,7 @@ export default function DashboardPage({ ...props }) {
   return (
     <MainLayout>
       <Controller title="Dashboard" bg="light" expand="lg"></Controller>
-      <Container className="container">
+      <Container fluid className="px-5">
         <Row>
           <Col sm={12} md={6}>
             <MonthlyTotalCard />
@@ -96,26 +96,24 @@ export default function DashboardPage({ ...props }) {
           </Col>
         </Row>
         <Row>
-          <Col xs={12}>
+          <Col lg={6}>
             <GenericCard
               title="Tasks"
               subtitle="Starred Tasks"
               href="/tasks"
-              style={{ maxHeight: "600px" }}
+              style={{ maxHeight: "1000px" }}
             >
               <div className="px-lg-3 py-3">
                 <Tasks />
               </div>
             </GenericCard>
           </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
+          <Col lg={6}>
             <GenericCard
               title="Notes"
               subtitle="Starred Notes"
               href="/notes"
-              style={{ maxHeight: "600px" }}
+              style={{ maxHeight: "1000px" }}
             >
               <div className="py-lg-3">
                 <Notes />
