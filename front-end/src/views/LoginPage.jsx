@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
+import { Container, Row, Col, Form, Button, InputGroup } from "react-bootstrap";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +9,6 @@ import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-ico
 
 import styles from "./views.module.css";
 import Avatar from "../assets/images/avatar.svg";
-import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPage } from "../redux/slices/common/settings.js";
 import { selectAuth } from "../redux/app/store.js";
@@ -38,7 +34,6 @@ export default function LoginPage(props) {
       password: "",
     },
   });
-  const [error, setError] = useState({ title: "Error", message: "An error occurs.", show: false });
 
   useEffect(() => {
     dispatch(verify());
@@ -60,11 +55,11 @@ export default function LoginPage(props) {
   };
 
   return (
-    <div className={`container-fluid ${styles.container}`}>
-      <div className="row">
-        <div className="col-12 my-3 text-center">
+    <Container fluid className={`${styles.container}`}>
+      <Row className={`${styles.row}`}>
+        <Col lg={12} className="my-3 text-center">
           <img className={`${styles.avatar}`} src={Avatar} alt="Avatar" />
-        </div>
+        </Col>
         <Form className="col-12 my-3" onSubmit={(e) => e.preventDefault()}>
           <Form.Group>
             <InputGroup>
@@ -102,6 +97,9 @@ export default function LoginPage(props) {
               />
             </InputGroup>
           </Form.Group>
+          <Form.Text className="text-danger">
+            {auth.callbackState.success ? "" : auth.callbackState.message}
+          </Form.Text>
           <Button className={`${styles["submit-btn"]}`} type="submit" onClick={() => handleLogin()}>
             <strong>Log In</strong>
           </Button>
@@ -114,7 +112,7 @@ export default function LoginPage(props) {
           </Button>
         </Form>
         <Separator />
-        <div className="col-12 text-center my-3">
+        <Col lg={12} className="text-center my-3">
           <Button className="mx-2">
             <FontAwesomeIcon icon={faGoogle} />
           </Button>
@@ -124,15 +122,8 @@ export default function LoginPage(props) {
           <Button className="mx-2">
             <FontAwesomeIcon icon={faGithub} />
           </Button>
-        </div>
-        <ErrorModal
-          title={error.title}
-          show={error.show}
-          onHide={() => setError({ ...error, show: false })}
-        >
-          <p>{error.message}</p>
-        </ErrorModal>
-      </div>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 }

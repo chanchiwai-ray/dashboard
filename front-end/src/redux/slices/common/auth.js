@@ -8,6 +8,7 @@ const initialState = {
   value: { userId: null, authenticated: false, redirect: "/login" },
   success: false,
   message: "Loading",
+  callbackState: { success: true, message: "" },
 };
 
 export const verify = createAsyncThunk(`${name}/verify`, async () => {
@@ -54,14 +55,17 @@ const slice = createSlice({
         const data = action.payload;
         if (data.success) {
           state.value = { userId: data.payload, authenticated: true, redirect: "/home" };
+          state.callbackState = { success: true, message: "" };
         } else {
           state.value = { userId: null, authenticated: false, redirect: "/login" };
+          state.callbackState = { success: true, message: "" };
         }
         state.success = data.success;
         state.message = data.message;
       })
       .addCase(verify.rejected, (state) => {
         state.value = { userId: null, authenticated: false, redirect: "/login" };
+        state.callbackState = { success: false, message: "Network Error" };
         state.success = false;
         state.message = "Network Error.";
       })
@@ -69,25 +73,30 @@ const slice = createSlice({
         const data = action.payload;
         if (data.success) {
           state.value = { userId: data.payload, authenticated: true, redirect: "/home" };
+          state.callbackState = { success: true, message: "" };
         } else {
           state.value = { userId: null, authenticated: false, redirect: "/login" };
+          state.callbackState = { success: false, message: data.message };
         }
         state.success = data.success;
         state.message = data.message;
       })
       .addCase(login.rejected, (state) => {
         state.value = { userId: null, authenticated: false, redirect: "/login" };
+        state.callbackState = { success: false, message: "Network Error" };
         state.success = false;
         state.message = "Network Error.";
       })
       .addCase(logout.fulfilled, (state, action) => {
         const data = action.payload;
         state.value = { userId: null, authenticated: false, redirect: "/login" };
+        state.callbackState = { success: true, message: "" };
         state.success = data.success;
         state.message = data.message;
       })
       .addCase(logout.rejected, (state) => {
         state.value = { userId: null, authenticated: false, redirect: "/login" };
+        state.callbackState = { success: false, message: "Network Error" };
         state.success = false;
         state.message = "Network Error.";
       })
@@ -95,14 +104,17 @@ const slice = createSlice({
         const data = action.payload;
         if (data.success) {
           state.value = { userId: data.payload, authenticated: true, redirect: "/home" };
+          state.callbackState = { success: true, message: "" };
         } else {
           state.value = { userId: null, authenticated: false, redirect: "/login" };
+          state.callbackState = { success: false, message: data.message };
         }
         state.success = data.success;
         state.message = data.message;
       })
       .addCase(signup.rejected, (state) => {
         state.value = { userId: null, authenticated: false, redirect: "/login" };
+        state.callbackState = { success: false, message: "Network Error" };
         state.success = false;
         state.message = "Network Error.";
       });
