@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 const passport = require("passport");
 const Users = require("../../models/users");
-const Profile = require("../../models/users/profile");
+const Profiles = require("../../models/users/profiles");
 
 router.route("/").post((req, res, next) => {
   Users.register(new Users({ account: req.body.account }), req.body.password, (err) => {
@@ -18,7 +18,7 @@ router.route("/").post((req, res, next) => {
     }
 
     passport.authenticate("local")(req, res, () => {
-      Profile.create({ userId: req.user._id }).then((profile) => {
+      Profiles.create({ userId: req.user._id }).then((profile) => {
         if (profile) {
           res.status(200).json({
             success: true,

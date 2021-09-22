@@ -74,4 +74,4 @@ const schema = new mongoose.Schema({
 });
 
 // Build and export the model
-module.exports = new mongoose.model("users.profile", schema);
+module.exports = new mongoose.model("users.profiles", schema);

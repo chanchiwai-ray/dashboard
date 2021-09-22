@@ -2,7 +2,7 @@
 
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const Profile = require("../../../models/users/profile");
+const Profiles = require("../../../models/users/profiles");
 const authenticate = require("../../../authenticate.js");
 
 router.use(authenticate.isSameUser);
@@ -10,7 +10,7 @@ router.use(authenticate.isSameUser);
 router
   .route("/")
   .get((req, res) => {
-    Profile.findOne({ userId: req.params.uid })
+    Profiles.findOne({ userId: req.params.uid })
       .then((user) => {
         if (!user) {
           return res.status(400).json({
@@ -31,7 +31,7 @@ router
       });
   })
   .put((req, res) => {
-    Profile.findOneAndUpdate({ userId: req.params.uid }, req.body, {
+    Profiles.findOneAndUpdate({ userId: req.params.uid }, req.body, {
       useFindAndModify: false,
       new: true,
     })

@@ -8,7 +8,7 @@ const authenticate = require("../../authenticate.js");
 
 const tasks = require("./tasks");
 const notes = require("./notes");
-const profile = require("./profile");
+const profile = require("./profiles");
 const finance = require("./finance");
 const contacts = require("./contacts");
 
