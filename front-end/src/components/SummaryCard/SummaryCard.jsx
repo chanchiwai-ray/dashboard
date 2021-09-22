@@ -14,7 +14,11 @@ export default function SummaryCard({ data, icon, ...props }) {
         <Row>
           <Col xs={4} className="d-flex align-items-center justify-content-center ">
             {icon ? (
-              <FontAwesomeIcon size="4x" icon={icon.icon} color={icon.color} />
+              <FontAwesomeIcon
+                className={`${styles["fontawesome-size"]}`}
+                icon={icon.icon}
+                color={icon.color}
+              />
             ) : (
               <span></span>
             )}

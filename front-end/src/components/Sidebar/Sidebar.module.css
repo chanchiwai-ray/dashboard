@@ -4,7 +4,6 @@
 }
 
 .link {
-  font-size: 1.1rem;
   color: rgb(100, 100, 100, 0.8);
   padding: 10px 23px;
   display: block;
@@ -29,4 +28,14 @@
 .link-text {
   margin-right: 7rem;
   margin-left: 1.5rem;
+}
+
+@media screen and (max-width: 992px) {
+  .link {
+    color: rgb(100, 100, 100, 0.8);
+    margin: 0;
+    padding: 1rem;
+    display: block;
+    transition: all 0.1s ease-in-out;
+  }
 }

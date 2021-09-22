@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import { Container, Row, Col, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Container, Row, Col, Dropdown, OverlayTrigger, Tooltip, Nav } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserCog,
@@ -18,6 +18,8 @@ import Sidebar from "../components/Sidebar/Sidebar.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuth, selectSettings } from "../redux/app/store.js";
 import { logout } from "../redux/slices/common/auth.js";
+
+import styles from "./layouts.module.css";
 
 const headerNavItems = [
   {
@@ -71,14 +73,20 @@ export default function MainLayout(props) {
   return (
     <React.Fragment>
       <Header
-        brand={<FontAwesomeIcon className="fa-lg fa-fw" icon={faBars} />}
-        navItems={headerNavItems}
-        toggleSidebar={() => setSidebarState(!sidebarState)}
-      >
-        {
+        brand={
+          <OverlayTrigger key="bottom" placement="bottom" overlay={<Tooltip>Menu</Tooltip>}>
+            <Nav.Item
+              className={`${styles["nav-item"]}`}
+              onClick={() => setSidebarState(!sidebarState)}
+            >
+              <FontAwesomeIcon className="fa-lg fa-fw" color="white" icon={faBars} />
+            </Nav.Item>
+          </OverlayTrigger>
+        }
+        extraChildren={
           <Dropdown alignRight>
             <OverlayTrigger key="bottom" placement="bottom" overlay={<Tooltip>Settings</Tooltip>}>
-              <Dropdown.Toggle>
+              <Dropdown.Toggle as={Nav.Item} className={`${styles["nav-item"]}`}>
                 <FontAwesomeIcon color="white" icon={faUserCog} />
               </Dropdown.Toggle>
             </OverlayTrigger>
@@ -94,6 +102,22 @@ export default function MainLayout(props) {
             </Dropdown.Menu>
           </Dropdown>
         }
+      >
+        {!headerNavItems
+          ? null
+          : headerNavItems.map((item, key) => (
+              <OverlayTrigger
+                key={key}
+                placement="bottom"
+                overlay={<Tooltip>{item.label}</Tooltip>}
+              >
+                <Link to={item.to}>
+                  <Nav.Item className={`${styles["nav-item"]}`} key={key}>
+                    <FontAwesomeIcon color="white" icon={item.faIcon} />
+                  </Nav.Item>
+                </Link>
+              </OverlayTrigger>
+            ))}
       </Header>
       <Container fluid>
         <Row>
