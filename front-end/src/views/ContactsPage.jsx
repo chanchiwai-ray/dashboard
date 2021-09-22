@@ -31,22 +31,20 @@ export default function ContactPage() {
 
   return (
     <MainLayout>
-      <Controller title="People" bg="light" expand="lg">
+      <Controller title="Contacts" bg="light" expand="lg">
         <Nav>
           <Nav.Link onClick={() => setDisplayNewContactForm(true)}>
             <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> New Contact
           </Nav.Link>
         </Nav>
-        <Nav style={{ marginLeft: "auto" }}>
-          <Nav.Link>
-            <FormControl
-              type="text"
-              placeholder="Search contact..."
-              onChange={(e) => setFilterString(e.target.value)}
-              value={filterString}
-            />
-          </Nav.Link>
-        </Nav>
+        <div style={{ marginLeft: "auto" }}>
+          <FormControl
+            type="text"
+            placeholder="Search contact..."
+            onChange={(e) => setFilterString(e.target.value)}
+            value={filterString}
+          />
+        </div>
       </Controller>
       <Container>
         <Row className="my-3">
