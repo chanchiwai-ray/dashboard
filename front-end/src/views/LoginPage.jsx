@@ -12,7 +12,8 @@ import Avatar from "../assets/images/avatar.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPage } from "../redux/slices/common/settings.js";
 import { selectAuth } from "../redux/app/store.js";
-import { verify, login, signup } from "../redux/slices/common/auth.js";
+import { verify, login, signup, resetCallbackState } from "../redux/slices/common/auth.js";
+import ErrorBadge from "../components/ErrorBadge/ErrorBadge.jsx";
 
 const Separator = () => {
   return (
@@ -97,9 +98,13 @@ export default function LoginPage(props) {
               />
             </InputGroup>
           </Form.Group>
-          <Form.Text className="text-danger">
-            {auth.callbackState.success ? "" : auth.callbackState.message}
-          </Form.Text>
+          {!auth.callbackState.success ? (
+            <ErrorBadge
+              className={"mx-0"}
+              message={auth.callbackState.message}
+              onClose={() => dispatch(resetCallbackState())}
+            />
+          ) : null}
           <Button className={`${styles["submit-btn"]}`} type="submit" onClick={() => handleLogin()}>
             <strong>Log In</strong>
           </Button>

@@ -48,7 +48,11 @@ export const signup = createAsyncThunk(`${name}/signup`, async (args) => {
 const slice = createSlice({
   name: name,
   initialState,
-  reducers: {},
+  reducers: {
+    resetCallbackState: (state) => {
+      state.callbackState = { success: true, message: "" };
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(verify.fulfilled, (state, action) => {
@@ -120,5 +124,7 @@ const slice = createSlice({
       });
   },
 });
+
+export const { resetCallbackState } = slice.actions;
 
 export default slice.reducer;

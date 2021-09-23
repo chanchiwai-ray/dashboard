@@ -11,7 +11,7 @@ import Controller from "../components/Controller/Controller.jsx";
 import DataTable from "../redux/components/DataTable.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 import EditableTableForm from "../redux/components/EditableTableForm.jsx";
-import ErrorModal from "../components/ErrorModal/ErrorModal.jsx";
+import ErrorBadge from "../components/ErrorBadge/ErrorBadge.jsx";
 
 import { categoryFields, getRecordFields } from "../configs.jsx";
 import { selectAuth, selectCategories } from "../redux/app/store.js";
@@ -29,7 +29,7 @@ export default function ExpensePage({ ...props }) {
     showRecordForm: false,
     showCategoryForm: false,
     showEditRecordForm: false,
-    showErrorModal: false,
+    showErrorBadge: false,
     selectedRowIds: new Set(),
   });
 
@@ -39,7 +39,7 @@ export default function ExpensePage({ ...props }) {
 
   const onDelete = (selectedRowIds) => {
     if (selectedRowIds.size === 0) {
-      return setState({ ...state, showErrorModal: true });
+      return setState({ ...state, showErrorBadge: true });
     }
 
     selectedRowIds.forEach((id) => {
@@ -51,24 +51,28 @@ export default function ExpensePage({ ...props }) {
       );
     });
 
-    setState({ ...state, setSelectedRowIds: new Set() });
+    setState({ ...state, setSelectedRowIds: new Set(), showErrorBadge: false });
   };
 
   const onUpdate = (selectedRowIds) => {
     if (selectedRowIds.size === 0) {
-      return setState({ ...state, showErrorModal: true });
+      return setState({ ...state, showErrorBadge: true });
     }
-    setState({ ...state, showEditRecordForm: true });
+    setState({ ...state, showEditRecordForm: true, showErrorBadge: false });
   };
 
   return (
     <MainLayout>
       <Controller title="Expense" bg="light" expand="lg">
         <Nav>
-          <Nav.Link onClick={() => setState({ ...state, showCategoryForm: true })}>
+          <Nav.Link
+            onClick={() => setState({ ...state, showCategoryForm: true, showErrorBadge: false })}
+          >
             <FontAwesomeIcon className="fa-fw" icon={faListAlt} /> New Category
           </Nav.Link>
-          <Nav.Link onClick={() => setState({ ...state, showRecordForm: true })}>
+          <Nav.Link
+            onClick={() => setState({ ...state, showRecordForm: true, showErrorBadge: false })}
+          >
             <FontAwesomeIcon className="fa-fw" icon={faPlusSquare} /> Create
           </Nav.Link>
           <Nav.Link onClick={() => onUpdate(state.selectedRowIds)}>
@@ -81,6 +85,15 @@ export default function ExpensePage({ ...props }) {
       </Controller>
       <Container>
         <Row>
+          <Col sm={12}>
+            {state.showErrorBadge ? (
+              <ErrorBadge
+                message="You have not selected any records. Please choose at least one record from the table."
+                onClose={() => setState({ ...state, showErrorBadge: false })}
+                timeout={5000}
+              />
+            ) : null}
+          </Col>
           <Col sm={12}>
             <Chart categories={recordFields[1].choices} />
           </Col>
@@ -163,13 +176,6 @@ export default function ExpensePage({ ...props }) {
           ))}
         </ListGroup>
       </ModalForm>
-      <ErrorModal
-        title="Invaild Operation"
-        show={state.showErrorModal}
-        onHide={() => setState({ ...state, showErrorModal: false })}
-      >
-        <p>You have not selected any records. Please choose at least one record from the table.</p>
-      </ErrorModal>
     </MainLayout>
   );
 }

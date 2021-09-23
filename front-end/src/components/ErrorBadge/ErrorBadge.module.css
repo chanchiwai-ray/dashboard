@@ -1,0 +1,15 @@
+.fontawesome-as-btn:hover {
+  cursor: pointer;
+}
+
+.error-badge {
+  display: flex;
+  align-items: center;
+  color: red;
+  padding: 10px 15px;
+  margin: 20px 0;
+  border: 1px solid coral;
+  background: rgba(255, 127, 80, 0.479);
+  font-size: 12px;
+  font-weight: bold;
+}
