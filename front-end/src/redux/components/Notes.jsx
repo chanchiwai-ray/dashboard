@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import Note from "../../components/Note/Note.jsx";
 import { selectAuth, selectNotes } from "../app/store";
-import { getNotes, putNote } from "../slices/notes";
+import { getNotes, putNote, deleteNote } from "../slices/notes";
 
 export default () => {
   const auth = useSelector(selectAuth);
@@ -32,7 +32,7 @@ export default () => {
                   onDone={(data) => {
                     dispatch(putNote({ id: note._id, userId: auth.value.userId, data: data }));
                   }}
-                  onDelete={() => dispatch(deleteTask({ userId: auth.value.userId, id: note._id }))}
+                  onDelete={() => dispatch(deleteNote({ userId: auth.value.userId, id: note._id }))}
                   onCancel={() => null}
                 />
               </Col>

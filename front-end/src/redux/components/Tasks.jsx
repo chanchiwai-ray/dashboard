@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Task from "../../components/Task/Task.jsx";
 import { selectAuth, selectTasks } from "../app/store";
-import { getTasks, putTask } from "../slices/tasks";
+import { getTasks, putTask, deleteTask } from "../slices/tasks";
 
 export default () => {
   const auth = useSelector(selectAuth);
