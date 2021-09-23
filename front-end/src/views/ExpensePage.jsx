@@ -51,7 +51,7 @@ export default function ExpensePage({ ...props }) {
       );
     });
 
-    setState({ ...state, setSelectedRowIds: new Set(), showErrorBadge: false });
+    setState({ ...state, selectedRowIds: new Set(), showErrorBadge: false });
   };
 
   const onUpdate = (selectedRowIds) => {
