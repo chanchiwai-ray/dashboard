@@ -121,7 +121,6 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       editedValues.listContent = editedValues.listContent.filter(
         (item) => item.title.trim() !== ""
       );
-      console.log(editedValues);
       setEditing(false);
       onDone(editedValues);
     },
