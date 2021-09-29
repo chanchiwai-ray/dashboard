@@ -30,6 +30,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from "uuid";
 import styles from "./Note.module.css";
+import ModalForm from "../ModalForm/ModalForm.jsx";
+import ImageUpload from "../ImageUpload/ImageUpload.jsx";
 
 const CheckList = ({ content, onDone, onEdit, isEditing }) => {
   const onChange = (id, key, value) => {
@@ -103,6 +105,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
 
 export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
   const [isEditing, setEditing] = useState(props.edit);
+  const [addPicture, setAddPicture] = useState(false);
   const formik = useFormik({
     initialValues: {
       star: item.star || false,
@@ -127,6 +130,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
     enableReinitialize: true,
   });
 
+  const renderImage = () => {};
   const renderHeader = () => (
     <React.Fragment>
       <div className="d-flex ">
@@ -220,7 +224,12 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
     <React.Fragment>
       {formik.values.imageContent ? (
         <React.Fragment>
-          <Card.Img src={formik.values.imageContent} />
+          <div className="d-flex justify-content-center py-3">
+            <Card.Img
+              src={URL.createObjectURL(new Blob([formik.values.imageContent]))}
+              className={`${styles.image}`}
+            />
+          </div>
           <hr />
         </React.Fragment>
       ) : null}
@@ -280,7 +289,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
           <OverlayTrigger overlay={<Tooltip>Add Picture</Tooltip>}>
             <InputGroup.Text
               className="btn btn-outline-warning mx-1"
-              onClick={() => console.log("Add picture")}
+              onClick={() => setAddPicture(true)}
             >
               <FontAwesomeIcon icon={faImage} />
             </InputGroup.Text>
@@ -339,6 +348,11 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
         {renderList()}
         <Card.Footer className="text-muted d-flex">{renderFooter()}</Card.Footer>
       </Card>
+      <ImageUpload
+        show={addPicture}
+        onHide={() => setAddPicture(false)}
+        setFormData={(buffer) => formik.setFieldValue("imageContent", buffer)}
+      />
     </Form>
   );
 }
