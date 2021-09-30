@@ -3,6 +3,37 @@
 }
 
 .image {
+  width: auto;
   max-width: 600px;
   max-height: 800px;
+}
+
+.input[type="file"] {
+  display: none;
+}
+
+.label:hover {
+  cursor: pointer;
+}
+
+.label {
+  height: 100%;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-top-color: rgb(206, 212, 218);
+  border-right-color: rgb(206, 212, 218);
+  border-bottom-color: rgb(206, 212, 218);
+  border-left-color: rgb(206, 212, 218);
+  border-radius: 0.25rem;
 }

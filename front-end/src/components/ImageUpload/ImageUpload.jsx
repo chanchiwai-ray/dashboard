@@ -44,14 +44,15 @@ export default function ({ show, onHide, setFormData, ...props }) {
   };
 
   const onReset = () => {
-    setState({ success: false, message: "" });
+    setState({ success: false, message: "(Select a picture to upload.)" });
     setFile(undefined);
     setBuffer(undefined);
     setThumbnail(undefined);
+    onHide();
   };
 
   return (
-    <Modal show={show} onHide={() => onHide()}>
+    <Modal show={show} onHide={() => onReset()}>
       <Modal.Header closeButton>
         <Modal.Title>Upload an image</Modal.Title>
       </Modal.Header>
@@ -68,15 +69,16 @@ export default function ({ show, onHide, setFormData, ...props }) {
         )}
         <input
           className={`${styles.input}`}
+          name="image"
           type="file"
-          accept="image/jpg,image/jpeg,image.png/image/gif"
+          accept="image/*"
           onChange={(e) => onChange(e)}
         />
       </Modal.Body>
       <Modal.Footer>
         <Button
           onClick={() => {
-            setFormData(buffer);
+            setFormData(file);
             onHide();
           }}
         >

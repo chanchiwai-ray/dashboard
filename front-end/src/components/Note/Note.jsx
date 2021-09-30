@@ -30,8 +30,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from "uuid";
 import styles from "./Note.module.css";
-import ModalForm from "../ModalForm/ModalForm.jsx";
-import ImageUpload from "../ImageUpload/ImageUpload.jsx";
+import { getImageMimetype } from "../../utils";
 
 const CheckList = ({ content, onDone, onEdit, isEditing }) => {
   const onChange = (id, key, value) => {
@@ -104,8 +103,8 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
 };
 
 export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
+  const _id = uuid();
   const [isEditing, setEditing] = useState(props.edit);
-  const [addPicture, setAddPicture] = useState(false);
   const formik = useFormik({
     initialValues: {
       star: item.star || false,
@@ -130,7 +129,29 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
     enableReinitialize: true,
   });
 
-  const renderImage = () => {};
+  const onFileChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file.slice(0, file.length));
+    reader.onloadend = function (evt) {
+      if (evt.target.readyState === FileReader.DONE) {
+        const uint = new Uint8Array(evt.target.result.slice(0, 4));
+        let bytes = [];
+        uint.forEach((byte) => {
+          bytes.push(byte.toString(16));
+        });
+        const hex = bytes.join("").toUpperCase();
+
+        const re = /^image/;
+        if (re.test(getImageMimetype(hex))) {
+          formik.setFieldValue("imageContent", file);
+        } else {
+          formik.setFieldValue("imageContent", undefined);
+        }
+      }
+    };
+  };
+
   const renderHeader = () => (
     <React.Fragment>
       <div className="d-flex ">
@@ -287,12 +308,21 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
             </InputGroup.Text>
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>Add Picture</Tooltip>}>
-            <InputGroup.Text
-              className="btn btn-outline-warning mx-1"
-              onClick={() => setAddPicture(true)}
-            >
-              <FontAwesomeIcon icon={faImage} />
-            </InputGroup.Text>
+            <div>
+              <label
+                htmlFor={`file-upload-${_id}`}
+                className={`${styles.label} btn btn-outline-warning`}
+              >
+                <FontAwesomeIcon icon={faImage} />
+              </label>
+              <input
+                id={`file-upload-${_id}`}
+                className={`${styles.input}`}
+                type="file"
+                onChange={(e) => onFileChange(e)}
+                accept="image/*"
+              />
+            </div>
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>Add Label</Tooltip>}>
             <InputGroup.Text
@@ -341,18 +371,13 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
     ) : null;
 
   return (
-    <Form onSubmit={formik.handleSubmit}>
+    <Form onSubmit={formik.handleSubmit} encType="multipart/form-data">
       <Card>
         <Card.Header>{renderHeader()}</Card.Header>
         <Card.Body>{renderBody()}</Card.Body>
         {renderList()}
         <Card.Footer className="text-muted d-flex">{renderFooter()}</Card.Footer>
       </Card>
-      <ImageUpload
-        show={addPicture}
-        onHide={() => setAddPicture(false)}
-        setFormData={(buffer) => formik.setFieldValue("imageContent", buffer)}
-      />
     </Form>
   );
 }
