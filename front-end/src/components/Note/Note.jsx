@@ -51,7 +51,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
 
   const onDelete = (id) => {
     const updatedContent = content.filter((item) => item.id !== id);
-    onDone(updatedContent);
+    onEdit(updatedContent);
   };
 
   return (
@@ -116,13 +116,22 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       modifiedDate: item.modifiedDate || Date.now(),
     },
     onSubmit: (values) => {
-      const editedValues = {
-        ...formik.values,
-        modifiedDate: Date.now(),
-      };
-      editedValues.listContent = editedValues.listContent.filter(
-        (item) => item.title.trim() !== ""
+      const editedValues = new FormData();
+      editedValues.append("star", formik.values.star);
+      editedValues.append("title", formik.values.title);
+      editedValues.append(
+        "labels",
+        JSON.stringify(formik.values.labels.filter((item) => item.label.trim() !== ""))
       );
+      editedValues.append("description", formik.values.description);
+      editedValues.append(
+        "listContent",
+        JSON.stringify(formik.values.listContent.filter((item) => item.title.trim() !== ""))
+      );
+      if (formik.values.imageContent !== undefined)
+        editedValues.append("imageContent", formik.values.imageContent);
+      editedValues.append("modifiedDate", Date.now());
+      console.log(formik.values);
       setEditing(false);
       onDone(editedValues);
     },

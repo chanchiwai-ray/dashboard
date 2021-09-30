@@ -20,8 +20,7 @@ export const getNotes = createAsyncThunk(`${name}/getNotes`, async (args) => {
 export const putNote = createAsyncThunk(`${name}/putNote`, async (args) => {
   const response = await fetch(`${api_host}/users/${args.userId}/notes/${args.id}`, {
     method: "PUT",
-    body: JSON.stringify(args.data),
-    headers: { "Content-Type": "application/json" },
+    body: args.data,
     credentials: "include",
   });
   return response.json();
@@ -30,8 +29,7 @@ export const putNote = createAsyncThunk(`${name}/putNote`, async (args) => {
 export const postNote = createAsyncThunk(`${name}/postNote`, async (args) => {
   const response = await fetch(`${api_host}/users/${args.userId}/notes`, {
     method: "POST",
-    body: JSON.stringify({ ...args.data, userId: args.userId }),
-    headers: { "Content-Type": "application/json" },
+    body: args.data,
     credentials: "include",
   });
   return response.json();
