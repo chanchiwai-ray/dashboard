@@ -124,7 +124,6 @@ export default function NotesPage() {
             }}
             onDelete={() => null}
             onDone={(data) => {
-              data.append("userId", auth.value.userId);
               dispatch(postNote({ userId: auth.value.userId, data: data }));
               setDisplayNewNoteForm(false);
             }}

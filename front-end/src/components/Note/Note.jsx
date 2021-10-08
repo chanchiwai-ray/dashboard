@@ -105,6 +105,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
 export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
   const _id = uuid();
   const [isEditing, setEditing] = useState(props.edit);
+  const [image, setImage] = useState(undefined);
   const formik = useFormik({
     initialValues: {
       star: item.star || false,
@@ -116,22 +117,14 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       modifiedDate: item.modifiedDate || Date.now(),
     },
     onSubmit: (values) => {
-      const editedValues = new FormData();
-      editedValues.append("star", formik.values.star);
-      editedValues.append("title", formik.values.title);
-      editedValues.append(
-        "labels",
-        JSON.stringify(formik.values.labels.filter((item) => item.label.trim() !== ""))
+      const editedValues = { ...formik.values };
+      editedValues.labels = formik.values.labels.filter((item) => item.label.trim() !== "");
+      editedValues.listContent = formik.values.listContent.filter(
+        (item) => item.title.trim() !== ""
       );
-      editedValues.append("description", formik.values.description);
-      editedValues.append(
-        "listContent",
-        JSON.stringify(formik.values.listContent.filter((item) => item.title.trim() !== ""))
-      );
-      if (formik.values.imageContentId !== undefined)
-        editedValues.append("imageContentId", formik.values.imageContentId);
-      editedValues.append("modifiedDate", Date.now());
-      console.log(formik.values);
+      editedValues.modifiedDate = Date.now();
+      if (image !== undefined) editedValues.imageContentId = uuid();
+      console.log(editedValues);
       setEditing(false);
       onDone(editedValues);
     },
@@ -153,12 +146,37 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
 
         const re = /^image/;
         if (re.test(getImageMimetype(hex))) {
-          formik.setFieldValue("imageContentId", file);
+          setImage(file);
         } else {
-          formik.setFieldValue("imageContentId", undefined);
+          setImage(undefined);
         }
       }
     };
+  };
+  const renderImage = () => {
+    if (image) {
+      return (
+        <React.Fragment>
+          <div className="d-flex justify-content-center py-3">
+            <Card.Img src={URL.createObjectURL(new Blob([image]))} className={`${styles.image}`} />
+          </div>
+          <hr />
+        </React.Fragment>
+      );
+    } else if (formik.values.imageContentId) {
+      return (
+        <React.Fragment>
+          <div className="d-flex justify-content-center py-3">
+            <Card.Img
+              src={URL.createObjectURL(new Blob([formik.values.imageContentId]))}
+              className={`${styles.image}`}
+            />
+          </div>
+          <hr />
+        </React.Fragment>
+      );
+    }
+    return null;
   };
 
   const renderHeader = () => (
@@ -252,17 +270,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
 
   const renderBody = () => (
     <React.Fragment>
-      {formik.values.imageContentId ? (
-        <React.Fragment>
-          <div className="d-flex justify-content-center py-3">
-            <Card.Img
-              src={URL.createObjectURL(new Blob([formik.values.imageContentId]))}
-              className={`${styles.image}`}
-            />
-          </div>
-          <hr />
-        </React.Fragment>
-      ) : null}
+      {renderImage()}
       <Card.Title>
         {isEditing ? (
           <input
