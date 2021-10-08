@@ -27,7 +27,7 @@ const schema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  imageContent: {
+  imageContentId: {
     type: String,
     default: "",
   },
