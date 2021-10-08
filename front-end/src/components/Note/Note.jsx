@@ -112,7 +112,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       labels: item.labels || [],
       description: item.description || "",
       listContent: item.listContent || [],
-      imageContent: item.imageContent || undefined,
+      imageContentId: item.imageContentId || undefined,
       modifiedDate: item.modifiedDate || Date.now(),
     },
     onSubmit: (values) => {
@@ -128,8 +128,8 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
         "listContent",
         JSON.stringify(formik.values.listContent.filter((item) => item.title.trim() !== ""))
       );
-      if (formik.values.imageContent !== undefined)
-        editedValues.append("imageContent", formik.values.imageContent);
+      if (formik.values.imageContentId !== undefined)
+        editedValues.append("imageContentId", formik.values.imageContentId);
       editedValues.append("modifiedDate", Date.now());
       console.log(formik.values);
       setEditing(false);
@@ -153,9 +153,9 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
 
         const re = /^image/;
         if (re.test(getImageMimetype(hex))) {
-          formik.setFieldValue("imageContent", file);
+          formik.setFieldValue("imageContentId", file);
         } else {
-          formik.setFieldValue("imageContent", undefined);
+          formik.setFieldValue("imageContentId", undefined);
         }
       }
     };
@@ -252,11 +252,11 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
 
   const renderBody = () => (
     <React.Fragment>
-      {formik.values.imageContent ? (
+      {formik.values.imageContentId ? (
         <React.Fragment>
           <div className="d-flex justify-content-center py-3">
             <Card.Img
-              src={URL.createObjectURL(new Blob([formik.values.imageContent]))}
+              src={URL.createObjectURL(new Blob([formik.values.imageContentId]))}
               className={`${styles.image}`}
             />
           </div>

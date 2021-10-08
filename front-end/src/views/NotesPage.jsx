@@ -119,7 +119,7 @@ export default function NotesPage() {
               labels: [],
               description: "",
               listContent: [],
-              imageContent: undefined,
+              imageContentId: undefined,
               modifiedDate: Date.now(),
             }}
             onDelete={() => null}
