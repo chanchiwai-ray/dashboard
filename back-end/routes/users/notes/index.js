@@ -3,6 +3,17 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const Notes = require("../../../models/users/notes");
+const multer = require("multer");
+const upload = multer();
+const minio = require("minio");
+const minioClient = new minio.Client({
+  endPoint: process.env.MINIO_ENDPOINT,
+  port: Number(process.env.MINIO_PORT),
+  useSSL: process.env.MINIO_USESSL === "true",
+  accessKey: process.env.MINIO_ACCESSKEY,
+  secretKey: process.env.MINIO_SECRETKEY,
+});
+const minioBucket = process.env.MINIO_BUCKET;
 
 router
   .route("/")
@@ -41,6 +52,138 @@ router
   })
   .delete((req, res) => {
     res.status(501).json({ error: "DELETE is not implemented." });
+  });
+
+router
+  .route("/images")
+  .post(upload.single("image"), (req, res) => {
+    if (req.file) {
+      if (req.file.size > 5 * 1000000) {
+        return res.status(400).json({
+          success: false,
+          message: `Image to be uploaded cannot be larger than 5MB.`,
+          payload: null,
+        });
+      }
+      // maybe update this to support more types
+      if (
+        !(
+          req.file.mimetype === "image/png" ||
+          req.file.mimetype === "image/gif" ||
+          req.file.mimetype === "image/jpeg"
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Only .png, .gif and .jpeg are supported.`,
+          payload: null,
+        });
+      }
+      minioClient
+        .putObject(minioBucket, req.body.imageContentId, req.file.buffer, req.file.size)
+        .then(() => {
+          res.status(200).json({
+            success: true,
+            message: `Uploaded one image.`,
+            payload: { id: req.body.imageContentId },
+          });
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .json({ success: false, message: `Internal Server Error.`, payload: null });
+          console.log(err);
+        });
+    }
+  })
+  .get((req, res) => {
+    res.status(501).json({ error: "GET is not implemented." });
+  })
+  .put((req, res) => {
+    res.status(501).json({ error: "PUT is not implemented." });
+  })
+  .delete((req, res) => {
+    res.status(501).json({ error: "DELETE is not implemented." });
+  });
+
+router
+  .route("/images/:id")
+  .get((req, res) => {
+    minioClient
+      .presignedGetObject(minioBucket, req.params.id, 7 * 24 * 3600)
+      .then((presignedURL) => {
+        res.status(200).json({
+          success: true,
+          message: `Got temporary access URL for image with id: ${req.params.id}.`,
+          payload: { id: req.params.id, presignedURL: presignedURL },
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({ success: false, message: `Internal Server Error.`, payload: null });
+        console.log(err);
+      });
+  })
+  .put(upload.single("image"), (req, res) => {
+    if (req.file) {
+      if (req.file.size > 5 * 1000000) {
+        return res.status(400).json({
+          success: false,
+          message: `Image to be uploaded cannot be larger than 5MB.`,
+          payload: null,
+        });
+      }
+      // maybe update this to support more types
+      if (
+        !(
+          req.file.mimetype === "image/png" ||
+          req.file.mimetype === "image/gif" ||
+          req.file.mimetype === "image/jpeg"
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Only .png, .gif and .jpeg are supported.`,
+          payload: null,
+        });
+      }
+      minioClient
+        .removeObject(minioBucket, req.params.id)
+        .then(() => {
+          minioClient
+            .putObject(minioBucket, req.params.id, req.file.buffer, req.file.size)
+            .then(() => {
+              res.status(200).json({ success: true, message: `Updated one image.`, payload: null });
+            })
+            .catch((err) => {
+              res
+                .status(500)
+                .json({ success: false, message: `Internal Server Error.`, payload: null });
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .json({ success: false, message: `Internal Server Error.`, payload: null });
+          console.log(err);
+        });
+    }
+  })
+  .delete((req, res) => {
+    minioClient
+      .removeObject(minioBucket, req.params.id)
+      .then(() => {
+        res
+          .status(200)
+          .json({ success: true, message: `Removed one image.`, payload: { id: req.params.id } });
+      })
+      .catch((err) => {
+        res.status(500).json({ success: false, message: `Internal Server Error.`, payload: null });
+        console.log(err);
+      });
+  })
+  .post((req, res) => {
+    res.status(501).json({ error: "POST is not implemented." });
   });
 
 router

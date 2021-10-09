@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
 import {
@@ -102,7 +102,17 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
   );
 };
 
-export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
+export default function Note({
+  item,
+  imageURL,
+  onDelete,
+  onDone,
+  onCancel,
+  onGetImage,
+  onPutImage,
+  onPostImage,
+  ...props
+}) {
   const _id = uuid();
   const [isEditing, setEditing] = useState(props.edit);
   const [image, setImage] = useState(undefined);
@@ -123,13 +133,28 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
         (item) => item.title.trim() !== ""
       );
       editedValues.modifiedDate = Date.now();
-      if (image !== undefined) editedValues.imageContentId = uuid();
-      console.log(editedValues);
+      if (image !== undefined && formik.values.imageContentId === undefined) {
+        editedValues.imageContentId = uuid();
+        const formdata = new FormData();
+        formdata.append("image", image);
+        formdata.append("imageContentId", editedValues.imageContentId);
+        onPostImage(editedValues.imageContentId, formdata);
+      } else if (image !== undefined && formik.values.imageContentId !== undefined) {
+        const formdata = new FormData();
+        formdata.append("image", image);
+        onPutImage(formik.values.imageContentId, formdata);
+      }
       setEditing(false);
       onDone(editedValues);
     },
     enableReinitialize: true,
   });
+
+  useEffect(() => {
+    if (formik.values.imageContentId) {
+      onGetImage(formik.values.imageContentId);
+    }
+  }, []);
 
   const onFileChange = (e) => {
     const file = e.target.files[0];
@@ -153,6 +178,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
       }
     };
   };
+
   const renderImage = () => {
     if (image) {
       return (
@@ -163,14 +189,11 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
           <hr />
         </React.Fragment>
       );
-    } else if (formik.values.imageContentId) {
+    } else if (imageURL) {
       return (
         <React.Fragment>
           <div className="d-flex justify-content-center py-3">
-            <Card.Img
-              src={URL.createObjectURL(new Blob([formik.values.imageContentId]))}
-              className={`${styles.image}`}
-            />
+            <Card.Img src={imageURL} className={`${styles.image}`} />
           </div>
           <hr />
         </React.Fragment>
@@ -364,6 +387,7 @@ export default function Note({ item, onDelete, onDone, onCancel, ...props }) {
               onClick={(e) => {
                 setEditing(false);
                 formik.resetForm();
+                setImage(undefined);
                 if (onCancel) {
                   onCancel();
                 }

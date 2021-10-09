@@ -19,7 +19,16 @@ import { setCurrentPage } from "../redux/slices/common/settings.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
-import { getNotes, putNote, postNote, deleteNote } from "../redux/slices/notes";
+import {
+  getNotes,
+  putNote,
+  postNote,
+  deleteNote,
+  getImage,
+  putImage,
+  postImage,
+  deleteImage,
+} from "../redux/slices/notes";
 import { selectAuth, selectNotes } from "../redux/app/store.js";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
@@ -90,14 +99,27 @@ export default function NotesPage() {
                   <Note
                     key={item._id}
                     item={item}
+                    imageURL={notes.imageURLs[item.imageContentId]}
                     onDone={(newContent) =>
                       dispatch(
                         putNote({ id: item._id, userId: auth.value.userId, data: newContent })
                       )
                     }
-                    onDelete={() =>
-                      dispatch(deleteNote({ userId: auth.value.userId, id: item._id }))
+                    onDelete={() => {
+                      dispatch(deleteNote({ userId: auth.value.userId, id: item._id }));
+                      if (item.imageContentId) {
+                        dispatch(
+                          deleteImage({ userId: auth.value.userId, id: item.imageContentId })
+                        );
+                      }
+                    }}
+                    onPostImage={(id, data) =>
+                      dispatch(postImage({ userId: auth.value.userId, id: id, data: data }))
                     }
+                    onPutImage={(id, data) =>
+                      dispatch(putImage({ userId: auth.value.userId, id: id, data: data }))
+                    }
+                    onGetImage={(id) => dispatch(getImage({ userId: auth.value.userId, id: id }))}
                   />
                 </Col>
               ))
@@ -127,6 +149,9 @@ export default function NotesPage() {
               dispatch(postNote({ userId: auth.value.userId, data: data }));
               setDisplayNewNoteForm(false);
             }}
+            onPostImage={(id, data) =>
+              dispatch(postImage({ userId: auth.value.userId, id: id, data: data }))
+            }
             onCancel={() => setDisplayNewNoteForm(false)}
           />
         </Modal.Body>

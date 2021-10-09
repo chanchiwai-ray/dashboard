@@ -85,5 +85,4 @@ app.use(passport.initialize());
 app.use("/apis/users", userRouter);
 app.use("/apis/authenticate", authenticateRouter);
 
-exports.minioClient = minioClient;
 module.exports = app;

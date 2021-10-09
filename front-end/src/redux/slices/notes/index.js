@@ -6,9 +6,43 @@ const name = "notes";
 
 const initialState = {
   value: [],
+  imageURLs: {},
   success: true,
   message: "Loading",
 };
+
+export const getImage = createAsyncThunk(`${name}/getImage`, async (args) => {
+  const response = await fetch(`${api_host}/users/${args.userId}/notes/images/${args.id}`, {
+    credentials: "include",
+  });
+  return response.json();
+});
+
+export const putImage = createAsyncThunk(`${name}/putImage`, async (args) => {
+  const response = await fetch(`${api_host}/users/${args.userId}/notes/images/${args.id}`, {
+    method: "PUT",
+    body: args.data,
+    credentials: "include",
+  });
+  return response.json();
+});
+
+export const postImage = createAsyncThunk(`${name}/postImage`, async (args) => {
+  const response = await fetch(`${api_host}/users/${args.userId}/notes/images`, {
+    method: "POST",
+    body: args.data,
+    credentials: "include",
+  });
+  return response.json();
+});
+
+export const deleteImage = createAsyncThunk(`${name}/deleteImage`, async (args) => {
+  const response = await fetch(`${api_host}/users/${args.userId}/notes/images/${args.id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  return response.json();
+});
 
 export const getNotes = createAsyncThunk(`${name}/getNotes`, async (args) => {
   const response = await fetch(`${api_host}/users/${args.userId}/notes`, {
@@ -54,6 +88,44 @@ const slice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+      .addCase(getImage.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.imageURLs[data.payload.id] = data.payload.presignedURL;
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(getImage.rejected, (state) => {
+        state.success = false;
+        state.message = "Network Error";
+      })
+      .addCase(putImage.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(putImage.rejected, (state) => {
+        state.success = false;
+        state.message = "Network Error";
+      })
+      .addCase(postImage.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(postImage.rejected, (state) => {
+        state.success = false;
+        state.message = "Network Error";
+      })
+      .addCase(deleteImage.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.imageURLs[data.payload.id] = undefined;
+        state.success = data.success;
+        state.message = data.message;
+      })
+      .addCase(deleteImage.rejected, (state) => {
+        state.success = false;
+        state.message = "Network Error";
+      })
       .addCase(getNotes.fulfilled, (state, action) => {
         const data = action.payload;
         state.value = data.payload;
