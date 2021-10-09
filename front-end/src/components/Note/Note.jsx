@@ -76,7 +76,7 @@ const CheckList = ({ content, onDone, onEdit, isEditing }) => {
                   className="form-control"
                   id="title"
                   name="title"
-                  onChange={(e) => onChange(item.id, "title", e.target.value.trim())}
+                  onChange={(e) => onChange(item.id, "title", e.target.value)}
                   value={item.title}
                 />
               )}
@@ -129,9 +129,12 @@ export default function Note({
     onSubmit: (values) => {
       const editedValues = { ...formik.values };
       editedValues.labels = formik.values.labels.filter((item) => item.label.trim() !== "");
-      editedValues.listContent = formik.values.listContent.filter(
-        (item) => item.title.trim() !== ""
-      );
+      editedValues.listContent = formik.values.listContent
+        .filter((item) => item.title.trim() !== "")
+        .map((item) => {
+          return { ...item, title: item.title.trim() };
+        });
+
       editedValues.modifiedDate = Date.now();
       if (image !== undefined && formik.values.imageContentId === undefined) {
         editedValues.imageContentId = uuid();
