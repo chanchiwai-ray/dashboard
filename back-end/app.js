@@ -32,30 +32,19 @@ const minioClient = new minio.Client({
   secretKey: process.env.MINIO_SECRETKEY,
 });
 
-// you can change these values
-minioClient.bucketExists(process.env.MINIO_BUCKET, function (err, exists) {
-  if (err) {
-    return console.log("Error when checking if bucket exists.", err);
-  }
-  if (exists) {
-    return console.log(`Bucket: ${process.env.MINIO_BUCKET} already exists, will reuse it.`);
-  } else {
-    console.log("Bucket: ${process.env.MINIO_BUCKET} did not exists, will create new one.");
-    minioClient
-      .makeBucket(process.env.MINIO_BUCKET)
-      .then(
-        () => {
-          console.log(`Successfully created bucket: ${process.env.MINIO_BUCKET}.`);
-        },
-        (err) => {
-          throw new Error(err.message);
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-});
+minioClient
+  .makeBucket(process.env.MINIO_BUCKET)
+  .then(
+    () => {
+      console.log(`Successfully created bucket: ${process.env.MINIO_BUCKET}.`);
+    },
+    (err) => {
+      throw new Error(err.message);
+    }
+  )
+  .catch((err) => {
+    console.log(err);
+  });
 
 const cors = require("./routes/cors.js");
 const userRouter = require("./routes/users");

@@ -21,6 +21,20 @@ services:
     image: mongo:latest
     volumes:
       - ./dbdata:/data/db
+  objectstore:
+    restart: always
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    env_file: .env
+    volumes:
+      - ./objects:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    expose:
+      - 9000
+      - 9001
 
 volumes:
   dbdata:
+  objects:
