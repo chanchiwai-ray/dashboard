@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import { remark } from "remark";
+import html from "remark-html";
 
 import {
   Row,
@@ -114,6 +116,7 @@ export default function Note({
   ...props
 }) {
   const _id = uuid();
+  const [description, setDescription] = useState("");
   const [isEditing, setEditing] = useState(props.edit);
   const [image, setImage] = useState(undefined);
   const formik = useFormik({
@@ -158,6 +161,15 @@ export default function Note({
       onGetImage(formik.values.imageContentId);
     }
   }, []);
+
+  useEffect(() => {
+    if (formik.values.description) {
+      remark()
+        .use(html)
+        .process(formik.values.description)
+        .then((data) => setDescription(data.toString()));
+    }
+  }, [formik.values.description]);
 
   const onFileChange = (e) => {
     const file = e.target.files[0];
@@ -312,8 +324,8 @@ export default function Note({
           formik.values.title
         )}
       </Card.Title>
-      <Card.Text>
-        {isEditing ? (
+      {isEditing ? (
+        <Card.Text>
           <textarea
             className="form-control"
             id="description"
@@ -322,10 +334,10 @@ export default function Note({
             onChange={formik.handleChange}
             value={formik.values.description}
           />
-        ) : (
-          formik.values.description
-        )}
-      </Card.Text>
+        </Card.Text>
+      ) : (
+        <div dangerouslySetInnerHTML={{ __html: description }} />
+      )}
     </React.Fragment>
   );
 

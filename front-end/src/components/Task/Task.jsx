@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import { remark } from "remark";
+import html from "remark-html";
 
 import { Row, Col, Form, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +16,7 @@ import styles from "./Task.module.css";
 
 export default function Task({ content, onDelete, onDone, onCancel, ...props }) {
   const [isEditing, setEditing] = useState(props.edit);
+  const [description, setDescription] = useState("");
   const formik = useFormik({
     initialValues: {
       star: content.star || false,
@@ -38,6 +41,15 @@ export default function Task({ content, onDelete, onDone, onCancel, ...props }) 
     },
     enableReinitialize: true,
   });
+
+  useEffect(() => {
+    if (formik.values.description) {
+      remark()
+        .use(html)
+        .process(formik.values.description)
+        .then((data) => setDescription(data.toString()));
+    }
+  }, [formik.values.description]);
 
   const convertToDateString = (date) => {
     if (date && !isNaN(Number(date))) {
@@ -182,7 +194,10 @@ export default function Task({ content, onDelete, onDone, onCancel, ...props }) 
         <span className={`${styles["task-title-text"]}`}>{formik.values.title}</span>
       </Col>
       <Col lg={12}>
-        <span className={`${styles["task-description-text"]}`}>{formik.values.description}</span>
+        <div
+          className={`${styles["task-description-text"]}`}
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
       </Col>
       <Col lg={12}>
         <span className={`${styles["task-meta-text"]}`}>Priority: {formik.values.priority}</span>
